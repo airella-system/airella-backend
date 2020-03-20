@@ -15,6 +15,7 @@ import java.util.Set;
 @Entity
 public class Sensor {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @ManyToOne
