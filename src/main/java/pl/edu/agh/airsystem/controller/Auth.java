@@ -2,28 +2,24 @@ package pl.edu.agh.airsystem.controller;
 
 
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import pl.edu.agh.airsystem.model.ApplicationUser;
+import org.springframework.web.bind.annotation.*;
+import pl.edu.agh.airsystem.model.Client;
+import pl.edu.agh.airsystem.model.StationClient;
+import pl.edu.agh.airsystem.model.UserClient;
 import pl.edu.agh.airsystem.model.auth.LoginRequest;
 import pl.edu.agh.airsystem.model.auth.LoginResponse;
 import pl.edu.agh.airsystem.model.auth.RefreshTokenRequest;
 import pl.edu.agh.airsystem.model.auth.RefreshTokenResponse;
-import pl.edu.agh.airsystem.repository.UserRepository;
+import pl.edu.agh.airsystem.repository.ClientRepository;
+import pl.edu.agh.airsystem.repository.UserClientRepository;
 import pl.edu.agh.airsystem.security.JWTTokenUtil;
 import pl.edu.agh.airsystem.security.model.JWTToken;
-import pl.edu.agh.airsystem.service.CustomUserDetailsService;
-
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -32,25 +28,30 @@ public class Auth {
 
     private final AuthenticationManager authenticationManager;
     private final JWTTokenUtil jwtTokenUtil;
-    private final CustomUserDetailsService userDetailsService;
-    private final UserRepository userRepository;
+    private final ClientRepository clientRepository;
+    private final UserClientRepository userClientRepository;
+
+    @GetMapping("/test")
+    public String test() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = auth.getPrincipal();
+        if (principal instanceof UserClient) {
+            return "You are user";
+        } else if (principal instanceof StationClient) {
+            return "You are station";
+        }
+        return "You are... I don't know ;(";
+    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest authenticationRequest) {
         authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
 
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-        ApplicationUser user = userRepository.findByUsername(authenticationRequest.getUsername())
+        final UserClient userClient = userClientRepository.findByUsername(authenticationRequest.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("Username " + authenticationRequest.getUsername() + " not found"));
 
-        // create new refresh token if not exists
-        if (user.getRefreshToken() == null) {
-            user.setRefreshToken(UUID.randomUUID().toString());
-            userRepository.save(user);
-        }
-
-        final JWTToken accessToken = jwtTokenUtil.generateAccessToken(userDetails);
-        final String refreshToken = user.getRefreshToken();
+        final JWTToken accessToken = jwtTokenUtil.generateAccessToken(userClient);
+        final String refreshToken = userClient.getRefreshToken();
 
         return ResponseEntity.ok(new LoginResponse(accessToken, refreshToken));
     }
@@ -58,26 +59,19 @@ public class Auth {
 
     @PostMapping("/refresh-token")
     public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest authenticationRequest) {
-        String username = authenticationRequest.getUsername();
         String refreshToken = authenticationRequest.getRefreshToken();
+        System.out.println("SADDS " + refreshToken);
 
-        ApplicationUser user = userRepository.findByUsername(username)
+        Client client = clientRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(() -> new UsernameNotFoundException(
-                        "Username " + username + " not found"));
+                        "Username not found"));
+        System.out.println("SADDS2 " + refreshToken);
 
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-        if (refreshToken.equals(user.getRefreshToken())) {
-            final JWTToken token = jwtTokenUtil.generateAccessToken(userDetails);
-            return ResponseEntity.ok(new RefreshTokenResponse(token));
-        }
-
-        return new ResponseEntity<Object>("Access denied",
-                new HttpHeaders(), HttpStatus.FORBIDDEN);
+        final JWTToken token = jwtTokenUtil.generateAccessToken(client);
+        return ResponseEntity.ok(new RefreshTokenResponse(token));
     }
 
     private void authenticate(String username, String password) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(username, password));
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
     }
 }

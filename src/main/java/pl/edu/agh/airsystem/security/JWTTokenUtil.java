@@ -4,8 +4,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import pl.edu.agh.airsystem.model.Client;
 import pl.edu.agh.airsystem.security.model.JWTToken;
 
 import java.util.Date;
@@ -22,8 +22,8 @@ public class JWTTokenUtil {
     private String secret;
 
 
-    public String getUsernameFromToken(String token) {
-        return getClaimFromToken(token, Claims::getSubject);
+    public long getClientIdFromToken(String token) {
+        return Long.parseLong(getClaimFromToken(token, Claims::getSubject));
     }
 
     public Date getExpirationDateFromToken(String token) {
@@ -44,8 +44,8 @@ public class JWTTokenUtil {
         return expiration.before(new Date());
     }
 
-    public JWTToken generateAccessToken(UserDetails userDetails) {
-        Claims claims = Jwts.claims().setSubject(userDetails.getUsername());
+    public JWTToken generateAccessToken(Client client) {
+        Claims claims = Jwts.claims().setSubject(String.valueOf(client.getId()));
         Date expirationDate = new Date(System.currentTimeMillis() + jwtTokenExpirationTime * 1000);
         String token = Jwts.builder()
                 .setClaims(claims)
@@ -55,8 +55,4 @@ public class JWTTokenUtil {
         return new JWTToken(token, expirationDate);
     }
 
-    public Boolean validateToken(String token, UserDetails userDetails) {
-        final String username = getUsernameFromToken(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-    }
 }

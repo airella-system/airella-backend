@@ -6,20 +6,20 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import pl.edu.agh.airsystem.model.ApplicationUser;
-import pl.edu.agh.airsystem.repository.UserRepository;
+import pl.edu.agh.airsystem.model.UserClient;
+import pl.edu.agh.airsystem.repository.UserClientRepository;
 
 import static java.util.Collections.emptyList;
 
 @Service
 @AllArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
-    private UserRepository applicationUserRepository;
+    private UserClientRepository userClientRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        ApplicationUser applicationUser = applicationUserRepository.findByUsername(username)
+        UserClient userClient = userClientRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(username));
-        return new User(applicationUser.getUsername(), applicationUser.getPasswordHash(), emptyList());
+        return new User(userClient.getUsername(), userClient.getPasswordHash(), emptyList());
     }
 }

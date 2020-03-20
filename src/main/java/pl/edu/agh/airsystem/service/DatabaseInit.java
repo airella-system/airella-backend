@@ -1,29 +1,38 @@
 package pl.edu.agh.airsystem.service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.edu.agh.airsystem.model.ApplicationUser;
-import pl.edu.agh.airsystem.model.Role;
-import pl.edu.agh.airsystem.repository.UserRepository;
+import pl.edu.agh.airsystem.model.Station;
+import pl.edu.agh.airsystem.model.StationClient;
+import pl.edu.agh.airsystem.model.UserClient;
+import pl.edu.agh.airsystem.repository.StationClientRepository;
+import pl.edu.agh.airsystem.repository.StationRepository;
+import pl.edu.agh.airsystem.repository.UserClientRepository;
 
 import javax.annotation.PostConstruct;
 
 @Service
+@AllArgsConstructor
 public class DatabaseInit {
-    private final UserRepository userRepository;
-
-    public DatabaseInit(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final UserClientRepository userClientRepository;
+    private final StationClientRepository stationClientRepository;
+    private final StationRepository stationRepository;
 
     @PostConstruct
     private void postConstruct() {
         //create default user if not exists
-        if (userRepository.findByUsername("admin").isEmpty()) {
-            ApplicationUser admin = new ApplicationUser("admin",
+        if (userClientRepository.findByUsername("admin").isEmpty()) {
+            UserClient admin = new UserClient("admin",
                     new BCryptPasswordEncoder().encode("admin"));
-            admin.addRole(Role.ROLE_USER);
-            userRepository.save(admin);
+            userClientRepository.save(admin);
+
+            Station station = new Station();
+            station.setName("Station 1");
+            stationRepository.save(station);
+
+            StationClient stationClient = new StationClient(station);
+            stationClientRepository.save(stationClient);
         }
     }
 }
