@@ -7,9 +7,12 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import pl.edu.agh.airsystem.model.Client;
-import pl.edu.agh.airsystem.model.Role;
+import pl.edu.agh.airsystem.model.database.Client;
+import pl.edu.agh.airsystem.model.database.Role;
 import pl.edu.agh.airsystem.repository.ClientRepository;
+import pl.edu.agh.airsystem.security.exceptions.NoTokenException;
+import pl.edu.agh.airsystem.security.exceptions.WrongTokenException;
+import pl.edu.agh.airsystem.security.util.JWTTokenUtil;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;

@@ -1,4 +1,4 @@
-package pl.edu.agh.airsystem.model;
+package pl.edu.agh.airsystem.model.database;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

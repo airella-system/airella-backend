@@ -1,4 +1,4 @@
-package pl.edu.agh.airsystem.model;
+package pl.edu.agh.airsystem.model.database;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +23,7 @@ public abstract class Client {
     private String refreshToken = UUID.randomUUID().toString();
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "id"))
+    @CollectionTable(name = "client_role", joinColumns = @JoinColumn(name = "id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> roles = new HashSet<>();
 

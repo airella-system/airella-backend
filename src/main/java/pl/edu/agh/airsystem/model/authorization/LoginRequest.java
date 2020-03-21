@@ -1,4 +1,4 @@
-package pl.edu.agh.airsystem.model.auth;
+package pl.edu.agh.airsystem.model.authorization;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RefreshTokenRequest {
-    private String refreshToken;
+public class LoginRequest {
+    private String username;
+    private String password;
 }

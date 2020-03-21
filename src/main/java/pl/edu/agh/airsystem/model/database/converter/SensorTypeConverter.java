@@ -1,6 +1,6 @@
-package pl.edu.agh.airsystem.model.converter;
+package pl.edu.agh.airsystem.model.database.converter;
 
-import pl.edu.agh.airsystem.model.SensorType;
+import pl.edu.agh.airsystem.model.database.SensorType;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

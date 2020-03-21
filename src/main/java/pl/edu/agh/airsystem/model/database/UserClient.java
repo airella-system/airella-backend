@@ -1,11 +1,16 @@
-package pl.edu.agh.airsystem.model;
+package pl.edu.agh.airsystem.model.database;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -15,6 +20,11 @@ public class UserClient extends Client {
     @Column(unique = true)
     private String username;
     private String passwordHash;
+
+    private String registerStationToken = UUID.randomUUID().toString();
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.REMOVE)
+    private Set<Station> stations = new HashSet<>();
 
     public UserClient(String username, String passwordHash) {
         this.username = username;

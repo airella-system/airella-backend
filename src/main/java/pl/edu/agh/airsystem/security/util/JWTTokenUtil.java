@@ -1,12 +1,12 @@
-package pl.edu.agh.airsystem.security;
+package pl.edu.agh.airsystem.security.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import pl.edu.agh.airsystem.model.Client;
-import pl.edu.agh.airsystem.security.model.JWTToken;
+import pl.edu.agh.airsystem.model.database.Client;
+import pl.edu.agh.airsystem.model.security.JWTToken;
 
 import java.util.Date;
 import java.util.function.Function;
