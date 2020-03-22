@@ -29,3 +29,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Swagger Docs ###
+/src/main/resources/public/docs/

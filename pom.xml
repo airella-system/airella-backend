@@ -14,10 +14,6 @@
     <name>airsystem</name>
     <description>Air quality measurement, data collection, and visualization system</description>
 
-    <properties>
-        <java.version>11</java.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -87,6 +83,29 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <!-- RELEASE_VERSION -->
+                <version>4.2.3</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <inputSpec>${project.basedir}/src/main/resources/api.yaml
+                    </inputSpec>
+                    <output>${project.basedir}/src/main/resources/public/docs
+                    </output>
+                    <generatorName>html</generatorName>
+                    <configOptions>
+                        <sourceFolder>src/gen/java/main</sourceFolder>
+                    </configOptions>
+                </configuration>
             </plugin>
         </plugins>
     </build>
