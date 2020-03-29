@@ -9,5 +9,5 @@ import pl.edu.agh.airsystem.model.security.JWTToken;
 public class LoginResponse {
     private final JWTToken accessToken;
     private final String refreshToken;
-    private final String registerStationToken;
+    private final String stationRegistrationToken;
 }

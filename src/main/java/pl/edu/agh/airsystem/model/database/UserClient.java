@@ -21,7 +21,7 @@ public class UserClient extends Client {
     private String username;
     private String passwordHash;
 
-    private String registerStationToken = UUID.randomUUID().toString();
+    private String stationRegistrationToken = UUID.randomUUID().toString();
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.REMOVE)
     private Set<Station> stations = new HashSet<>();
