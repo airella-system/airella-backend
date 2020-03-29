@@ -15,12 +15,15 @@ import pl.edu.agh.airsystem.model.database.Client;
 import pl.edu.agh.airsystem.model.database.Station;
 import pl.edu.agh.airsystem.model.database.StationClient;
 import pl.edu.agh.airsystem.model.database.UserClient;
+import pl.edu.agh.airsystem.model.error.ErrorBody;
 import pl.edu.agh.airsystem.model.security.JWTToken;
 import pl.edu.agh.airsystem.repository.ClientRepository;
 import pl.edu.agh.airsystem.repository.StationClientRepository;
 import pl.edu.agh.airsystem.repository.StationRepository;
 import pl.edu.agh.airsystem.repository.UserClientRepository;
 import pl.edu.agh.airsystem.security.util.JWTTokenUtil;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -67,11 +70,14 @@ public class AuthorizationController {
     public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest authenticationRequest) {
         String refreshToken = authenticationRequest.getRefreshToken();
 
-        Client client = clientRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new UsernameNotFoundException(
-                        "Username not found"));
+        Optional<Client> client = clientRepository.findByRefreshToken(refreshToken);
+        if (client.isEmpty()) {
+            return ResponseEntity.badRequest().body(
+                    new ErrorBody("WRONG_TOKEN",
+                            "This refresh token is wrong"));
+        }
 
-        final JWTToken token = jwtTokenUtil.generateAccessToken(client);
+        final JWTToken token = jwtTokenUtil.generateAccessToken(client.get());
         return ResponseEntity.ok(new RefreshTokenResponse(token));
     }
 
@@ -81,7 +87,9 @@ public class AuthorizationController {
                 new BCryptPasswordEncoder().encode(registerUserRequest.getPassword()));
 
         if (userClientRepository.findByUsername(registerUserRequest.getUsername()).isPresent()) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(
+                    new ErrorBody("USERNAME_TAKEN",
+                            "This username is already taken"));
         }
 
         userClientRepository.save(userClient);
@@ -90,17 +98,17 @@ public class AuthorizationController {
 
     @PostMapping("/register-station")
     public ResponseEntity<?> registerStation(@RequestBody RegisterStationRequest registerStationRequest) {
-        if (userClientRepository
-                .findByStationRegistrationToken(registerStationRequest.getStationRegistrationToken()).isEmpty()) {
-            return ResponseEntity.badRequest().build();
+        Optional<UserClient> userClient = userClientRepository
+                .findByStationRegistrationToken(registerStationRequest.getStationRegistrationToken());
+
+        if (userClient.isEmpty()) {
+            return ResponseEntity.badRequest().body(
+                    new ErrorBody("WRONG_TOKEN",
+                            "This registration token is wrong."));
         }
 
-        UserClient userClient = userClientRepository
-                .findByStationRegistrationToken(registerStationRequest.getStationRegistrationToken())
-                .get();
-
         Station station = new Station();
-        station.setOwner(userClient);
+        station.setOwner(userClient.get());
         StationClient stationClient = new StationClient(station);
 
         stationRepository.save(station);
