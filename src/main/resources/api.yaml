@@ -40,3 +40,31 @@ paths:
         '403':
           description: |-
             Bad credentials
+  /auth/refresh-token:
+    post:
+      operationId: refresh-token
+      summary: Login user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+      responses:
+        '200':
+          description: |-
+            User logged in succesfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  expirationDate:
+                    type: string
+        '403':
+          description: |-
+            Bad refresh token

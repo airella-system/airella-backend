@@ -10,5 +10,5 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RegisterStationRequest {
-    private String registerToken;
+    private String stationRegistrationToken;
 }

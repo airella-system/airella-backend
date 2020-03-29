@@ -59,7 +59,7 @@ public class AuthorizationController {
         return ResponseEntity.ok(new LoginResponse(
                 accessToken,
                 userClient.getRefreshToken(),
-                userClient.getRegisterStationToken()));
+                userClient.getStationRegistrationToken()));
     }
 
 
@@ -79,14 +79,24 @@ public class AuthorizationController {
     public ResponseEntity<?> registerUser(@RequestBody RegisterUserRequest registerUserRequest) {
         UserClient userClient = new UserClient(registerUserRequest.getUsername(),
                 new BCryptPasswordEncoder().encode(registerUserRequest.getPassword()));
+
+        if (userClientRepository.findByUsername(registerUserRequest.getUsername()).isPresent()) {
+            return ResponseEntity.badRequest().build();
+        }
+
         userClientRepository.save(userClient);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/register-station")
     public ResponseEntity<?> registerStation(@RequestBody RegisterStationRequest registerStationRequest) {
+        if (userClientRepository
+                .findByStationRegistrationToken(registerStationRequest.getStationRegistrationToken()).isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
         UserClient userClient = userClientRepository
-                .findByRegisterStationToken(registerStationRequest.getRegisterToken())
+                .findByStationRegistrationToken(registerStationRequest.getStationRegistrationToken())
                 .get();
 
         Station station = new Station();

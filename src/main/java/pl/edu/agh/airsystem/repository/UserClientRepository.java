@@ -8,5 +8,5 @@ import java.util.Optional;
 public interface UserClientRepository extends CrudRepository<UserClient, Long> {
     Optional<UserClient> findByUsername(String username);
 
-    Optional<UserClient> findByRegisterStationToken(String registerToken);
+    Optional<UserClient> findByStationRegistrationToken(String registerToken);
 }
