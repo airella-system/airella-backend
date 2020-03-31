@@ -1,7 +1,7 @@
 openapi: "3.0.0"
 info:
-  title: Simple API overview
-  version: 2.0.0
+  title: Airella API
+  version: 1.0.0
 paths:
   /auth/login:
     post:
@@ -43,7 +43,7 @@ paths:
   /auth/refresh-token:
     post:
       operationId: refresh-token
-      summary: Login user
+      summary: Refresh user access token
       requestBody:
         content:
           application/json:
@@ -65,6 +65,60 @@ paths:
                     type: string
                   expirationDate:
                     type: string
+        '403':
+          description: |-
+            Bad refresh token
+  /auth/register-user:
+    post:
+      operationId: register-user
+      summary: Register new user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: |-
+            User created
+        '400':
+          description: |-
+            This username is already taken
+        '403':
+          description: |-
+            Bad refresh token
+  /auth/register-station:
+    post:
+      operationId: register-station
+      summary: Register new station
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                stationRegistrationToken:
+                  type: string
+      responses:
+        '200':
+          description: |-
+            New station registered successfully. Returns refreshToken of newly registered station.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  refreshToken:
+                    type: string
+                    description: "Token of newly registered staton"
+        '400':
+          description: |-
+            Bad stationRegistrationToken
         '403':
           description: |-
             Bad refresh token
