@@ -7,15 +7,16 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import pl.edu.agh.airsystem.exception.UsernameAlreadyTakenException;
+import pl.edu.agh.airsystem.exception.UsernameNotFoundException;
+import pl.edu.agh.airsystem.exception.WrongTokenException;
 import pl.edu.agh.airsystem.model.authorization.*;
 import pl.edu.agh.airsystem.model.database.Client;
 import pl.edu.agh.airsystem.model.database.Station;
 import pl.edu.agh.airsystem.model.database.StationClient;
 import pl.edu.agh.airsystem.model.database.UserClient;
-import pl.edu.agh.airsystem.model.error.ErrorBody;
 import pl.edu.agh.airsystem.model.security.JWTToken;
 import pl.edu.agh.airsystem.repository.ClientRepository;
 import pl.edu.agh.airsystem.repository.StationClientRepository;
@@ -55,7 +56,7 @@ public class AuthorizationController {
         authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
 
         final UserClient userClient = userClientRepository.findByUsername(authenticationRequest.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("Username " + authenticationRequest.getUsername() + " not found"));
+                .orElseThrow(() -> new UsernameNotFoundException(authenticationRequest.getUsername()));
 
         final JWTToken accessToken = jwtTokenUtil.generateAccessToken(userClient);
 
@@ -72,9 +73,7 @@ public class AuthorizationController {
 
         Optional<Client> client = clientRepository.findByRefreshToken(refreshToken);
         if (client.isEmpty()) {
-            return ResponseEntity.badRequest().body(
-                    new ErrorBody("WRONG_TOKEN",
-                            "This refresh token is wrong"));
+            throw new WrongTokenException();
         }
 
         final JWTToken token = jwtTokenUtil.generateAccessToken(client.get());
@@ -87,9 +86,7 @@ public class AuthorizationController {
                 new BCryptPasswordEncoder().encode(registerUserRequest.getPassword()));
 
         if (userClientRepository.findByUsername(registerUserRequest.getUsername()).isPresent()) {
-            return ResponseEntity.badRequest().body(
-                    new ErrorBody("USERNAME_TAKEN",
-                            "This username is already taken"));
+            throw new UsernameAlreadyTakenException();
         }
 
         userClientRepository.save(userClient);
@@ -102,9 +99,7 @@ public class AuthorizationController {
                 .findByStationRegistrationToken(registerStationRequest.getStationRegistrationToken());
 
         if (userClient.isEmpty()) {
-            return ResponseEntity.badRequest().body(
-                    new ErrorBody("WRONG_TOKEN",
-                            "This registration token is wrong."));
+            throw new WrongTokenException();
         }
 
         Station station = new Station();

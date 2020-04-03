@@ -25,4 +25,10 @@ public class Sensor {
 
     @OneToMany(mappedBy = "sensor", cascade = CascadeType.REMOVE)
     private Set<SensorValue> values;
+
+    public Sensor(Station station, SensorType sensorType) {
+        this.station = station;
+        this.type = sensorType;
+    }
+
 }

@@ -6,9 +6,11 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum SensorType {
+    PM1("pm1"),
     PM10("pm10"),
     PM25("pm25"),
-    TEMP("temperature");
+    TEMP("temperature"),
+    HUMIDITY("humidity");
 
     private final String code;
 }

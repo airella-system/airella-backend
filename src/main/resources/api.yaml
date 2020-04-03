@@ -115,7 +115,7 @@ paths:
                 properties:
                   refreshToken:
                     type: string
-                    description: "Token of newly registered staton"
+                    description: "Token of newly registered station"
         '400':
           description: |-
             Bad stationRegistrationToken
