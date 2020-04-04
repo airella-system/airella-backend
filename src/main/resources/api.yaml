@@ -234,7 +234,7 @@ paths:
             Added new measurement with current date.
             Adds new sensor. Sensor URI is returned in Location header.
   /search/map:
-    post:
+    get:
       parameters:
         - in: query
           name: latitude
