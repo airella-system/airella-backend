@@ -16,7 +16,10 @@ import java.util.Set;
 public class Sensor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private long dbId;
+
+    @Column(unique = true)
+    private String id;
 
     @ManyToOne
     private Station station;
@@ -26,8 +29,9 @@ public class Sensor {
     @OneToMany(mappedBy = "sensor", cascade = CascadeType.REMOVE)
     private Set<SensorValue> values;
 
-    public Sensor(Station station, SensorType sensorType) {
+    public Sensor(Station station, String id, SensorType sensorType) {
         this.station = station;
+        this.id = id;
         this.type = sensorType;
     }
 

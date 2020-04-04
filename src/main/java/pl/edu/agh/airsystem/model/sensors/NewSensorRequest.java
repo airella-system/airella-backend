@@ -10,5 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class NewSensorRequest {
-    private String sensorType;
+    private String id;
+    private String type;
 }

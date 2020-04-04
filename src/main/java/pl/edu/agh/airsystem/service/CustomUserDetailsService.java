@@ -22,4 +22,5 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException(username));
         return new User(userClient.getUsername(), userClient.getPasswordHash(), emptyList());
     }
+
 }

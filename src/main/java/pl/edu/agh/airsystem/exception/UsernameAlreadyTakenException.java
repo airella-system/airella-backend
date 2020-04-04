@@ -6,6 +6,6 @@ public class UsernameAlreadyTakenException extends BaseErrorException {
     public UsernameAlreadyTakenException() {
         super(BAD_REQUEST,
                 "USERNAME_TAKEN",
-                "This username is already taken");
+                "This username is already taken.");
     }
 }

@@ -35,4 +35,5 @@ public class DatabaseInitializationService {
             stationClientRepository.save(stationClient);
         }
     }
+
 }
