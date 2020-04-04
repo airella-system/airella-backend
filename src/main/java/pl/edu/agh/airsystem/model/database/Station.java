@@ -19,10 +19,15 @@ public class Station {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
-    private Location location;
+
+    @Embedded
+    private Location location = new Location();
 
     @ManyToOne
     private UserClient owner;
+
+    @OneToOne
+    private StationClient stationClient;
 
     @OneToOne
     private Address address;

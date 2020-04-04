@@ -1,15 +1,17 @@
-package pl.edu.agh.airsystem.model.sensors;
+package pl.edu.agh.airsystem.model.api.security;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class NewSensorRequest {
-    private String id;
-    private String type;
+public class JWTToken {
+    String token;
+    Date expirationDate;
 }

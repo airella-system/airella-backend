@@ -3,8 +3,6 @@ package pl.edu.agh.airsystem.service;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.edu.agh.airsystem.model.database.Station;
-import pl.edu.agh.airsystem.model.database.StationClient;
 import pl.edu.agh.airsystem.model.database.UserClient;
 import pl.edu.agh.airsystem.repository.StationClientRepository;
 import pl.edu.agh.airsystem.repository.StationRepository;
@@ -26,13 +24,6 @@ public class DatabaseInitializationService {
             UserClient admin = new UserClient("admin",
                     new BCryptPasswordEncoder().encode("admin"));
             userClientRepository.save(admin);
-
-            Station station = new Station();
-            station.setName("Station 1");
-            stationRepository.save(station);
-
-            StationClient stationClient = new StationClient(station);
-            stationClientRepository.save(stationClient);
         }
     }
 

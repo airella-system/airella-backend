@@ -1,4 +1,4 @@
-package pl.edu.agh.airsystem.model.authorization;
+package pl.edu.agh.airsystem.model.api.authorization;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterStationResponse {
-    private String refreshToken;
+public class RegisterStationRequest {
+    private String stationRegistrationToken;
 }

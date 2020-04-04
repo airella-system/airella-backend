@@ -2,7 +2,7 @@ package pl.edu.agh.airsystem.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
-import pl.edu.agh.airsystem.model.error.ErrorBody;
+import pl.edu.agh.airsystem.model.api.error.ErrorBody;
 
 @Getter
 public class BaseErrorException extends RuntimeException {

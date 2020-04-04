@@ -1,10 +1,10 @@
-package pl.edu.agh.airsystem.model.authorization;
+package pl.edu.agh.airsystem.model.api.authorization;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.edu.agh.airsystem.model.security.JWTToken;
+import pl.edu.agh.airsystem.model.api.security.JWTToken;
 
 @Getter
 @Setter

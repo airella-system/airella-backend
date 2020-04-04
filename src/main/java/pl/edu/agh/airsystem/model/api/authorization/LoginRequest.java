@@ -1,4 +1,4 @@
-package pl.edu.agh.airsystem.model.authorization;
+package pl.edu.agh.airsystem.model.api.authorization;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterUserRequest {
+public class LoginRequest {
     private String username;
     private String password;
 }

@@ -1,4 +1,4 @@
-package pl.edu.agh.airsystem.model.sensors;
+package pl.edu.agh.airsystem.model.api.sensors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

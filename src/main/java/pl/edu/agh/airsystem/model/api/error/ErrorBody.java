@@ -1,4 +1,4 @@
-package pl.edu.agh.airsystem.model.error;
+package pl.edu.agh.airsystem.model.api.error;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class SensorValue {
+public class Measurement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -23,4 +23,11 @@ public class SensorValue {
 
     private Timestamp timestamp;
     private double value;
+
+    public Measurement(Sensor sensor, Timestamp timestamp, double value) {
+        this.sensor = sensor;
+        this.timestamp = timestamp;
+        this.value = value;
+    }
+
 }

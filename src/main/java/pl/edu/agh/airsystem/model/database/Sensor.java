@@ -18,7 +18,6 @@ public class Sensor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long dbId;
 
-    @Column(unique = true)
     private String id;
 
     @ManyToOne
@@ -27,7 +26,7 @@ public class Sensor {
     private SensorType type;
 
     @OneToMany(mappedBy = "sensor", cascade = CascadeType.REMOVE)
-    private Set<SensorValue> values;
+    private Set<Measurement> measurements;
 
     public Sensor(Station station, String id, SensorType sensorType) {
         this.station = station;

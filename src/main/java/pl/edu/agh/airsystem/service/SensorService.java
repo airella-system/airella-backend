@@ -3,37 +3,45 @@ package pl.edu.agh.airsystem.service;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.edu.agh.airsystem.exception.NewSensorIdDuplicatedException;
+import pl.edu.agh.airsystem.exception.NotUsersStationException;
+import pl.edu.agh.airsystem.model.api.sensors.BriefSensorResponse;
+import pl.edu.agh.airsystem.model.api.sensors.NewSensorRequest;
 import pl.edu.agh.airsystem.model.database.Sensor;
 import pl.edu.agh.airsystem.model.database.Station;
+import pl.edu.agh.airsystem.model.database.StationClient;
 import pl.edu.agh.airsystem.model.database.converter.SensorTypeConverter;
-import pl.edu.agh.airsystem.model.sensors.NewSensorRequest;
-import pl.edu.agh.airsystem.model.sensors.NewSensorResponse;
-import pl.edu.agh.airsystem.model.sensors.SensorResponse;
-import pl.edu.agh.airsystem.model.stations.BriefSensorResponse;
 import pl.edu.agh.airsystem.repository.SensorRepository;
-import pl.edu.agh.airsystem.repository.StationRepository;
 
-import java.util.List;
+import java.net.URI;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class SensorService {
-    private final StationRepository stationRepository;
+    private final ResourceFinder resourceFinder;
     private final SensorRepository sensorRepository;
+    private final AuthorizationService authorizationService;
 
-    public ResponseEntity<List<BriefSensorResponse>> getSensors(Long stationId) {
-        List<BriefSensorResponse> body = stationRepository.findById(stationId).get()
-                .getSensors().stream()
-                .map(BriefSensorResponse::new)
-                .collect(Collectors.toList());
+    public ResponseEntity<Map<String, BriefSensorResponse>> getSensors(Long stationId) {
+        Station station = resourceFinder.findStation(stationId);
 
-        return ResponseEntity.ok().body(body);
+        Map<String, BriefSensorResponse> sensors = station.getSensors().stream()
+                .collect(Collectors.toMap(Sensor::getId, BriefSensorResponse::new));
+
+        return ResponseEntity.ok().body(sensors);
     }
 
-    public ResponseEntity<NewSensorResponse> addSensor(Long stationId, NewSensorRequest newSensor) {
-        Station station = stationRepository.findById(stationId).get();
+    public ResponseEntity<?> addSensor(Long stationId, NewSensorRequest newSensor) {
+        StationClient loggedStation = authorizationService.checkAuthenticationAndGetStationClient();
+
+        Station station = resourceFinder.findStation(stationId);
+
+        if (station.getStationClient().getId() != loggedStation.getId()) {
+            throw new NotUsersStationException();
+        }
 
         if (station.getSensors().stream()
                 .anyMatch(e -> e.getId().equals(newSensor.getId()))) {
@@ -47,14 +55,21 @@ public class SensorService {
 
         sensorRepository.save(sensor);
 
-        return ResponseEntity.ok()
-                .body(new NewSensorResponse(station.getSensors().indexOf(sensor)));
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(sensor.getId())
+                .toUri();
+
+        return ResponseEntity
+                .created(uri)
+                .build();
     }
 
-    public ResponseEntity<Sensor> getSensor(Long stationId, String sensorId) {
-        SensorResponse body = new SensorResponse(stationRepository.findById(stationId).get().getSensors()
-                .stream().filter(e -> e.getId().equals(sensorId)).findFirst().get());
-        return ResponseEntity.ok().body(body);
+    public ResponseEntity<BriefSensorResponse> getSensor(Long stationId, String sensorId) {
+        Sensor sensor = resourceFinder.findSensorInStation(stationId, sensorId);
+        BriefSensorResponse response = new BriefSensorResponse(sensor);
+
+        return ResponseEntity.ok().body(response);
     }
 
 }
