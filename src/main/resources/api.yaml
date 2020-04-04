@@ -105,9 +105,9 @@ paths:
                 stationRegistrationToken:
                   type: string
       responses:
-        '200':
+        '201':
           description: |-
-            New station registered successfully. Returns refreshToken of newly registered station.
+            New station registered successfully. Returns refreshToken of newly registered station. Id of station is returned in Location header.
           content:
             application/json:
               schema:
@@ -122,3 +122,206 @@ paths:
         '403':
           description: |-
             Bad refresh token
+  /stations:
+    get:
+      operationId: get-stations
+      summary: Lists stations
+      responses:
+        '200':
+          description: |-
+            Returns all stations.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/station-brief'
+  /stations/{stationId}:
+    get:
+      parameters:
+        - in: path
+          name: stationId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: Station id
+      operationId: get-station
+      summary: Returns information about one station
+      responses:
+        '200':
+          description: |-
+            Returns information about one station, including sensor ones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/station'
+  /stations/{stationId}/location:
+    put:
+      parameters:
+        - in: path
+          name: stationId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: Station id
+      operationId: update-station-location
+      summary: Updates station location
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/location'
+      responses:
+        '200':
+          description: |-
+            Updates station location.
+  /stations/{stationId}/sensors:
+    post:
+      parameters:
+        - in: path
+          name: stationId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: Station id
+      operationId: add-sensor
+      summary: Adds sensor to station
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                id:
+                  type: string
+      responses:
+        '201':
+          description: |-
+            Adds new sensor. Sensor URI is returned in Location header.
+  /stations/{stationId}/sensors/{sensorId}/measurements:
+    post:
+      parameters:
+        - in: path
+          name: stationId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: Station id
+        - in: path
+          name: sensorId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: Sensor id
+      operationId: add-measurement
+      summary: Adds measurement to sensor
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: number
+      responses:
+        '200':
+          description: |-
+            Added new measurement with current date.
+            Adds new sensor. Sensor URI is returned in Location header.
+  /search/map:
+    post:
+      parameters:
+        - in: query
+          name: latitude
+          required: true
+          schema:
+            type: number
+            minimum: 1
+          description: Latitude of searched area
+        - in: query
+          name: longitude
+          required: true
+          schema:
+            type: number
+            minimum: 1
+          description: Longitude of searched area
+        - in: query
+          name: radius
+          required: true
+          schema:
+            type: number
+            minimum: 1
+          description: Radius of searched area in meters
+      operationId: search-map
+      summary: Searchs for stations in selected area
+      responses:
+        '200':
+          description: |-
+            Successfully searched for stations.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/station-brief'
+components:
+  schemas:
+    address:
+      type: object
+      properties:
+        country:
+          type: string
+        city:
+          type: string
+        street:
+          type: string
+        number:
+          type: string
+    location:
+      type: object
+      properties:
+        latitude:
+          type: number
+        longitude:
+          type: number
+    station-brief:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+          name:
+            type: string
+          address:
+            $ref: '#/components/schemas/address'
+          location:
+            $ref: '#/components/schemas/location'
+    sensor-brief:
+      type: object
+      properties:
+        type:
+          type: string
+        value:
+          type: number
+    station:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+          name:
+            type: string
+          address:
+            $ref: '#/components/schemas/address'
+          location:
+            $ref: '#/components/schemas/location'
+          sensors:
+            type: object
+            properties:
+              sensorid:
+                $ref: '#/components/schemas/sensor-brief'
