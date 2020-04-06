@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>pl.edu.agh</groupId>
-    <artifactId>airsystem</artifactId>
+    <artifactId>airella-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>airsystem</name>
+    <name>airella-backend</name>
     <description>Air quality measurement, data collection, and visualization system</description>
 
     <dependencies>
@@ -79,6 +79,7 @@
     </dependencies>
 
     <build>
+        <finalName>${artifactId}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
