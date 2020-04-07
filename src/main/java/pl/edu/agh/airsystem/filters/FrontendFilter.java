@@ -17,13 +17,10 @@ public class FrontendFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         String requestURI = req.getRequestURI();
 
-        System.out.println(requestURI);
-
         if (requestURI.startsWith("/api") || requestURI.startsWith("/static")) {
             chain.doFilter(request, response);
             return;
         }
-
 
         // all requests not api or static will be forwarded to index page.
         request.getRequestDispatcher("/").forward(request, response);
