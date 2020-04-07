@@ -1,4 +1,4 @@
-package pl.edu.agh.airsystem.security;
+package pl.edu.agh.airsystem.filters;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
