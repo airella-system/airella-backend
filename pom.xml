@@ -120,7 +120,8 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <inputSpec>${project.basedir}/src/main/resources/api.yaml
+                    <inputSpec>
+                        ${project.basedir}/src/main/resources/static/api.yaml
                     </inputSpec>
                     <output>${project.basedir}/src/main/resources/public/docs
                     </output>
