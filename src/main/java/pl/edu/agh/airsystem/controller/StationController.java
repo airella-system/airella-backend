@@ -17,6 +17,7 @@ import java.util.List;
 @RequestMapping("/api/stations")
 public class StationController {
     private final StationService stationService;
+    private final MeasurementQueryConverter measurementQueryConverter;
 
     @GetMapping("")
     public ResponseEntity<List<BriefStationResponse>> getStations() {
@@ -28,7 +29,7 @@ public class StationController {
             @PathVariable(value = "stationId") Long stationId,
             MeasurementQueryRequest measurementQueryRequest) {
         return stationService.getStation(stationId,
-                MeasurementQueryConverter.of(measurementQueryRequest));
+                measurementQueryConverter.convert(measurementQueryRequest));
     }
 
     @PutMapping("{stationId}/location")

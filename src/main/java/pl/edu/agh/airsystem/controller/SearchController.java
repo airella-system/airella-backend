@@ -15,6 +15,7 @@ import pl.edu.agh.airsystem.service.SearchService;
 @RequestMapping("/api/search")
 public class SearchController {
     private final SearchService searchService;
+    private final MeasurementQueryConverter measurementQueryConverter;
 
     @GetMapping("/map")
     public ResponseEntity<?> getStations(
@@ -23,7 +24,7 @@ public class SearchController {
             @RequestParam double radius,
             MeasurementQueryRequest measurementQueryRequest) {
         return searchService.getStations(latitude, longitude, radius,
-                MeasurementQueryConverter.of(measurementQueryRequest));
+                measurementQueryConverter.convert(measurementQueryRequest));
     }
 
 }

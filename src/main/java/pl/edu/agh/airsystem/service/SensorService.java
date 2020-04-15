@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import pl.edu.agh.airsystem.assembler.SensorResponseAssembler;
 import pl.edu.agh.airsystem.exception.NewSensorIdDuplicatedException;
 import pl.edu.agh.airsystem.exception.NotUsersStationException;
 import pl.edu.agh.airsystem.model.api.query.MeasurementQuery;
@@ -27,6 +28,7 @@ public class SensorService {
     private final ResourceFinder resourceFinder;
     private final SensorRepository sensorRepository;
     private final AuthorizationService authorizationService;
+    private final SensorResponseAssembler sensorResponseAssembler;
 
     public ResponseEntity<Map<String, SensorResponse>> getSensors(Long stationId, MeasurementQuery measurementQuery) {
         Station station = resourceFinder.findStation(stationId);
@@ -34,7 +36,7 @@ public class SensorService {
         Map<String, SensorResponse> sensors = station.getSensors().stream()
                 .filter(e -> filterSensorType(e, measurementQuery.getTypes()))
                 .collect(Collectors.toMap(Sensor::getId,
-                        sensor -> new SensorResponse(sensor, measurementQuery)));
+                        sensor -> sensorResponseAssembler.assemble(sensor, measurementQuery)));
 
         return ResponseEntity.ok().body(sensors);
     }
@@ -77,7 +79,7 @@ public class SensorService {
 
     public ResponseEntity<SensorResponse> getSensor(Long stationId, String sensorId, MeasurementQuery measurementQuery) {
         Sensor sensor = resourceFinder.findSensorInStation(stationId, sensorId);
-        SensorResponse response = new SensorResponse(sensor, measurementQuery);
+        SensorResponse response = sensorResponseAssembler.assemble(sensor, measurementQuery);
 
         return ResponseEntity.ok().body(response);
     }

@@ -16,13 +16,14 @@ import java.util.Map;
 @RequestMapping("/api/stations")
 public class SensorController {
     private final SensorService sensorService;
+    private final MeasurementQueryConverter measurementQueryConverter;
 
     @GetMapping("{stationId}/sensors")
     public ResponseEntity<Map<String, SensorResponse>> getSensors(
             @PathVariable(value = "stationId") Long stationId,
             MeasurementQueryRequest measurementQueryRequest) {
         return sensorService.getSensors(stationId,
-                MeasurementQueryConverter.of(measurementQueryRequest));
+                measurementQueryConverter.convert(measurementQueryRequest));
     }
 
     @GetMapping("{stationId}/sensors/{sensorId}")
@@ -31,7 +32,7 @@ public class SensorController {
             @PathVariable(value = "sensorId") String sensorId,
             MeasurementQueryRequest measurementQueryRequest) {
         return sensorService.getSensor(stationId, sensorId,
-                MeasurementQueryConverter.of(measurementQueryRequest));
+                measurementQueryConverter.convert(measurementQueryRequest));
     }
 
     @PostMapping("{stationId}/sensors")

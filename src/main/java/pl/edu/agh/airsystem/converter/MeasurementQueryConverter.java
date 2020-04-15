@@ -1,5 +1,6 @@
 package pl.edu.agh.airsystem.converter;
 
+import org.springframework.stereotype.Component;
 import pl.edu.agh.airsystem.model.api.query.MeasurementQuery;
 import pl.edu.agh.airsystem.model.api.query.MeasurementQueryRequest;
 import pl.edu.agh.airsystem.model.database.SensorType;
@@ -12,8 +13,11 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
-public class MeasurementQueryConverter {
-    public static MeasurementQuery of(MeasurementQueryRequest measurementQueryRequest) {
+@Component
+public class MeasurementQueryConverter implements Converter<MeasurementQueryRequest, MeasurementQuery> {
+
+    @Override
+    public MeasurementQuery convert(MeasurementQueryRequest measurementQueryRequest) {
         LocalDateTime startDate = null;
         LocalDateTime endDate = null;
         Duration interval = null;
