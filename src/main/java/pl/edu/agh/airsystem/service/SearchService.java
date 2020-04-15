@@ -3,6 +3,8 @@ package pl.edu.agh.airsystem.service;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import pl.edu.agh.airsystem.assembler.StationResponseAssembler;
+import pl.edu.agh.airsystem.model.api.query.MeasurementQuery;
 import pl.edu.agh.airsystem.model.api.stations.StationResponse;
 import pl.edu.agh.airsystem.model.database.Location;
 import pl.edu.agh.airsystem.model.database.Station;
@@ -18,22 +20,20 @@ import static pl.edu.agh.airsystem.util.GeographicUtils.distance;
 @AllArgsConstructor
 public class SearchService {
     private final StationRepository stationRepository;
+    private final StationResponseAssembler stationResponseAssembler;
 
     public ResponseEntity<List<StationResponse>> getStations(
-            double latitude, double longitude, double radius) {
+            double latitude, double longitude, double radius,
+            MeasurementQuery measurementQuery) {
         List<Station> stations = new ArrayList<>();
         stationRepository.findAll().forEach(stations::add);
 
         Location location = new Location(latitude, longitude);
 
-        stations.stream()
-                .forEach(e -> System.out.println(e.getLocation()));
-
-
         List<StationResponse> response = stations.stream()
                 .filter(e -> e.getLocation() != null)
                 .filter(e -> distance(location, e.getLocation()) < radius)
-                .map(StationResponse::new)
+                .map(e -> stationResponseAssembler.assemble(e, measurementQuery))
                 .collect(toList());
 
         return ResponseEntity.ok().body(response);
