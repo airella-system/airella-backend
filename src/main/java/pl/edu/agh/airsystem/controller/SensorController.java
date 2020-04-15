@@ -3,8 +3,8 @@ package pl.edu.agh.airsystem.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.edu.agh.airsystem.model.api.sensors.BriefSensorResponse;
 import pl.edu.agh.airsystem.model.api.sensors.NewSensorRequest;
+import pl.edu.agh.airsystem.model.api.sensors.SensorResponse;
 import pl.edu.agh.airsystem.service.SensorService;
 
 import java.util.Map;
@@ -16,13 +16,13 @@ public class SensorController {
     private final SensorService sensorService;
 
     @GetMapping("{stationId}/sensors")
-    public ResponseEntity<Map<String, BriefSensorResponse>> getSensors(
+    public ResponseEntity<Map<String, SensorResponse>> getSensors(
             @PathVariable(value = "stationId") Long stationId) {
         return sensorService.getSensors(stationId);
     }
 
     @GetMapping("{stationId}/sensors/{sensorId}")
-    public ResponseEntity<BriefSensorResponse> getSensor(
+    public ResponseEntity<SensorResponse> getSensor(
             @PathVariable(value = "stationId") Long stationId,
             @PathVariable(value = "sensorId") String sensorId) {
         return sensorService.getSensor(stationId, sensorId);

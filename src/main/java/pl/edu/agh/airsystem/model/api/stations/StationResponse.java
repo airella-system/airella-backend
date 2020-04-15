@@ -2,7 +2,8 @@ package pl.edu.agh.airsystem.model.api.stations;
 
 import lombok.Getter;
 import lombok.Setter;
-import pl.edu.agh.airsystem.model.api.sensors.BriefSensorResponse;
+import pl.edu.agh.airsystem.model.api.query.MeasurementQuery;
+import pl.edu.agh.airsystem.model.api.sensors.SensorResponse;
 import pl.edu.agh.airsystem.model.database.Address;
 import pl.edu.agh.airsystem.model.database.Location;
 import pl.edu.agh.airsystem.model.database.Sensor;
@@ -18,16 +19,16 @@ public class StationResponse {
     private final String name;
     private final Address address;
     private final Location location;
-    private final Map<String, BriefSensorResponse> sensors;
+    private final Map<String, SensorResponse> sensors;
 
-    public StationResponse(Station station) {
+    public StationResponse(Station station, MeasurementQuery measurementQuery) {
         this.id = station.getId();
         this.name = station.getName();
         this.address = station.getAddress();
         this.location = station.getLocation();
 
         this.sensors = station.getSensors().stream()
-                .collect(Collectors.toMap(Sensor::getId, BriefSensorResponse::new));
+                .collect(Collectors.toMap(Sensor::getId, e -> new SensorResponse(e, measurementQuery)));
 
     }
 

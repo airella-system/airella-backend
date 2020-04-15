@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.edu.agh.airsystem.exception.NewSensorIdDuplicatedException;
 import pl.edu.agh.airsystem.exception.NotUsersStationException;
-import pl.edu.agh.airsystem.model.api.sensors.BriefSensorResponse;
 import pl.edu.agh.airsystem.model.api.sensors.NewSensorRequest;
+import pl.edu.agh.airsystem.model.api.sensors.SensorResponse;
 import pl.edu.agh.airsystem.model.database.Sensor;
 import pl.edu.agh.airsystem.model.database.Station;
 import pl.edu.agh.airsystem.model.database.StationClient;
@@ -25,11 +25,11 @@ public class SensorService {
     private final SensorRepository sensorRepository;
     private final AuthorizationService authorizationService;
 
-    public ResponseEntity<Map<String, BriefSensorResponse>> getSensors(Long stationId) {
+    public ResponseEntity<Map<String, SensorResponse>> getSensors(Long stationId) {
         Station station = resourceFinder.findStation(stationId);
 
-        Map<String, BriefSensorResponse> sensors = station.getSensors().stream()
-                .collect(Collectors.toMap(Sensor::getId, BriefSensorResponse::new));
+        Map<String, SensorResponse> sensors = station.getSensors().stream()
+                .collect(Collectors.toMap(Sensor::getId, SensorResponse::new));
 
         return ResponseEntity.ok().body(sensors);
     }
@@ -65,9 +65,9 @@ public class SensorService {
                 .build();
     }
 
-    public ResponseEntity<BriefSensorResponse> getSensor(Long stationId, String sensorId) {
+    public ResponseEntity<SensorResponse> getSensor(Long stationId, String sensorId) {
         Sensor sensor = resourceFinder.findSensorInStation(stationId, sensorId);
-        BriefSensorResponse response = new BriefSensorResponse(sensor);
+        SensorResponse response = new SensorResponse(sensor);
 
         return ResponseEntity.ok().body(response);
     }

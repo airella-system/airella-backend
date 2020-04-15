@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import pl.edu.agh.airsystem.exception.NotUsersStationException;
+import pl.edu.agh.airsystem.model.api.query.MeasurementQuery;
 import pl.edu.agh.airsystem.model.api.stations.BriefStationResponse;
 import pl.edu.agh.airsystem.model.api.stations.LocationChangeRequest;
 import pl.edu.agh.airsystem.model.api.stations.StationResponse;
@@ -28,9 +29,9 @@ public class StationService {
         return ResponseEntity.ok().body(response);
     }
 
-    public ResponseEntity<StationResponse> getStation(Long stationId) {
+    public ResponseEntity<StationResponse> getStation(Long stationId, MeasurementQuery measurementQuery) {
         return ResponseEntity.ok()
-                .body(new StationResponse(resourceFinder.findStation(stationId)));
+                .body(new StationResponse(resourceFinder.findStation(stationId), measurementQuery));
     }
 
     public ResponseEntity<?> setStationLocation(
