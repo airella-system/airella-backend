@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import pl.edu.agh.airsystem.model.api.query.MeasurementQuery;
+import pl.edu.agh.airsystem.converter.MeasurementQueryConverter;
 import pl.edu.agh.airsystem.model.api.query.MeasurementQueryRequest;
 import pl.edu.agh.airsystem.service.SearchService;
 
@@ -23,7 +23,7 @@ public class SearchController {
             @RequestParam double radius,
             MeasurementQueryRequest measurementQueryRequest) {
         return searchService.getStations(latitude, longitude, radius,
-                new MeasurementQuery(measurementQueryRequest));
+                MeasurementQueryConverter.of(measurementQueryRequest));
     }
 
 }

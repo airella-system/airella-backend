@@ -1,5 +1,6 @@
 package pl.edu.agh.airsystem.model.api.query;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import pl.edu.agh.airsystem.model.database.SensorType;
@@ -10,14 +11,10 @@ import java.util.List;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class MeasurementQuery {
-
-    LocalDateTime startDate;
-    LocalDateTime endDate;
-    Duration interval;
-    List<SensorType> types;
-
-    public MeasurementQuery(MeasurementQueryRequest measurementQueryRequest) {
-    }
-
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
+    private Duration interval;
+    private List<SensorType> types;
 }

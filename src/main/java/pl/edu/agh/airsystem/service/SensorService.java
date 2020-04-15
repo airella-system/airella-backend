@@ -6,15 +6,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.edu.agh.airsystem.exception.NewSensorIdDuplicatedException;
 import pl.edu.agh.airsystem.exception.NotUsersStationException;
+import pl.edu.agh.airsystem.model.api.query.MeasurementQuery;
 import pl.edu.agh.airsystem.model.api.sensors.NewSensorRequest;
 import pl.edu.agh.airsystem.model.api.sensors.SensorResponse;
 import pl.edu.agh.airsystem.model.database.Sensor;
+import pl.edu.agh.airsystem.model.database.SensorType;
 import pl.edu.agh.airsystem.model.database.Station;
 import pl.edu.agh.airsystem.model.database.StationClient;
 import pl.edu.agh.airsystem.model.database.converter.SensorTypeConverter;
 import pl.edu.agh.airsystem.repository.SensorRepository;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -25,13 +28,20 @@ public class SensorService {
     private final SensorRepository sensorRepository;
     private final AuthorizationService authorizationService;
 
-    public ResponseEntity<Map<String, SensorResponse>> getSensors(Long stationId) {
+    public ResponseEntity<Map<String, SensorResponse>> getSensors(Long stationId, MeasurementQuery measurementQuery) {
         Station station = resourceFinder.findStation(stationId);
 
         Map<String, SensorResponse> sensors = station.getSensors().stream()
-                .collect(Collectors.toMap(Sensor::getId, SensorResponse::new));
+                .filter(e -> filterSensorType(e, measurementQuery.getTypes()))
+                .collect(Collectors.toMap(Sensor::getId,
+                        sensor -> new SensorResponse(sensor, measurementQuery)));
 
         return ResponseEntity.ok().body(sensors);
+    }
+
+    private boolean filterSensorType(Sensor sensor, List<SensorType> types) {
+        if (types == null) return true;
+        return types.contains(sensor.getType());
     }
 
     public ResponseEntity<?> addSensor(Long stationId, NewSensorRequest newSensor) {
@@ -50,7 +60,7 @@ public class SensorService {
 
         Sensor sensor = new Sensor(station,
                 newSensor.getId(),
-                new SensorTypeConverter().convertToEntityAttribute(newSensor.getType()));
+                SensorTypeConverter.convertStringToEnum(newSensor.getType()));
         station.getSensors().add(sensor);
 
         sensorRepository.save(sensor);
@@ -65,9 +75,9 @@ public class SensorService {
                 .build();
     }
 
-    public ResponseEntity<SensorResponse> getSensor(Long stationId, String sensorId) {
+    public ResponseEntity<SensorResponse> getSensor(Long stationId, String sensorId, MeasurementQuery measurementQuery) {
         Sensor sensor = resourceFinder.findSensorInStation(stationId, sensorId);
-        SensorResponse response = new SensorResponse(sensor);
+        SensorResponse response = new SensorResponse(sensor, measurementQuery);
 
         return ResponseEntity.ok().body(response);
     }

@@ -3,7 +3,7 @@ package pl.edu.agh.airsystem.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.edu.agh.airsystem.model.api.query.MeasurementQuery;
+import pl.edu.agh.airsystem.converter.MeasurementQueryConverter;
 import pl.edu.agh.airsystem.model.api.query.MeasurementQueryRequest;
 import pl.edu.agh.airsystem.model.api.stations.BriefStationResponse;
 import pl.edu.agh.airsystem.model.api.stations.LocationChangeRequest;
@@ -28,7 +28,7 @@ public class StationController {
             @PathVariable(value = "stationId") Long stationId,
             MeasurementQueryRequest measurementQueryRequest) {
         return stationService.getStation(stationId,
-                new MeasurementQuery(measurementQueryRequest));
+                MeasurementQueryConverter.of(measurementQueryRequest));
     }
 
     @PutMapping("{stationId}/location")

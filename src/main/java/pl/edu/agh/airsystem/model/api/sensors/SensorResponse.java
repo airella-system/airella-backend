@@ -1,12 +1,10 @@
 package pl.edu.agh.airsystem.model.api.sensors;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import pl.edu.agh.airsystem.model.api.query.MeasurementQuery;
 import pl.edu.agh.airsystem.model.database.Measurement;
 import pl.edu.agh.airsystem.model.database.Sensor;
-import pl.edu.agh.airsystem.model.database.SensorType;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -18,15 +16,10 @@ import java.util.stream.Stream;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class SensorResponse {
-    private SensorType type;
     private List<MeasurementResponse> values = new ArrayList<>();
 
     public SensorResponse(Sensor sensor, MeasurementQuery measurementQuery) {
-        this.type = sensor.getType();
-
-
         if (measurementQuery.getStartDate() == null &&
                 measurementQuery.getEndDate() == null &&
                 measurementQuery.getInterval() == null) {
@@ -39,7 +32,6 @@ public class SensorResponse {
         } else if (measurementQuery.getInterval() != null) {
             createQueriedValueResponse(sensor, LocalDateTime.now().minusDays(7), LocalDateTime.now(), measurementQuery.getInterval());
         }
-
     }
 
     private void createQueriedValueResponse(Sensor sensor, LocalDateTime startDate, LocalDateTime endDate, Duration interval) {
@@ -47,11 +39,12 @@ public class SensorResponse {
                 .limit(Duration.between(startDate, endDate).dividedBy(interval) + 1)
                 .forEach(currentEndDate -> {
                     LocalDateTime currentStartDate = getCurrentStartDate(startDate, currentEndDate, interval);
+                    System.out.println(currentStartDate + " " + currentEndDate);
                     sensor.getMeasurements().stream()
                             .filter(e -> e.getTimestamp().isAfter(currentStartDate))
                             .filter(e -> e.getTimestamp().isBefore(currentEndDate))
-                            .forEach(e -> values.add(new MeasurementResponse(e)));
-
+                            .max(Comparator.comparing(Measurement::getTimestamp))
+                            .ifPresent(e -> values.add(new MeasurementResponse(e)));
                 });
     }
 
@@ -71,4 +64,5 @@ public class SensorResponse {
 
         sensorValue.ifPresent(measurement -> values.add(new MeasurementResponse(measurement)));
     }
+
 }
