@@ -28,13 +28,17 @@ public class SensorResponse {
                 measurementQuery.getEndDate() != null) {
             Duration interval = measurementQuery.getInterval() != null ?
                     measurementQuery.getInterval() : Duration.ofDays(1);
-            createQueriedValueResponse(sensor, measurementQuery.getStartDate(), measurementQuery.getEndDate(), interval);
+            createQueriedValueResponse(sensor, measurementQuery.getStartDate(),
+                    measurementQuery.getEndDate(), interval);
         } else if (measurementQuery.getInterval() != null) {
-            createQueriedValueResponse(sensor, LocalDateTime.now().minusDays(7), LocalDateTime.now(), measurementQuery.getInterval());
+            createQueriedValueResponse(sensor, LocalDateTime.now().minusDays(7),
+                    LocalDateTime.now(), measurementQuery.getInterval());
         }
     }
 
-    private void createQueriedValueResponse(Sensor sensor, LocalDateTime startDate, LocalDateTime endDate, Duration interval) {
+    private void createQueriedValueResponse(Sensor sensor, LocalDateTime startDate,
+                                            LocalDateTime endDate, Duration interval) {
+
         Stream.iterate(endDate, currentEndDate -> currentEndDate.minus(interval))
                 .limit(Duration.between(startDate, endDate).dividedBy(interval) + 1)
                 .forEach(currentEndDate -> {
@@ -47,7 +51,8 @@ public class SensorResponse {
                 });
     }
 
-    private LocalDateTime getCurrentStartDate(LocalDateTime startDate, LocalDateTime currentEndDate, Duration interval) {
+    private LocalDateTime getCurrentStartDate(LocalDateTime startDate,
+                                              LocalDateTime currentEndDate, Duration interval) {
         LocalDateTime currentStartDate = currentEndDate.minus(interval);
         if (currentStartDate.isBefore(startDate)) {
             currentStartDate = startDate;
