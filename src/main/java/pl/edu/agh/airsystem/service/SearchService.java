@@ -28,10 +28,6 @@ public class SearchService {
 
         Location location = new Location(latitude, longitude);
 
-        stations.stream()
-                .forEach(e -> System.out.println(e.getLocation()));
-
-
         List<StationResponse> response = stations.stream()
                 .filter(e -> e.getLocation() != null)
                 .filter(e -> distance(location, e.getLocation()) < radius)

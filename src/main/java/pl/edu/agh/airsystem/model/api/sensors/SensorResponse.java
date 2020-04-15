@@ -39,7 +39,6 @@ public class SensorResponse {
                 .limit(Duration.between(startDate, endDate).dividedBy(interval) + 1)
                 .forEach(currentEndDate -> {
                     LocalDateTime currentStartDate = getCurrentStartDate(startDate, currentEndDate, interval);
-                    System.out.println(currentStartDate + " " + currentEndDate);
                     sensor.getMeasurements().stream()
                             .filter(e -> e.getTimestamp().isAfter(currentStartDate))
                             .filter(e -> e.getTimestamp().isBefore(currentEndDate))
