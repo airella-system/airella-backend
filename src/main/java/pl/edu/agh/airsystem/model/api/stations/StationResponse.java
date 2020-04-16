@@ -18,4 +18,5 @@ public class StationResponse {
     private final Address address;
     private final Location location;
     private final Map<String, SensorResponse> sensors;
+    private Double airStatus;
 }

@@ -11,6 +11,8 @@ import pl.edu.agh.airsystem.model.database.Station;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static pl.edu.agh.airsystem.util.AirStatusUtils.calculateAirStatus;
+
 @Component
 @AllArgsConstructor
 public class StationResponseAssembler {
@@ -25,7 +27,8 @@ public class StationResponseAssembler {
                 station.getName(),
                 station.getAddress(),
                 station.getLocation(),
-                sensors);
+                sensors,
+                calculateAirStatus(station));
     }
 
 }

@@ -3,6 +3,7 @@ package pl.edu.agh.airsystem.service;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import pl.edu.agh.airsystem.assembler.BriefStationResponseAssembler;
 import pl.edu.agh.airsystem.assembler.StationResponseAssembler;
 import pl.edu.agh.airsystem.exception.NotUsersStationException;
 import pl.edu.agh.airsystem.model.api.query.MeasurementQuery;
@@ -24,10 +25,11 @@ public class StationService {
     private final ResourceFinder resourceFinder;
     private final AuthorizationService authorizationService;
     private final StationResponseAssembler stationResponseAssembler;
+    private final BriefStationResponseAssembler briefStationResponseAssembler;
 
     public ResponseEntity<List<BriefStationResponse>> getStations() {
         List<BriefStationResponse> response = new ArrayList<>();
-        stationRepository.findAll().forEach(station -> response.add(new BriefStationResponse(station)));
+        stationRepository.findAll().forEach(station -> response.add(briefStationResponseAssembler.assemble(station)));
         return ResponseEntity.ok().body(response);
     }
 
