@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static pl.edu.agh.airsystem.util.AirStatusUtils.calculateSensorStatus;
+
 @Component
 public class SensorResponseAssembler {
 
@@ -75,22 +77,4 @@ public class SensorResponseAssembler {
                 measurementResponses, calculateSensorStatus(sensor));
     }
 
-    private Double calculateSensorStatus(Sensor sensor) {
-        Measurement measurement = getLatestMeasurement(sensor);
-        if (measurement == null) {
-            return null;
-        } else {
-            //TODO add calculation method
-            return 50.0;
-        }
-    }
-
-    private Measurement getLatestMeasurement(Sensor sensor) {
-        LocalDateTime now = LocalDateTime.now();
-        Optional<Measurement> sensorValue = sensor.getMeasurements().stream()
-                .filter(e -> e.getTimestamp().isBefore(now))
-                .max(Comparator.comparing(Measurement::getTimestamp));
-
-        return sensorValue.orElse(null);
-    }
 }

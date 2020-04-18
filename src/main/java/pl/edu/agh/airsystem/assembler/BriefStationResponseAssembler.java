@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import pl.edu.agh.airsystem.model.api.stations.BriefStationResponse;
 import pl.edu.agh.airsystem.model.database.Station;
 
-import static pl.edu.agh.airsystem.util.AirStatusUtils.calculateAirStatus;
+import static pl.edu.agh.airsystem.util.AirStatusUtils.calculateAirQualityIndex;
 
 @Component
 @AllArgsConstructor
@@ -18,7 +18,7 @@ public class BriefStationResponseAssembler {
                 station.getName(),
                 station.getAddress(),
                 station.getLocation(),
-                calculateAirStatus(station));
+                calculateAirQualityIndex(station));
     }
 
 }

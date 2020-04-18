@@ -10,7 +10,7 @@ import pl.edu.agh.airsystem.model.database.Station;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
-import static pl.edu.agh.airsystem.util.AirStatusUtils.calculateAirStatus;
+import static pl.edu.agh.airsystem.util.AirStatusUtils.calculateAirQualityIndex;
 
 @Component
 @AllArgsConstructor
@@ -28,7 +28,7 @@ public class StationResponseAssembler {
                 station.getAddress(),
                 station.getLocation(),
                 sensorResponses,
-                calculateAirStatus(station));
+                calculateAirQualityIndex(station));
     }
 
 }
