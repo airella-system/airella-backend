@@ -8,5 +8,6 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class SensorResponse {
+    private String type;
     private List<MeasurementResponse> values;
 }

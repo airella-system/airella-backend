@@ -50,7 +50,7 @@ public class SensorResponseAssembler {
                             .max(Comparator.comparing(Measurement::getTimestamp))
                             .ifPresent(e -> measurementResponses.add(new MeasurementResponse(e)));
                 });
-        return new SensorResponse(measurementResponses);
+        return new SensorResponse(sensor.getType().getCode(), measurementResponses);
     }
 
     private LocalDateTime getCurrentStartDate(LocalDateTime startDate,
@@ -70,6 +70,6 @@ public class SensorResponseAssembler {
                 .max(Comparator.comparing(Measurement::getTimestamp));
 
         sensorValue.ifPresent(measurement -> measurementResponses.add(new MeasurementResponse(measurement)));
-        return new SensorResponse(measurementResponses);
+        return new SensorResponse(sensor.getType().getCode(), measurementResponses);
     }
 }
