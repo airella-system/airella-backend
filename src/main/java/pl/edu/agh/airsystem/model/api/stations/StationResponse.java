@@ -7,7 +7,7 @@ import pl.edu.agh.airsystem.model.api.sensors.SensorResponse;
 import pl.edu.agh.airsystem.model.database.Address;
 import pl.edu.agh.airsystem.model.database.Location;
 
-import java.util.Map;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,6 +17,6 @@ public class StationResponse {
     private final String name;
     private final Address address;
     private final Location location;
-    private final Map<String, SensorResponse> sensors;
-    private Double airStatus;
+    private final List<SensorResponse> sensors;
+    private Double airQualityIndex;
 }

@@ -180,6 +180,48 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/station'
+  /stations/{stationId}/name:
+    put:
+      parameters:
+        - in: path
+          name: stationId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: Station id
+      operationId: update-station-name
+      summary: Updates station name
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/station-name'
+      responses:
+        '200':
+          description: |-
+            Updates station name.
+  /stations/{stationId}/address:
+    put:
+      parameters:
+        - in: path
+          name: stationId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: Station id
+      operationId: update-station-address
+      summary: Updates station address
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/address'
+      responses:
+        '200':
+          description: |-
+            Updates station address.
   /stations/{stationId}/location:
     put:
       parameters:
@@ -305,10 +347,14 @@ components:
     sensor:
       type: object
       properties:
+        id:
+          type: string
         values:
           type: array
           items:
             $ref: '#/components/schemas/measurement'
+        status:
+          type: number
     station-brief:
       type: array
       items:
@@ -322,7 +368,7 @@ components:
             $ref: '#/components/schemas/address'
           location:
             $ref: '#/components/schemas/location'
-          airStatus:
+          airQualityIndex:
             type: number
     station:
       type: array
@@ -337,13 +383,12 @@ components:
             $ref: '#/components/schemas/address'
           location:
             $ref: '#/components/schemas/location'
-          airStatus:
+          airQualityIndex:
             type: number
           sensors:
-            type: object
-            properties:
-              sensorid:
-                $ref: '#/components/schemas/sensor'
+            type: array
+            items:
+              $ref: '#/components/schemas/sensor'
     address:
       type: object
       properties:
@@ -362,6 +407,11 @@ components:
           type: number
         longitude:
           type: number
+    station-name:
+      type: object
+      properties:
+        name:
+          type: string
     measurement:
       type: object
       properties:

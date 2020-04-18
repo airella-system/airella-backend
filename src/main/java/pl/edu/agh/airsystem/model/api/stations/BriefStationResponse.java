@@ -14,5 +14,5 @@ public class BriefStationResponse {
     private final String name;
     private final Address address;
     private final Location location;
-    private final Double airStatus;
+    private final Double airQualityIndex;
 }
