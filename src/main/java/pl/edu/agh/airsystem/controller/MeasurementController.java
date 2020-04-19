@@ -3,6 +3,7 @@ package pl.edu.agh.airsystem.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.edu.agh.airsystem.model.api.DataResponse;
 import pl.edu.agh.airsystem.model.api.measurement.NewMeasurementRequest;
 import pl.edu.agh.airsystem.service.MeasurementService;
 
@@ -13,7 +14,7 @@ public class MeasurementController {
     private final MeasurementService measurementService;
 
     @PostMapping("{stationId}/sensors/{sensorId}/measurements")
-    public ResponseEntity<?> addMeasurement(
+    public ResponseEntity<DataResponse> addMeasurement(
             @PathVariable(value = "stationId") Long stationId,
             @PathVariable(value = "sensorId") String sensorId,
             @RequestBody NewMeasurementRequest newMeasurementRequest) {

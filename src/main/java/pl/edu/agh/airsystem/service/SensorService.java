@@ -8,6 +8,7 @@ import pl.edu.agh.airsystem.assembler.SensorResponseAssembler;
 import pl.edu.agh.airsystem.converter.SensorTypeConverter;
 import pl.edu.agh.airsystem.exception.NewSensorIdDuplicatedException;
 import pl.edu.agh.airsystem.exception.NotUsersStationException;
+import pl.edu.agh.airsystem.model.api.DataResponse;
 import pl.edu.agh.airsystem.model.api.query.MeasurementQuery;
 import pl.edu.agh.airsystem.model.api.sensors.NewSensorRequest;
 import pl.edu.agh.airsystem.model.api.sensors.SensorResponse;
@@ -30,7 +31,7 @@ public class SensorService {
     private final AuthorizationService authorizationService;
     private final SensorResponseAssembler sensorResponseAssembler;
 
-    public ResponseEntity<Map<String, SensorResponse>> getSensors(Long stationId, MeasurementQuery measurementQuery) {
+    public ResponseEntity<DataResponse> getSensors(Long stationId, MeasurementQuery measurementQuery) {
         Station station = resourceFinder.findStation(stationId);
 
         Map<String, SensorResponse> sensors = station.getSensors().stream()
@@ -38,7 +39,7 @@ public class SensorService {
                 .collect(Collectors.toMap(Sensor::getId,
                         sensor -> sensorResponseAssembler.assemble(sensor, measurementQuery)));
 
-        return ResponseEntity.ok().body(sensors);
+        return ResponseEntity.ok().body(DataResponse.of(sensors));
     }
 
     private boolean filterSensorType(Sensor sensor, List<SensorType> types) {
@@ -46,7 +47,7 @@ public class SensorService {
         return types.contains(sensor.getType());
     }
 
-    public ResponseEntity<?> addSensor(Long stationId, NewSensorRequest newSensor) {
+    public ResponseEntity<DataResponse> addSensor(Long stationId, NewSensorRequest newSensor) {
         StationClient loggedStation = authorizationService.checkAuthenticationAndGetStationClient();
 
         Station station = resourceFinder.findStation(stationId);
@@ -77,11 +78,11 @@ public class SensorService {
                 .build();
     }
 
-    public ResponseEntity<SensorResponse> getSensor(Long stationId, String sensorId, MeasurementQuery measurementQuery) {
+    public ResponseEntity<DataResponse> getSensor(Long stationId, String sensorId, MeasurementQuery measurementQuery) {
         Sensor sensor = resourceFinder.findSensorInStation(stationId, sensorId);
         SensorResponse response = sensorResponseAssembler.assemble(sensor, measurementQuery);
 
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok().body(DataResponse.of(response));
     }
 
 }

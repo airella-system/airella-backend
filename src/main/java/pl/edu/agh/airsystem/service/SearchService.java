@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import pl.edu.agh.airsystem.assembler.BriefStationResponseAssembler;
+import pl.edu.agh.airsystem.model.api.DataResponse;
 import pl.edu.agh.airsystem.model.api.stations.BriefStationResponse;
 import pl.edu.agh.airsystem.model.database.Location;
 import pl.edu.agh.airsystem.model.database.Station;
@@ -21,7 +22,7 @@ public class SearchService {
     private final StationRepository stationRepository;
     private final BriefStationResponseAssembler briefStationResponseAssembler;
 
-    public ResponseEntity<List<BriefStationResponse>> getStations(
+    public ResponseEntity<DataResponse> getStations(
             double latitude, double longitude, double radius) {
         List<Station> stations = new ArrayList<>();
         stationRepository.findAll().forEach(stations::add);
@@ -34,7 +35,7 @@ public class SearchService {
                 .map(briefStationResponseAssembler::assemble)
                 .collect(toList());
 
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok().body(DataResponse.of(response));
     }
 
 }

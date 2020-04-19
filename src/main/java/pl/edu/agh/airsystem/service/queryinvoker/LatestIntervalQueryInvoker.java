@@ -5,6 +5,7 @@ import pl.edu.agh.airsystem.model.api.query.MeasurementQuery;
 import pl.edu.agh.airsystem.model.api.sensors.IntervalMeasurementResponse;
 import pl.edu.agh.airsystem.model.api.sensors.IntervalTimeMeasurementResponse;
 import pl.edu.agh.airsystem.model.api.sensors.MeasurementResponse;
+import pl.edu.agh.airsystem.model.api.sensors.TimespanResponse;
 import pl.edu.agh.airsystem.model.database.Measurement;
 import pl.edu.agh.airsystem.model.database.Sensor;
 import pl.edu.agh.airsystem.util.Interval;
@@ -26,16 +27,17 @@ public class LatestIntervalQueryInvoker implements QueryInvoker {
 
         List<IntervalMeasurementResponse> measurementResponses = new ArrayList<>();
         for (Interval interval : intervals) {
+            TimespanResponse timespan = new TimespanResponse(
+                    interval.getStart(),
+                    interval.getEnd());
             sensor.getMeasurements().stream()
                     .filter(e -> e.getTimestamp().isAfter(interval.getStart()))
                     .filter(e -> e.getTimestamp().isBefore(interval.getEnd()))
                     .max(Comparator.comparing(Measurement::getTimestamp))
                     .ifPresentOrElse(e -> measurementResponses.add(
-                            new IntervalTimeMeasurementResponse(interval.getStart(),
-                                    interval.getEnd(), e.getTimestamp(), e.getValue())),
+                            new IntervalTimeMeasurementResponse(timespan, e.getTimestamp(), e.getValue())),
                             () -> measurementResponses.add(
-                                    new IntervalTimeMeasurementResponse(interval.getStart(),
-                                            interval.getEnd(), null, null)));
+                                    new IntervalTimeMeasurementResponse(timespan, null, null)));
         }
         return measurementResponses;
     }

@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.edu.agh.airsystem.exception.*;
+import pl.edu.agh.airsystem.model.api.DataResponse;
 import pl.edu.agh.airsystem.model.api.authorization.*;
 import pl.edu.agh.airsystem.model.api.security.JWTToken;
 import pl.edu.agh.airsystem.model.database.Client;
@@ -35,7 +36,7 @@ public class AuthorizationService {
     private final StationClientRepository stationClientRepository;
     private final StationRepository stationRepository;
 
-    public ResponseEntity<LoginResponse> login(LoginRequest authenticationRequest) {
+    public ResponseEntity<DataResponse> login(LoginRequest authenticationRequest) {
         authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
 
         final UserClient userClient = userClientRepository.findByUsername(authenticationRequest.getUsername())
@@ -43,13 +44,13 @@ public class AuthorizationService {
 
         final JWTToken accessToken = jwtTokenUtil.generateAccessToken(userClient);
 
-        return ResponseEntity.ok(new LoginResponse(
+        return ResponseEntity.ok(DataResponse.of(new LoginResponse(
                 accessToken,
                 userClient.getRefreshToken(),
-                userClient.getStationRegistrationToken()));
+                userClient.getStationRegistrationToken())));
     }
 
-    public ResponseEntity<?> refreshToken(RefreshTokenRequest authenticationRequest) {
+    public ResponseEntity<DataResponse> refreshToken(RefreshTokenRequest authenticationRequest) {
         String refreshToken = authenticationRequest.getRefreshToken();
 
         Optional<Client> client = clientRepository.findByRefreshToken(refreshToken);
@@ -58,10 +59,10 @@ public class AuthorizationService {
         }
 
         final JWTToken token = jwtTokenUtil.generateAccessToken(client.get());
-        return ResponseEntity.ok(new RefreshTokenResponse(token));
+        return ResponseEntity.ok(DataResponse.of(new RefreshTokenResponse(token)));
     }
 
-    public ResponseEntity<?> registerUser(RegisterUserRequest registerUserRequest) {
+    public ResponseEntity<DataResponse> registerUser(RegisterUserRequest registerUserRequest) {
         UserClient userClient = new UserClient(registerUserRequest.getUsername(),
                 new BCryptPasswordEncoder().encode(registerUserRequest.getPassword()));
 
@@ -73,7 +74,7 @@ public class AuthorizationService {
         return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity<?> registerStation(RegisterStationRequest registerStationRequest) {
+    public ResponseEntity<DataResponse> registerStation(RegisterStationRequest registerStationRequest) {
         Optional<UserClient> userClient = userClientRepository
                 .findByStationRegistrationToken(registerStationRequest.getStationRegistrationToken());
 
@@ -95,7 +96,8 @@ public class AuthorizationService {
 
         return ResponseEntity
                 .created(uri)
-                .body(new RegisterStationResponse(stationClient.getRefreshToken()));
+                .body(DataResponse.of(
+                        new RegisterStationResponse(stationClient.getRefreshToken())));
     }
 
     private void authenticate(String username, String password) {
