@@ -5,9 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.agh.airsystem.converter.MeasurementQueryConverter;
 import pl.edu.agh.airsystem.model.api.query.MeasurementQueryRequest;
-import pl.edu.agh.airsystem.model.api.stations.BriefStationResponse;
-import pl.edu.agh.airsystem.model.api.stations.LocationChangeRequest;
-import pl.edu.agh.airsystem.model.api.stations.StationResponse;
+import pl.edu.agh.airsystem.model.api.stations.*;
 import pl.edu.agh.airsystem.service.StationService;
 
 import java.util.List;
@@ -30,6 +28,20 @@ public class StationController {
             MeasurementQueryRequest measurementQueryRequest) {
         return stationService.getStation(stationId,
                 measurementQueryConverter.convert(measurementQueryRequest));
+    }
+
+    @PutMapping("{stationId}/name")
+    public ResponseEntity<?> setName(
+            @PathVariable(value = "stationId") Long stationId,
+            @RequestBody NameChangeRequest nameChangeRequest) {
+        return stationService.setStationName(stationId, nameChangeRequest);
+    }
+
+    @PutMapping("{stationId}/address")
+    public ResponseEntity<?> setAddress(
+            @PathVariable(value = "stationId") Long stationId,
+            @RequestBody AddressChangeRequest addressChangeRequest) {
+        return stationService.setStationAddress(stationId, addressChangeRequest);
     }
 
     @PutMapping("{stationId}/location")

@@ -147,6 +147,36 @@ paths:
             type: integer
             minimum: 1
           description: Station id
+        - in: query
+          name: timespan
+          required: false
+          schema:
+            type: string
+            format: date-time
+          description: Timespan of queried measurements in ISO 8601 format
+          example: 2020-04-02T21:37:00/2020-04-05T22:48:00
+        - in: query
+          name: interval
+          required: false
+          schema:
+            type: string
+            format: date-time
+          description: Interval bettwen queried measurements in ISO 8601 format
+          example: PT1H
+        - in: query
+          name: sensors
+          required: false
+          schema:
+            type: string
+          description: Filter for sensors - split by comma
+          example: pm10,pm25
+        - in: query
+          name: strategy
+          required: false
+          schema:
+            type: string
+          description: Strategy of agregating results - avg, all or latest
+          example: avg
       operationId: get-station
       summary: Returns information about one station
       responses:
@@ -157,6 +187,48 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/station'
+  /stations/{stationId}/name:
+    put:
+      parameters:
+        - in: path
+          name: stationId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: Station id
+      operationId: update-station-name
+      summary: Updates station name
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/station-name'
+      responses:
+        '200':
+          description: |-
+            Updates station name.
+  /stations/{stationId}/address:
+    put:
+      parameters:
+        - in: path
+          name: stationId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: Station id
+      operationId: update-station-address
+      summary: Updates station address
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/address'
+      responses:
+        '200':
+          description: |-
+            Updates station address.
   /stations/{stationId}/location:
     put:
       parameters:
@@ -244,22 +316,22 @@ paths:
           required: true
           schema:
             type: number
-            minimum: 1
           description: Latitude of searched area
+          example: 50.0680472
         - in: query
           name: longitude
           required: true
           schema:
             type: number
-            minimum: 1
           description: Longitude of searched area
+          example: 19.9104095
         - in: query
           name: radius
           required: true
           schema:
             type: number
-            minimum: 1
           description: Radius of searched area in meters
+          example: 10000
       operationId: search-map
       summary: Searchs for stations in selected area
       responses:
@@ -272,6 +344,58 @@ paths:
                 $ref: '#/components/schemas/station-brief'
 components:
   schemas:
+    sensor-brief:
+      type: object
+      properties:
+        type:
+          type: string
+        value:
+          type: number
+    sensor:
+      type: object
+      properties:
+        id:
+          type: string
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/measurement'
+        status:
+          type: number
+    station-brief:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+          name:
+            type: string
+          address:
+            $ref: '#/components/schemas/address'
+          location:
+            $ref: '#/components/schemas/location'
+          airQualityIndex:
+            type: number
+    station:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+          name:
+            type: string
+          address:
+            $ref: '#/components/schemas/address'
+          location:
+            $ref: '#/components/schemas/location'
+          airQualityIndex:
+            type: number
+          sensors:
+            type: array
+            items:
+              $ref: '#/components/schemas/sensor'
     address:
       type: object
       properties:
@@ -290,41 +414,22 @@ components:
           type: number
         longitude:
           type: number
-    station-brief:
-      type: array
-      items:
-        type: object
-        properties:
-          id:
-            type: integer
-          name:
-            type: string
-          address:
-            $ref: '#/components/schemas/address'
-          location:
-            $ref: '#/components/schemas/location'
-    sensor-brief:
+    station-name:
       type: object
       properties:
-        type:
+        name:
           type: string
+    measurement:
+      type: object
+      properties:
+        startTimestamp:
+          type: string
+          format: date-time
+        endTimestamp:
+          type: string
+          format: date-time
+        timestamp:
+          type: string
+          format: date-time
         value:
           type: number
-    station:
-      type: array
-      items:
-        type: object
-        properties:
-          id:
-            type: integer
-          name:
-            type: string
-          address:
-            $ref: '#/components/schemas/address'
-          location:
-            $ref: '#/components/schemas/location'
-          sensors:
-            type: object
-            properties:
-              sensorid:
-                $ref: '#/components/schemas/sensor-brief'

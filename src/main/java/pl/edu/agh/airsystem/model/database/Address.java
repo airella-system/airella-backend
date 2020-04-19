@@ -24,4 +24,13 @@ public class Address {
     private String city;
     private String street;
     private String number;
+
+    public Address(String country, String city,
+                   String street, String number) {
+        this.country = country;
+        this.city = city;
+        this.street = street;
+        this.number = number;
+    }
+
 }
