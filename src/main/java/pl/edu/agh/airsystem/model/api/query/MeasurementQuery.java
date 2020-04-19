@@ -17,4 +17,6 @@ public class MeasurementQuery {
     private LocalDateTime endDate;
     private Duration interval;
     private List<SensorType> types;
+    private MeasurementQueryStrategy strategy;
+    private boolean interpolate;
 }

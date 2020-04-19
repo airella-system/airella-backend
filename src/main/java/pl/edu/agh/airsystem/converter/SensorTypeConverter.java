@@ -1,4 +1,4 @@
-package pl.edu.agh.airsystem.model.database.converter;
+package pl.edu.agh.airsystem.converter;
 
 import pl.edu.agh.airsystem.model.database.SensorType;
 

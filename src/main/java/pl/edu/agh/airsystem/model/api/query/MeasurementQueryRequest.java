@@ -14,4 +14,6 @@ public class MeasurementQueryRequest {
     String timespan;
     String interval;
     String sensors;
+    String strategy;
+    String interpolate;
 }

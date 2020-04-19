@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.edu.agh.airsystem.assembler.SensorResponseAssembler;
+import pl.edu.agh.airsystem.converter.SensorTypeConverter;
 import pl.edu.agh.airsystem.exception.NewSensorIdDuplicatedException;
 import pl.edu.agh.airsystem.exception.NotUsersStationException;
 import pl.edu.agh.airsystem.model.api.query.MeasurementQuery;
@@ -14,7 +15,6 @@ import pl.edu.agh.airsystem.model.database.Sensor;
 import pl.edu.agh.airsystem.model.database.SensorType;
 import pl.edu.agh.airsystem.model.database.Station;
 import pl.edu.agh.airsystem.model.database.StationClient;
-import pl.edu.agh.airsystem.model.database.converter.SensorTypeConverter;
 import pl.edu.agh.airsystem.repository.SensorRepository;
 
 import java.net.URI;

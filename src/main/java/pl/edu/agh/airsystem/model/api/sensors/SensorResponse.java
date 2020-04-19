@@ -10,6 +10,6 @@ import java.util.List;
 public class SensorResponse {
     private String id;
     private String type;
-    private List<MeasurementResponse> values;
+    private List<? extends MeasurementResponse> values;
     private Double status;
 }

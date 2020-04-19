@@ -34,4 +34,5 @@ public class AirStatusUtils {
                 .map(Measurement::getValue)
                 .orElse(null);
     }
+
 }
