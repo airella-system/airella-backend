@@ -170,6 +170,13 @@ paths:
             type: string
           description: Filter for sensors - split by comma
           example: pm10,pm25
+        - in: query
+          name: strategy
+          required: false
+          schema:
+            type: string
+          description: Strategy of agregating results - avg, all or latest
+          example: avg
       operationId: get-station
       summary: Returns information about one station
       responses:
@@ -415,6 +422,12 @@ components:
     measurement:
       type: object
       properties:
+        startTimestamp:
+          type: string
+          format: date-time
+        endTimestamp:
+          type: string
+          format: date-time
         timestamp:
           type: string
           format: date-time
