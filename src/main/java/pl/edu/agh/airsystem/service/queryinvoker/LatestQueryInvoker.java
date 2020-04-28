@@ -6,10 +6,9 @@ import pl.edu.agh.airsystem.model.api.sensors.MeasurementResponse;
 import pl.edu.agh.airsystem.model.api.sensors.SingleValueMeasurementResponse;
 import pl.edu.agh.airsystem.model.database.Measurement;
 import pl.edu.agh.airsystem.model.database.Sensor;
+import pl.edu.agh.airsystem.util.SensorUtils;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,10 +20,7 @@ public class LatestQueryInvoker implements QueryInvoker {
     @Override
     public List<? extends MeasurementResponse> apply(Sensor sensor, MeasurementQuery measurementQuery) {
         List<MeasurementResponse> measurementResponses = new ArrayList<>();
-        LocalDateTime now = LocalDateTime.now();
-        Optional<Measurement> sensorValue = sensor.getMeasurements().stream()
-                .filter(e -> e.getTimestamp().isBefore(now))
-                .max(Comparator.comparing(Measurement::getTimestamp));
+        Optional<Measurement> sensorValue = SensorUtils.getLatestMeasurement(sensor);
 
         sensorValue.ifPresent(measurement -> measurementResponses.add(new SingleValueMeasurementResponse(measurement)));
 
