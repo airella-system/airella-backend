@@ -6,16 +6,17 @@ import pl.edu.agh.airsystem.model.api.query.MeasurementQuery;
 import pl.edu.agh.airsystem.model.api.sensors.SensorResponse;
 import pl.edu.agh.airsystem.model.api.stations.StationResponse;
 import pl.edu.agh.airsystem.model.database.Station;
+import pl.edu.agh.airsystem.util.AirStatusService;
 
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
-import static pl.edu.agh.airsystem.util.AirStatusUtils.calculateAirQualityIndex;
 
 @Component
 @AllArgsConstructor
 public class StationResponseAssembler {
     private SensorResponseAssembler sensorResponseAssembler;
+    private AirStatusService airStatusService;
 
     public StationResponse assemble(Station station, MeasurementQuery measurementQuery) {
         List<SensorResponse> sensorResponses = station.getSensors().stream()
@@ -28,7 +29,7 @@ public class StationResponseAssembler {
                 station.getAddress(),
                 station.getLocation(),
                 sensorResponses,
-                calculateAirQualityIndex(station));
+                airStatusService.calculateAirQualityIndex(station));
     }
 
 }

@@ -38,6 +38,7 @@ public class MeasurementService {
                 newMeasurementRequest.getValue());
 
         sensor.getMeasurements().add(measurement);
+        sensor.setLatestMeasurement(measurement);
         measurementRepository.save(measurement);
 
         return ResponseEntity.ok().build();

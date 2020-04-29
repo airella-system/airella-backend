@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(name = "measurement", indexes = {
+        @Index(name = "INDX_0", columnList = "timestamp")})
 public class Measurement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

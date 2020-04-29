@@ -2,6 +2,7 @@ package pl.edu.agh.airsystem.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import pl.edu.agh.airsystem.assembler.VirtualStationResponseAssembler;
 import pl.edu.agh.airsystem.model.api.mappoint.VirtualStationResponse;
 import pl.edu.agh.airsystem.model.database.*;
@@ -14,8 +15,10 @@ import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
+@Service
 @AllArgsConstructor
 public class SensorInterpolationService {
+    private SensorUtilsService sensorUtilsService;
     private NearestStationsFinder nearestStationsFinder;
     private VirtualStationResponseAssembler virtualStationResponseAssembler;
 
@@ -41,7 +44,7 @@ public class SensorInterpolationService {
 
             List<NearMeasurement> nearMeasurements = nearestStations.stream()
                     .map(station -> StationUtils.getSensorById(station.getStation(), sensorType.getCode())
-                            .flatMap(SensorUtils::getLatestMeasurement)
+                            .flatMap(sensorUtilsService::findLatestMeasurementInSensor)
                             .map(measurement -> new NearMeasurement(station.getDistance(), measurement)))
                     .filter(Optional::isPresent)
                     .map(Optional::get)
