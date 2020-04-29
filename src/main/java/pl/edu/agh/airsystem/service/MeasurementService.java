@@ -9,7 +9,7 @@ import pl.edu.agh.airsystem.model.api.measurement.NewMeasurementRequest;
 import pl.edu.agh.airsystem.model.database.Measurement;
 import pl.edu.agh.airsystem.model.database.Sensor;
 import pl.edu.agh.airsystem.model.database.StationClient;
-import pl.edu.agh.airsystem.repository.MeasurementRepository;
+import pl.edu.agh.airsystem.util.MeasurementUtilsService;
 
 import java.time.LocalDateTime;
 
@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 public class MeasurementService {
     private final ResourceFinder resourceFinder;
     private final AuthorizationService authorizationService;
-    private final MeasurementRepository measurementRepository;
+    private final MeasurementUtilsService measurementUtilsService;
 
     public ResponseEntity<DataResponse> addMeasurement(
             Long stationId,
@@ -36,10 +36,8 @@ public class MeasurementService {
                 sensor,
                 LocalDateTime.now(),
                 newMeasurementRequest.getValue());
+        measurementUtilsService.addNewMeasurement(sensor, measurement);
 
-        sensor.getMeasurements().add(measurement);
-        sensor.setLatestMeasurement(measurement);
-        measurementRepository.save(measurement);
 
         return ResponseEntity.ok().build();
     }

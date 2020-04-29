@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import pl.edu.agh.airsystem.assembler.VirtualStationResponseAssembler;
-import pl.edu.agh.airsystem.model.api.mappoint.VirtualStationResponse;
+import pl.edu.agh.airsystem.model.api.DataResponse;
 import pl.edu.agh.airsystem.model.database.*;
 import pl.edu.agh.airsystem.util.*;
 
@@ -22,7 +22,7 @@ public class SensorInterpolationService {
     private NearestStationsFinder nearestStationsFinder;
     private VirtualStationResponseAssembler virtualStationResponseAssembler;
 
-    public ResponseEntity<VirtualStationResponse> getResponse(double latitude, double longitude) {
+    public ResponseEntity<DataResponse> getResponse(double latitude, double longitude) {
         Location location = new Location(latitude, longitude);
         List<NearStation> nearestStations = nearestStationsFinder.findNearestSensors(location, 5, 1000);
 
@@ -64,7 +64,8 @@ public class SensorInterpolationService {
 
         virtualStation.setSensors(virtualSensors);
 
-        return ResponseEntity.ok(virtualStationResponseAssembler.assemble(virtualStation));
+        return ResponseEntity.ok(DataResponse.of(
+                virtualStationResponseAssembler.assemble(virtualStation)));
     }
 
     @AllArgsConstructor

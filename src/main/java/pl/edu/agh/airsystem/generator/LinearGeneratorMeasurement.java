@@ -6,6 +6,7 @@ import pl.edu.agh.airsystem.model.database.Measurement;
 import pl.edu.agh.airsystem.model.database.Sensor;
 import pl.edu.agh.airsystem.repository.MeasurementRepository;
 import pl.edu.agh.airsystem.repository.SensorRepository;
+import pl.edu.agh.airsystem.util.MeasurementUtilsService;
 import pl.edu.agh.airsystem.util.SensorUtilsService;
 
 import java.time.Duration;
@@ -17,7 +18,7 @@ import static pl.edu.agh.airsystem.util.RandomUtils.randomBetween;
 
 @Slf4j
 public class LinearGeneratorMeasurement
-        implements GeneratorMeasurementDefinition {
+        implements GeneratorMeasurementInstance {
     private final double min;
     private final double max;
     private final double minStep;
@@ -58,23 +59,24 @@ public class LinearGeneratorMeasurement
         }
     }
 
-    private void generateAndAddNewMeasurement(MeasurementRepository measurementRepository,
-                                              SensorRepository sensorRepository, Sensor sensor, LocalDateTime current) {
+
+    void generateAndAddNewMeasurement(MeasurementRepository measurementRepository,
+                                      MeasurementUtilsService measurementUtilsService,
+                                      SensorRepository sensorRepository, Sensor sensor, LocalDateTime current) {
         Measurement measurement = new Measurement(
                 sensor,
                 current,
                 currentValue);
-        sensor.getMeasurements().add(measurement);
-        sensor.setLatestMeasurement(measurement);
-        measurementRepository.save(measurement);
-        sensorRepository.save(sensor);
+        measurementUtilsService.addNewMeasurement(sensor, measurement);
     }
 
-    public void catchUpOnMeasurements(Sensor sensor,
-                                      SensorRepository sensorRepository,
-                                      SensorUtilsService sensorUtilsService,
-                                      MeasurementRepository repository,
-                                      TaskScheduler taskScheduler) {
+    @Override
+    public void catchUpMeasurements(Sensor sensor,
+                                    SensorRepository sensorRepository,
+                                    SensorUtilsService sensorUtilsService,
+                                    MeasurementRepository repository,
+                                    MeasurementUtilsService measurementUtilsService,
+                                    TaskScheduler taskScheduler) {
         LocalDateTime from;
         LocalDateTime current;
         LocalDateTime to = LocalDateTime.now();
@@ -89,7 +91,7 @@ public class LinearGeneratorMeasurement
         current = LocalDateTime.from(from).plus(getTimeStep());
         while (current.isBefore(to)) {
             generateNextValue();
-            generateAndAddNewMeasurement(repository, sensorRepository, sensor, current);
+            generateAndAddNewMeasurement(repository, measurementUtilsService, sensorRepository, sensor, current);
             current = current.plus(getTimeStep());
         }
     }
@@ -99,30 +101,32 @@ public class LinearGeneratorMeasurement
                                            SensorRepository sensorRepository,
                                            SensorUtilsService sensorUtilsService,
                                            MeasurementRepository repository,
+                                           MeasurementUtilsService measurementUtilsService,
                                            TaskScheduler taskScheduler) {
-        catchUpOnMeasurements(sensor, sensorRepository, sensorUtilsService, repository, taskScheduler);
-        scheduleNextIteration(sensor, sensorRepository, sensorUtilsService, repository, taskScheduler);
+        scheduleNextIteration(sensor, sensorRepository, sensorUtilsService, repository, measurementUtilsService, taskScheduler);
     }
 
     private void generatorIteration(Sensor sensor,
                                     SensorRepository sensorRepository,
                                     SensorUtilsService sensorUtilsService,
                                     MeasurementRepository repository,
+                                    MeasurementUtilsService measurementUtilsService,
                                     TaskScheduler taskScheduler) {
         generateNextValue();
-        generateAndAddNewMeasurement(repository, sensorRepository, sensor, LocalDateTime.now());
-        scheduleNextIteration(sensor, sensorRepository, sensorUtilsService, repository, taskScheduler);
+        generateAndAddNewMeasurement(repository, measurementUtilsService, sensorRepository, sensor, LocalDateTime.now());
+        scheduleNextIteration(sensor, sensorRepository, sensorUtilsService, repository, measurementUtilsService, taskScheduler);
     }
 
     private void scheduleNextIteration(Sensor sensor,
                                        SensorRepository sensorRepository,
                                        SensorUtilsService sensorUtilsService,
                                        MeasurementRepository repository,
+                                       MeasurementUtilsService measurementUtilsService,
                                        TaskScheduler taskScheduler) {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime next = now.plus(getTimeStep());
 
-        taskScheduler.schedule(() -> generatorIteration(sensor, sensorRepository, sensorUtilsService, repository, taskScheduler),
+        taskScheduler.schedule(() -> generatorIteration(sensor, sensorRepository, sensorUtilsService, repository, measurementUtilsService, taskScheduler),
                 next.atZone(ZoneId.systemDefault()).toInstant());
     }
 
