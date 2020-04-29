@@ -7,15 +7,15 @@ import pl.edu.agh.airsystem.model.api.sensors.MeasurementResponse;
 import pl.edu.agh.airsystem.model.api.sensors.SensorResponse;
 import pl.edu.agh.airsystem.model.database.Sensor;
 import pl.edu.agh.airsystem.service.queryinvoker.QueryInvoker;
+import pl.edu.agh.airsystem.util.AirStatusService;
 
 import java.util.List;
-
-import static pl.edu.agh.airsystem.util.AirStatusUtils.calculateSensorStatus;
 
 @Component
 @AllArgsConstructor
 public class SensorResponseAssembler {
     private List<QueryInvoker> queryInvokers;
+    private AirStatusService airStatusService;
 
     public SensorResponse assemble(Sensor sensor, MeasurementQuery measurementQuery) {
         List<? extends MeasurementResponse> measurementResponses = queryInvokers.stream()
@@ -27,7 +27,7 @@ public class SensorResponseAssembler {
         return new SensorResponse(sensor.getId(),
                 sensor.getType().getCode(),
                 measurementResponses,
-                calculateSensorStatus(sensor));
+                airStatusService.calculateSensorStatus(sensor));
     }
 
 }

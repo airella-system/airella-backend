@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface MeasurementRepository extends CrudRepository<Measurement, Long> {
     Optional<Measurement> findById(long id);
+
 }

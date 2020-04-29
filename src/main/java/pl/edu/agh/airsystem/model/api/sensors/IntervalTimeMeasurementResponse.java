@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 public class IntervalTimeMeasurementResponse extends IntervalMeasurementResponse {
     private LocalDateTime timestamp;
 
-    public IntervalTimeMeasurementResponse(LocalDateTime start, LocalDateTime end,
+    public IntervalTimeMeasurementResponse(TimespanResponse timespanResponse,
                                            LocalDateTime timestamp, Double value) {
-        super(start, end, value);
+        super(timespanResponse, value);
         this.timestamp = timestamp;
     }
 

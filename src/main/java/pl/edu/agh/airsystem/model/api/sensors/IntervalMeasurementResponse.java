@@ -5,14 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class IntervalMeasurementResponse extends MeasurementResponse {
-    private LocalDateTime startTimestamp;
-    private LocalDateTime endTimestamp;
+    private TimespanResponse timespan;
     private Double value;
 }

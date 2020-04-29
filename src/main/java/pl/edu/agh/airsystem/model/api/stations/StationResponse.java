@@ -18,5 +18,5 @@ public class StationResponse {
     private final Address address;
     private final Location location;
     private final List<SensorResponse> sensors;
-    private Double airQualityIndex;
+    private Double caqi;
 }

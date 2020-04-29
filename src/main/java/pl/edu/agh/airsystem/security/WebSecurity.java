@@ -25,6 +25,7 @@ import pl.edu.agh.airsystem.service.CustomUserDetailsService;
 public class WebSecurity extends WebSecurityConfigurerAdapter {
     private CustomUserDetailsService userDetailsService;
     private JWTAuthorizationFilter jwtAuthorizationFilter;
+    private AuthEntryPoint authEntryPoint;
 
     @Bean
     public PasswordEncoder passwordEncoder() {

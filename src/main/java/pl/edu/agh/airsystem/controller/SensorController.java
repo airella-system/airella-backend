@@ -4,12 +4,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.agh.airsystem.converter.MeasurementQueryConverter;
+import pl.edu.agh.airsystem.model.api.DataResponse;
 import pl.edu.agh.airsystem.model.api.query.MeasurementQueryRequest;
 import pl.edu.agh.airsystem.model.api.sensors.NewSensorRequest;
-import pl.edu.agh.airsystem.model.api.sensors.SensorResponse;
 import pl.edu.agh.airsystem.service.SensorService;
-
-import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -19,7 +17,7 @@ public class SensorController {
     private final MeasurementQueryConverter measurementQueryConverter;
 
     @GetMapping("{stationId}/sensors")
-    public ResponseEntity<Map<String, SensorResponse>> getSensors(
+    public ResponseEntity<DataResponse> getSensors(
             @PathVariable(value = "stationId") Long stationId,
             MeasurementQueryRequest measurementQueryRequest) {
         return sensorService.getSensors(stationId,
@@ -27,7 +25,7 @@ public class SensorController {
     }
 
     @GetMapping("{stationId}/sensors/{sensorId}")
-    public ResponseEntity<SensorResponse> getSensor(
+    public ResponseEntity<DataResponse> getSensor(
             @PathVariable(value = "stationId") Long stationId,
             @PathVariable(value = "sensorId") String sensorId,
             MeasurementQueryRequest measurementQueryRequest) {
@@ -36,7 +34,7 @@ public class SensorController {
     }
 
     @PostMapping("{stationId}/sensors")
-    public ResponseEntity<?> addSensor(
+    public ResponseEntity<DataResponse> addSensor(
             @PathVariable(value = "stationId") Long stationId,
             @RequestBody NewSensorRequest newSensor) {
         return sensorService.addSensor(stationId, newSensor);

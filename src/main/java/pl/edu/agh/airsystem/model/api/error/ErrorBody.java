@@ -4,20 +4,25 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 public class ErrorBody {
-    private Error error;
+    private List<Error> errors = new ArrayList<>();
 
-    public ErrorBody(String code, String message) {
-        error = new Error(code, message);
+    public ErrorBody(int status, String title, String detail) {
+        errors.add(new Error(String.valueOf(status), title, detail));
     }
 
     @Getter
     @Setter
     @AllArgsConstructor
-    private class Error {
-        private String code;
-        private String message;
+    private static class Error {
+        private String status;
+        private String title;
+        private String detail;
     }
+
 }
 

@@ -4,26 +4,24 @@ import pl.edu.agh.airsystem.model.database.Location;
 
 public class GeographicUtils {
 
-    public static double distance(Location location1, Location location2) {
-        final int R = 6371; // Radius of the earth
+    public static final double R = 6372.8; // in kilometers
 
+    //Haversine formula for calculating distance bettwen two points
+    public static double distance(Location location1, Location location2) {
         double lat1 = location1.getLatitude();
         double lat2 = location2.getLatitude();
         double lon1 = location1.getLongitude();
         double lon2 = location2.getLongitude();
 
 
-        double latDistance = Math.toRadians(lat2 - lat1);
-        double lonDistance = Math.toRadians(lon2 - lon1);
-        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
-                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
-                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        double distance = R * c * 1000; // convert to meters
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        lat1 = Math.toRadians(lat1);
+        lat2 = Math.toRadians(lat2);
 
-        distance = Math.pow(distance, 2);
-
-        return Math.sqrt(distance);
+        double a = Math.pow(Math.sin(dLat / 2), 2) + Math.pow(Math.sin(dLon / 2), 2) * Math.cos(lat1) * Math.cos(lat2);
+        double c = 2 * Math.asin(Math.sqrt(a));
+        return R * c * 1000; // convert to meters
     }
 
 }

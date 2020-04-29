@@ -16,7 +16,6 @@ paths:
               type: object
               properties:
                 username:
-
                   type: string
                 password:
                   type: string
@@ -29,17 +28,20 @@ paths:
               schema:
                 type: object
                 properties:
-                  accessToken:
+                  data:
                     type: object
                     properties:
-                      token:
+                      accessToken:
+                        type: object
+                        properties:
+                          token:
+                            type: string
+                          expirationDate:
+                            type: string
+                      refreshToken:
                         type: string
-                      expirationDate:
+                      stationRegistrationToken:
                         type: string
-                  refreshToken:
-                    type: string
-                  stationRegistrationToken:
-                    type: string
         '403':
           description: |-
             Bad credentials
@@ -64,10 +66,13 @@ paths:
               schema:
                 type: object
                 properties:
-                  token:
-                    type: string
-                  expirationDate:
-                    type: string
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                      expirationDate:
+                        type: string
         '403':
           description: |-
             Bad refresh token
@@ -116,9 +121,12 @@ paths:
               schema:
                 type: object
                 properties:
-                  refreshToken:
-                    type: string
-                    description: "Token of newly registered station"
+                  data:
+                    type: object
+                    properties:
+                      refreshToken:
+                        type: string
+                        description: "Token of newly registered station"
         '400':
           description: |-
             Bad stationRegistrationToken
@@ -136,7 +144,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/station-brief'
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/station-brief'
   /stations/{stationId}:
     get:
       parameters:
@@ -186,7 +197,40 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/station'
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/station'
+  /map/at:
+    get:
+      parameters:
+        - in: query
+          name: latitude
+          required: true
+          schema:
+            type: number
+          description: Latitude of queried point
+          example: 50.0680472
+        - in: query
+          name: longitude
+          required: true
+          schema:
+            type: number
+          description: Longitude of queried point
+          example: 19.9104095
+      operationId: map-at
+      summary: Returns information about selected point (interpolated)
+      responses:
+        '200':
+          description: |-
+            Returns information about selected point.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/virtual-station'
   /stations/{stationId}/name:
     put:
       parameters:
@@ -341,7 +385,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/station-brief'
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/station-brief'
 components:
   schemas:
     sensor-brief:
@@ -375,7 +422,7 @@ components:
             $ref: '#/components/schemas/address'
           location:
             $ref: '#/components/schemas/location'
-          airQualityIndex:
+          caqi:
             type: number
     station:
       type: array
@@ -390,7 +437,18 @@ components:
             $ref: '#/components/schemas/address'
           location:
             $ref: '#/components/schemas/location'
-          airQualityIndex:
+          caqi:
+            type: number
+          sensors:
+            type: array
+            items:
+              $ref: '#/components/schemas/sensor'
+    virtual-station:
+      type: array
+      items:
+        type: object
+        properties:
+          caqi:
             type: number
           sensors:
             type: array
@@ -422,12 +480,15 @@ components:
     measurement:
       type: object
       properties:
-        startTimestamp:
-          type: string
-          format: date-time
-        endTimestamp:
-          type: string
-          format: date-time
+        timespan:
+          type: object
+          properties:
+            start:
+              type: string
+              format: date-time
+            end:
+              type: string
+              format: date-time
         timestamp:
           type: string
           format: date-time

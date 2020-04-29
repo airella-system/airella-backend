@@ -11,6 +11,7 @@ public class BaseErrorException extends RuntimeException {
 
     public BaseErrorException(HttpStatus httpStatus, String code, String text) {
         this.httpStatus = httpStatus;
-        this.errorBody = new ErrorBody(code, text);
+        this.errorBody = new ErrorBody(httpStatus.value(), code, text);
     }
+
 }

@@ -28,6 +28,9 @@ public class Sensor {
     @OneToMany(mappedBy = "sensor", cascade = CascadeType.REMOVE)
     private Set<Measurement> measurements;
 
+    @OneToOne
+    private Measurement latestMeasurement;
+
     public Sensor(Station station, String id, SensorType sensorType) {
         this.station = station;
         this.id = id;
