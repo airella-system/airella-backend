@@ -201,6 +201,36 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/station'
+  /map/at:
+    get:
+      parameters:
+        - in: query
+          name: latitude
+          required: true
+          schema:
+            type: number
+          description: Latitude of queried point
+          example: 50.0680472
+        - in: query
+          name: longitude
+          required: true
+          schema:
+            type: number
+          description: Longitude of queried point
+          example: 19.9104095
+      operationId: map-at
+      summary: Returns information about selected point (interpolated)
+      responses:
+        '200':
+          description: |-
+            Returns information about selected point.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/virtual-station'
   /stations/{stationId}/name:
     put:
       parameters:
@@ -407,6 +437,17 @@ components:
             $ref: '#/components/schemas/address'
           location:
             $ref: '#/components/schemas/location'
+          caqi:
+            type: number
+          sensors:
+            type: array
+            items:
+              $ref: '#/components/schemas/sensor'
+    virtual-station:
+      type: array
+      items:
+        type: object
+        properties:
           caqi:
             type: number
           sensors:
