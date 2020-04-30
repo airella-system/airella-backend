@@ -1,6 +1,5 @@
 package pl.edu.agh.airsystem.generator;
 
-import javafx.util.Pair;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,6 +16,7 @@ import pl.edu.agh.airsystem.repository.MeasurementRepository;
 import pl.edu.agh.airsystem.repository.SensorRepository;
 import pl.edu.agh.airsystem.repository.StationRepository;
 import pl.edu.agh.airsystem.util.MeasurementUtilsService;
+import pl.edu.agh.airsystem.util.Pair;
 import pl.edu.agh.airsystem.util.SensorUtilsService;
 
 import javax.transaction.Transactional;
