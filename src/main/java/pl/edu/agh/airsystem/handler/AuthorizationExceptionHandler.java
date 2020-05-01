@@ -14,7 +14,7 @@ public class AuthorizationExceptionHandler {
     public ResponseEntity<Object> exception(AuthenticationException exception) {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
-                .body(new WrongCredentialsException().getErrorBody());
+                .body(new WrongCredentialsException().getErrorResponse());
     }
 
 }

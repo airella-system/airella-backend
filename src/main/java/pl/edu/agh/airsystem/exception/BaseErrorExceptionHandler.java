@@ -11,7 +11,7 @@ public class BaseErrorExceptionHandler {
     public ResponseEntity<Object> exception(BaseErrorException exception) {
         return ResponseEntity
                 .status(exception.getHttpStatus())
-                .body(exception.getErrorBody());
+                .body(exception.getErrorResponse());
     }
 
 }

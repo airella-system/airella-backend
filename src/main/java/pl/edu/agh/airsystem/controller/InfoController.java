@@ -6,8 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import pl.edu.agh.airsystem.model.api.DataResponse;
-import pl.edu.agh.airsystem.model.api.info.InfoResponse;
+import pl.edu.agh.airsystem.model.api.response.DataResponse;
 
 @Controller
 @AllArgsConstructor
@@ -17,12 +16,7 @@ public class InfoController {
 
     @GetMapping("/info")
     public ResponseEntity<DataResponse> getInfo() {
-        return ResponseEntity.ok(
-                new DataResponse(
-                        new InfoResponse(buildProperties.getTime(),
-                                buildProperties.getVersion())
-                )
-        );
+        throw new NullPointerException();
     }
 
 }

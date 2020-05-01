@@ -3,7 +3,7 @@ package pl.edu.agh.airsystem.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.edu.agh.airsystem.model.api.DataResponse;
+import pl.edu.agh.airsystem.model.api.response.DataResponse;
 import pl.edu.agh.airsystem.model.api.measurement.NewMeasurementRequest;
 import pl.edu.agh.airsystem.service.MeasurementService;
 

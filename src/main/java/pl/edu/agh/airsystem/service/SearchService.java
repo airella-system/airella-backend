@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import pl.edu.agh.airsystem.assembler.BriefStationResponseAssembler;
-import pl.edu.agh.airsystem.model.api.DataResponse;
+import pl.edu.agh.airsystem.model.api.response.DataResponse;
 import pl.edu.agh.airsystem.model.api.stations.BriefStationResponse;
 import pl.edu.agh.airsystem.model.database.Location;
 import pl.edu.agh.airsystem.model.database.Station;
