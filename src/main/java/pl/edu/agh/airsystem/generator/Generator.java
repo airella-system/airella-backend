@@ -103,6 +103,7 @@ public class Generator {
             Station station = new Station();
             station.setName(stationDefinition.getName());
             station.setLocation(stationDefinition.getLocation());
+            station.setAddress(stationDefinition.getAddress());
             stationRepository.save(station);
             return station;
         } else {
