@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import pl.edu.agh.airsystem.assembler.BriefStationResponseAssembler;
 import pl.edu.agh.airsystem.assembler.StationResponseAssembler;
 import pl.edu.agh.airsystem.exception.NotUsersStationException;
-import pl.edu.agh.airsystem.model.api.DataResponse;
+import pl.edu.agh.airsystem.model.api.response.DataResponse;
 import pl.edu.agh.airsystem.model.api.query.MeasurementQuery;
 import pl.edu.agh.airsystem.model.api.stations.*;
 import pl.edu.agh.airsystem.model.database.Address;

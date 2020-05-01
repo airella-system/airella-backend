@@ -10,7 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.edu.agh.airsystem.exception.*;
-import pl.edu.agh.airsystem.model.api.DataResponse;
+import pl.edu.agh.airsystem.model.api.response.DataResponse;
 import pl.edu.agh.airsystem.model.api.authorization.*;
 import pl.edu.agh.airsystem.model.api.security.JWTToken;
 import pl.edu.agh.airsystem.model.database.Client;

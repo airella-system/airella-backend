@@ -1,7 +1,10 @@
 package pl.edu.agh.airsystem.generator;
 
+import pl.edu.agh.airsystem.model.database.Address;
 import pl.edu.agh.airsystem.model.database.Location;
 import pl.edu.agh.airsystem.model.database.SensorType;
+import pl.edu.agh.airsystem.util.GeneratorUtils;
+import pl.edu.agh.airsystem.util.RandomUtils;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -44,9 +47,12 @@ public class Generators {
             Location location = new Location(
                     randomBetween(from.getLatitude(), to.getLatitude()),
                     randomBetween(from.getLongitude(), to.getLongitude()));
-            stationDefinitions.add(new GeneratorStationDefinition("gen-" + i, location, standardSensors));
+            Address address = new Address("Poland", "Kraków",
+                    GeneratorUtils.generateString(), String.valueOf(RandomUtils.randomBetween(1, 200)));
+            stationDefinitions.add(new GeneratorStationDefinition("gen-" + i, location, address, standardSensors));
         }
 
         return stationDefinitions;
     }
+
 }

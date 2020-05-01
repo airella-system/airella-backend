@@ -8,7 +8,7 @@ import pl.edu.agh.airsystem.assembler.SensorResponseAssembler;
 import pl.edu.agh.airsystem.converter.SensorTypeConverter;
 import pl.edu.agh.airsystem.exception.NewSensorIdDuplicatedException;
 import pl.edu.agh.airsystem.exception.NotUsersStationException;
-import pl.edu.agh.airsystem.model.api.DataResponse;
+import pl.edu.agh.airsystem.model.api.response.DataResponse;
 import pl.edu.agh.airsystem.model.api.query.MeasurementQuery;
 import pl.edu.agh.airsystem.model.api.sensors.NewSensorRequest;
 import pl.edu.agh.airsystem.model.api.sensors.SensorResponse;

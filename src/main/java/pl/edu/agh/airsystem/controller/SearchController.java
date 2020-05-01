@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import pl.edu.agh.airsystem.converter.MeasurementQueryConverter;
-import pl.edu.agh.airsystem.model.api.DataResponse;
+import pl.edu.agh.airsystem.model.api.response.DataResponse;
+import pl.edu.agh.airsystem.model.api.response.Response;
 import pl.edu.agh.airsystem.service.SearchService;
 
 @RestController
@@ -18,7 +19,7 @@ public class SearchController {
     private final MeasurementQueryConverter measurementQueryConverter;
 
     @GetMapping("/map")
-    public ResponseEntity<DataResponse> getStations(
+    public ResponseEntity<? extends Response> getStations(
             @RequestParam double latitude,
             @RequestParam double longitude,
             @RequestParam double radius) {

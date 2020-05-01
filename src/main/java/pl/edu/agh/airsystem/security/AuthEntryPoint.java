@@ -22,7 +22,7 @@ public class AuthEntryPoint implements AuthenticationEntryPoint {
 
         OutputStream out = response.getOutputStream();
         ObjectMapper mapper = new ObjectMapper();
-        mapper.writeValue(out, exception.getErrorBody());
+        mapper.writeValue(out, exception.getErrorResponse());
         out.flush();
     }
 
