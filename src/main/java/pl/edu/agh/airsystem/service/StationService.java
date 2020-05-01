@@ -13,6 +13,7 @@ import pl.edu.agh.airsystem.model.database.Address;
 import pl.edu.agh.airsystem.model.database.Location;
 import pl.edu.agh.airsystem.model.database.Station;
 import pl.edu.agh.airsystem.model.database.StationClient;
+import pl.edu.agh.airsystem.repository.AddressRepository;
 import pl.edu.agh.airsystem.repository.StationRepository;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import java.util.List;
 @AllArgsConstructor
 public class StationService {
     private final StationRepository stationRepository;
+    private final AddressRepository addressRepository;
     private final ResourceFinder resourceFinder;
     private final AuthorizationService authorizationService;
     private final StationResponseAssembler stationResponseAssembler;
@@ -70,6 +72,7 @@ public class StationService {
                 addressChangeRequest.getStreet(),
                 addressChangeRequest.getNumber()
         );
+        addressRepository.save(address);
 
         station.setAddress(address);
         stationRepository.save(station);

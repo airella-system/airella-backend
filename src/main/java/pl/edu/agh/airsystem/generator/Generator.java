@@ -10,8 +10,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
+import pl.edu.agh.airsystem.model.database.Address;
 import pl.edu.agh.airsystem.model.database.Sensor;
 import pl.edu.agh.airsystem.model.database.Station;
+import pl.edu.agh.airsystem.repository.AddressRepository;
 import pl.edu.agh.airsystem.repository.MeasurementRepository;
 import pl.edu.agh.airsystem.repository.SensorRepository;
 import pl.edu.agh.airsystem.repository.StationRepository;
@@ -32,11 +34,12 @@ import java.util.Optional;
 public class Generator {
     @Qualifier("generatorTaskScheduler")
     TaskScheduler taskScheduler;
-    private StationRepository stationRepository;
-    private SensorRepository sensorRepository;
-    private MeasurementRepository measurementRepository;
-    private SensorUtilsService sensorUtilsService;
-    private MeasurementUtilsService measurementUtilsService;
+    private final StationRepository stationRepository;
+    private final AddressRepository addressRepository;
+    private final SensorRepository sensorRepository;
+    private final MeasurementRepository measurementRepository;
+    private final SensorUtilsService sensorUtilsService;
+    private final MeasurementUtilsService measurementUtilsService;
 
     @EventListener(ContextRefreshedEvent.class)
     public void onApplicationEvent(ContextRefreshedEvent event) {
@@ -100,6 +103,9 @@ public class Generator {
     private Station getOrCreateStation(GeneratorStationDefinition stationDefinition) {
         List<Station> stations = stationRepository.findByName(stationDefinition.getName());
         if (stations.size() == 0) {
+            Address address = stationDefinition.getAddress();
+            addressRepository.save(address);
+
             Station station = new Station();
             station.setName(stationDefinition.getName());
             station.setLocation(stationDefinition.getLocation());
