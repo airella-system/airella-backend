@@ -12,6 +12,7 @@ import pl.edu.agh.airsystem.model.api.authorization.LoginRequest;
 import pl.edu.agh.airsystem.model.api.authorization.RefreshTokenRequest;
 import pl.edu.agh.airsystem.model.api.authorization.RegisterStationRequest;
 import pl.edu.agh.airsystem.model.api.authorization.RegisterUserRequest;
+import pl.edu.agh.airsystem.model.api.response.Response;
 import pl.edu.agh.airsystem.service.AuthorizationService;
 
 @RestController
@@ -21,25 +22,25 @@ public class AuthorizationController {
     private final AuthorizationService authorizationService;
 
     @PostMapping("/login")
-    public ResponseEntity<DataResponse> login(
+    public ResponseEntity<? extends Response> login(
             @RequestBody LoginRequest authenticationRequest) {
         return authorizationService.login(authenticationRequest);
     }
 
     @PostMapping("/refresh-token")
-    public ResponseEntity<DataResponse> refreshToken(
+    public ResponseEntity<? extends Response> refreshToken(
             @RequestBody RefreshTokenRequest authenticationRequest) {
         return authorizationService.refreshToken(authenticationRequest);
     }
 
     @PostMapping("/register-user")
-    public ResponseEntity<DataResponse> registerUser(
+    public ResponseEntity<? extends Response> registerUser(
             @RequestBody RegisterUserRequest registerUserRequest) {
         return authorizationService.registerUser(registerUserRequest);
     }
 
     @PostMapping("/register-station")
-    public ResponseEntity<DataResponse> registerStation(
+    public ResponseEntity<? extends Response> registerStation(
             @RequestBody RegisterStationRequest registerStationRequest) {
         return authorizationService.registerStation(registerStationRequest);
     }
