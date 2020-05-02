@@ -12,6 +12,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.edu.agh.airsystem.exception.*;
 import pl.edu.agh.airsystem.model.api.response.DataResponse;
 import pl.edu.agh.airsystem.model.api.authorization.*;
+import pl.edu.agh.airsystem.model.api.response.Response;
+import pl.edu.agh.airsystem.model.api.response.SuccessResponse;
 import pl.edu.agh.airsystem.model.api.security.JWTToken;
 import pl.edu.agh.airsystem.model.database.Client;
 import pl.edu.agh.airsystem.model.database.Station;
@@ -36,7 +38,7 @@ public class AuthorizationService {
     private final StationClientRepository stationClientRepository;
     private final StationRepository stationRepository;
 
-    public ResponseEntity<DataResponse> login(LoginRequest authenticationRequest) {
+    public ResponseEntity<Response> login(LoginRequest authenticationRequest) {
         authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
 
         final UserClient userClient = userClientRepository.findByUsername(authenticationRequest.getUsername())
@@ -50,7 +52,7 @@ public class AuthorizationService {
                 userClient.getStationRegistrationToken())));
     }
 
-    public ResponseEntity<DataResponse> refreshToken(RefreshTokenRequest authenticationRequest) {
+    public ResponseEntity<Response> refreshToken(RefreshTokenRequest authenticationRequest) {
         String refreshToken = authenticationRequest.getRefreshToken();
 
         Optional<Client> client = clientRepository.findByRefreshToken(refreshToken);
@@ -62,7 +64,7 @@ public class AuthorizationService {
         return ResponseEntity.ok(DataResponse.of(new RefreshTokenResponse(token)));
     }
 
-    public ResponseEntity<DataResponse> registerUser(RegisterUserRequest registerUserRequest) {
+    public ResponseEntity<Response> registerUser(RegisterUserRequest registerUserRequest) {
         UserClient userClient = new UserClient(registerUserRequest.getUsername(),
                 new BCryptPasswordEncoder().encode(registerUserRequest.getPassword()));
 
@@ -71,10 +73,10 @@ public class AuthorizationService {
         }
 
         userClientRepository.save(userClient);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new SuccessResponse());
     }
 
-    public ResponseEntity<DataResponse> registerStation(RegisterStationRequest registerStationRequest) {
+    public ResponseEntity<Response> registerStation(RegisterStationRequest registerStationRequest) {
         Optional<UserClient> userClient = userClientRepository
                 .findByStationRegistrationToken(registerStationRequest.getStationRegistrationToken());
 

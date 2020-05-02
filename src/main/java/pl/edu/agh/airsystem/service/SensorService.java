@@ -10,6 +10,8 @@ import pl.edu.agh.airsystem.exception.NewSensorIdDuplicatedException;
 import pl.edu.agh.airsystem.exception.NotUsersStationException;
 import pl.edu.agh.airsystem.model.api.response.DataResponse;
 import pl.edu.agh.airsystem.model.api.query.MeasurementQuery;
+import pl.edu.agh.airsystem.model.api.response.Response;
+import pl.edu.agh.airsystem.model.api.response.SuccessResponse;
 import pl.edu.agh.airsystem.model.api.sensors.NewSensorRequest;
 import pl.edu.agh.airsystem.model.api.sensors.SensorResponse;
 import pl.edu.agh.airsystem.model.database.Sensor;
@@ -47,7 +49,7 @@ public class SensorService {
         return types.contains(sensor.getType());
     }
 
-    public ResponseEntity<DataResponse> addSensor(Long stationId, NewSensorRequest newSensor) {
+    public ResponseEntity<Response> addSensor(Long stationId, NewSensorRequest newSensor) {
         StationClient loggedStation = authorizationService.checkAuthenticationAndGetStationClient();
 
         Station station = resourceFinder.findStation(stationId);
@@ -75,7 +77,7 @@ public class SensorService {
 
         return ResponseEntity
                 .created(uri)
-                .build();
+                .body(new SuccessResponse());
     }
 
     public ResponseEntity<DataResponse> getSensor(Long stationId, String sensorId, MeasurementQuery measurementQuery) {

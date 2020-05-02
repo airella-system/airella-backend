@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import pl.edu.agh.airsystem.exception.NotUsersStationException;
 import pl.edu.agh.airsystem.model.api.response.DataResponse;
 import pl.edu.agh.airsystem.model.api.measurement.NewMeasurementRequest;
+import pl.edu.agh.airsystem.model.api.response.Response;
+import pl.edu.agh.airsystem.model.api.response.SuccessResponse;
 import pl.edu.agh.airsystem.model.database.Measurement;
 import pl.edu.agh.airsystem.model.database.Sensor;
 import pl.edu.agh.airsystem.model.database.StationClient;
@@ -20,7 +22,7 @@ public class MeasurementService {
     private final AuthorizationService authorizationService;
     private final MeasurementUtilsService measurementUtilsService;
 
-    public ResponseEntity<DataResponse> addMeasurement(
+    public ResponseEntity<Response> addMeasurement(
             Long stationId,
             String sensorId,
             NewMeasurementRequest newMeasurementRequest) {
@@ -39,7 +41,7 @@ public class MeasurementService {
         measurementUtilsService.addNewMeasurement(sensor, measurement);
 
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new SuccessResponse());
     }
 }
 

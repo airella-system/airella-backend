@@ -8,6 +8,8 @@ import pl.edu.agh.airsystem.assembler.StationResponseAssembler;
 import pl.edu.agh.airsystem.exception.NotUsersStationException;
 import pl.edu.agh.airsystem.model.api.response.DataResponse;
 import pl.edu.agh.airsystem.model.api.query.MeasurementQuery;
+import pl.edu.agh.airsystem.model.api.response.Response;
+import pl.edu.agh.airsystem.model.api.response.SuccessResponse;
 import pl.edu.agh.airsystem.model.api.stations.*;
 import pl.edu.agh.airsystem.model.database.Address;
 import pl.edu.agh.airsystem.model.database.Location;
@@ -29,16 +31,16 @@ public class StationService {
     private final StationResponseAssembler stationResponseAssembler;
     private final BriefStationResponseAssembler briefStationResponseAssembler;
 
-    public ResponseEntity<DataResponse> getStations() {
+    public ResponseEntity<Response> getStations() {
         List<BriefStationResponse> response = new ArrayList<>();
         stationRepository.findAll().forEach(station -> response.add(briefStationResponseAssembler.assemble(station)));
         return ResponseEntity.ok().body(DataResponse.of(response));
     }
 
-    public ResponseEntity<DataResponse> getStation(Long stationId, MeasurementQuery measurementQuery) {
+    public ResponseEntity<Response> getStation(Long stationId, MeasurementQuery measurementQuery) {
         Station station = resourceFinder.findStation(stationId);
         StationResponse stationResponse = stationResponseAssembler.assemble(station, measurementQuery);
-        return ResponseEntity.ok().body(DataResponse.of(stationResponse));
+        return ResponseEntity.ok(DataResponse.of(stationResponse));
     }
 
     public void ensureSelectedStationAuthorization(Station selectedStation) {
@@ -48,7 +50,7 @@ public class StationService {
         }
     }
 
-    public ResponseEntity<DataResponse> setStationName(
+    public ResponseEntity<Response> setStationName(
             Long stationId,
             NameChangeRequest nameChangeRequest) {
         Station station = resourceFinder.findStation(stationId);
@@ -57,10 +59,10 @@ public class StationService {
         station.setName(nameChangeRequest.getName());
         stationRepository.save(station);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new SuccessResponse());
     }
 
-    public ResponseEntity<DataResponse> setStationAddress(
+    public ResponseEntity<Response> setStationAddress(
             Long stationId,
             AddressChangeRequest addressChangeRequest) {
         Station station = resourceFinder.findStation(stationId);
@@ -77,10 +79,10 @@ public class StationService {
         station.setAddress(address);
         stationRepository.save(station);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new SuccessResponse());
     }
 
-    public ResponseEntity<DataResponse> setStationLocation(
+    public ResponseEntity<Response> setStationLocation(
             Long stationId,
             LocationChangeRequest locationChangeRequest) {
         Station station = resourceFinder.findStation(stationId);
@@ -93,7 +95,7 @@ public class StationService {
         station.setLocation(location);
         stationRepository.save(station);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new SuccessResponse());
     }
 }
 

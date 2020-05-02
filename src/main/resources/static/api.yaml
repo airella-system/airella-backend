@@ -98,6 +98,13 @@ paths:
         '200':
           description: |-
             User created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
         '400':
           description: |-
             This username is already taken
@@ -261,6 +268,14 @@ paths:
         '200':
           description: |-
             Updates station name.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+
   /stations/{stationId}/address:
     put:
       parameters:
@@ -282,6 +297,13 @@ paths:
         '200':
           description: |-
             Updates station address.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
   /stations/{stationId}/location:
     put:
       parameters:
@@ -303,6 +325,13 @@ paths:
         '200':
           description: |-
             Updates station location.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
   /stations/{stationId}/sensors:
     post:
       parameters:
@@ -329,6 +358,13 @@ paths:
         '201':
           description: |-
             Adds new sensor. Sensor URI is returned in Location header.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
   /stations/{stationId}/sensors/{sensorId}/measurements:
     post:
       parameters:
@@ -360,7 +396,13 @@ paths:
         '200':
           description: |-
             Added new measurement with current date.
-            Adds new sensor. Sensor URI is returned in Location header.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
   /search/map:
     get:
       parameters:
