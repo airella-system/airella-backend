@@ -12,7 +12,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.edu.agh.airsystem.exception.*;
 import pl.edu.agh.airsystem.model.api.response.DataResponse;
 import pl.edu.agh.airsystem.model.api.authorization.*;
-import pl.edu.agh.airsystem.model.api.response.ErrorResponse;
 import pl.edu.agh.airsystem.model.api.response.Response;
 import pl.edu.agh.airsystem.model.api.response.SuccessResponse;
 import pl.edu.agh.airsystem.model.api.security.JWTToken;
@@ -41,7 +40,7 @@ public class AuthorizationService {
         authenticate(authenticationRequest.getEmail(), authenticationRequest.getPassword());
 
         final UserClient userClient = userClientRepository.findByEmail(authenticationRequest.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException(authenticationRequest.getEmail()));
+                .orElseThrow(() -> new EmailNotFoundException(authenticationRequest.getEmail()));
 
         final JWTToken accessToken = jwtTokenUtil.generateAccessToken(userClient);
 
