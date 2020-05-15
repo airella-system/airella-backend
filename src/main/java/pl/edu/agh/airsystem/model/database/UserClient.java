@@ -18,7 +18,7 @@ import java.util.UUID;
 @Entity
 public class UserClient extends Client {
     @Column(unique = true)
-    private String username;
+    private String email;
     private String passwordHash;
 
     private String stationRegistrationToken = UUID.randomUUID().toString();
@@ -26,8 +26,8 @@ public class UserClient extends Client {
     @OneToMany(mappedBy = "owner", cascade = CascadeType.REMOVE)
     private Set<Station> stations = new HashSet<>();
 
-    public UserClient(String username, String passwordHash) {
-        this.username = username;
+    public UserClient(String email, String passwordHash) {
+        this.email = email;
         this.passwordHash = passwordHash;
 
         addRole(Role.ROLE_USER);

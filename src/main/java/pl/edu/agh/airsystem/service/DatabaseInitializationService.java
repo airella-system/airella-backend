@@ -20,8 +20,8 @@ public class DatabaseInitializationService {
     @PostConstruct
     private void postConstruct() {
         //create default user if not exists
-        if (userClientRepository.findByUsername("admin").isEmpty()) {
-            UserClient admin = new UserClient("admin",
+        if (userClientRepository.findByEmail("admin@gmail.com").isEmpty()) {
+            UserClient admin = new UserClient("admin@gmail.com",
                     new BCryptPasswordEncoder().encode("admin"));
             userClientRepository.save(admin);
         }
