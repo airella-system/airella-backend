@@ -10,6 +10,7 @@ import pl.edu.agh.airsystem.repository.UserClientRepository;
 
 import javax.annotation.PostConstruct;
 import javax.mail.*;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
@@ -18,11 +19,11 @@ import java.util.Properties;
 @AllArgsConstructor
 public class EmailSenderService {
 
-    static final String username = System.getenv("EMAIL_LOGIN");
-    static final String password = System.getenv("EMAIL_PASSWORD");
+    final String username = System.getenv("EMAIL_LOGIN");
+    final String password = System.getenv("EMAIL_PASSWORD");
+    final String domain = System.getenv("DOMAIN");
 
-    public void sendActivationString(String email, String activationString) {
-
+    public void sendActivationString(String email, String activateString) throws MessagingException {
         Properties prop = new Properties();
         prop.put("mail.smtp.host", "smtp.gmail.com");
         prop.put("mail.smtp.port", "587");
@@ -36,24 +37,19 @@ public class EmailSenderService {
                     }
                 });
 
-        try {
+        String messageContent = String.format("Hello! \r\n\r\nHere is your activation link: %s",
+                domain + "/api/auth/activate-user?activateString=" + activateString);
 
-            String messageContent = String.format("Hello! \r\n\r\nHere is your activation text: %s",
-                    activationString);
+        Message message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(username));
+        message.setRecipients(
+                Message.RecipientType.TO,
+                InternetAddress.parse(email)
+        );
+        message.setSubject("Airella activation.");
+        message.setContent(messageContent, "text/plain; charset=UTF-8");
 
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("gradebook.agh@gmail.com"));
-            message.setRecipients(
-                    Message.RecipientType.TO,
-                    InternetAddress.parse(email)
-            );
-            message.setSubject("Gradebook password.");
-            message.setContent(messageContent, "text/plain; charset=UTF-8");
-
-            Transport.send(message);
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
-
+        Transport.send(message);
     }
+
 }

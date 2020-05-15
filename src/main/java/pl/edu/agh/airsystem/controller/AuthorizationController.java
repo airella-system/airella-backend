@@ -3,10 +3,7 @@ package pl.edu.agh.airsystem.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.edu.agh.airsystem.model.api.authorization.*;
 import pl.edu.agh.airsystem.model.api.response.DataResponse;
 import pl.edu.agh.airsystem.model.api.response.Response;
@@ -36,10 +33,10 @@ public class AuthorizationController {
         return authorizationService.registerUser(registerUserRequest);
     }
 
-    @PostMapping("/activate-user")
+    @GetMapping("/activate-user")
     public ResponseEntity<? extends Response> activateUser(
-            @RequestBody ActivateUserRequest activateUserRequest) {
-        return authorizationService.activateUser(activateUserRequest);
+            @RequestParam String activateString) {
+        return authorizationService.activateUser(activateString);
     }
 
     @PostMapping("/register-station")

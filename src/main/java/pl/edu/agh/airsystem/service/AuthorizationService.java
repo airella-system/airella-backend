@@ -12,6 +12,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.edu.agh.airsystem.exception.*;
 import pl.edu.agh.airsystem.model.api.response.DataResponse;
 import pl.edu.agh.airsystem.model.api.authorization.*;
+import pl.edu.agh.airsystem.model.api.response.ErrorResponse;
 import pl.edu.agh.airsystem.model.api.response.Response;
 import pl.edu.agh.airsystem.model.api.response.SuccessResponse;
 import pl.edu.agh.airsystem.model.api.security.JWTToken;
@@ -19,6 +20,7 @@ import pl.edu.agh.airsystem.model.database.*;
 import pl.edu.agh.airsystem.repository.*;
 import pl.edu.agh.airsystem.security.util.JWTTokenUtil;
 
+import javax.mail.MessagingException;
 import java.net.URI;
 import java.util.Optional;
 import java.util.UUID;
@@ -62,7 +64,8 @@ public class AuthorizationService {
     }
 
     public ResponseEntity<Response> registerUser(RegisterUserRequest registerUserRequest) {
-        if (userClientRepository.findByEmail(registerUserRequest.getEmail()).isPresent()) {
+        if (userClientRepository.findByEmail(registerUserRequest.getEmail()).isPresent() ||
+                userClientStubRepository.findByEmail(registerUserRequest.getEmail()).isPresent()) {
             throw new EmailAlreadyUsedException();
         }
 
@@ -70,14 +73,20 @@ public class AuthorizationService {
                 new BCryptPasswordEncoder().encode(registerUserRequest.getPassword()),
                 UUID.randomUUID().toString());
 
+        try {
+            emailSenderService.sendActivationString(userClientStub.getEmail(), userClientStub.getActivateString());
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            throw new EmailServiceErrorException();
+        }
+
         userClientStubRepository.save(userClientStub);
-        emailSenderService.sendActivationString(userClientStub.getEmail(), userClientStub.getActivateString());
         return ResponseEntity.ok(new SuccessResponse());
     }
 
-    public ResponseEntity<? extends Response> activateUser(ActivateUserRequest activateUserRequest) {
+    public ResponseEntity<? extends Response> activateUser(String activateString) {
         Optional<UserClientStub> userClientStub = userClientStubRepository.findByActivateString(
-                activateUserRequest.getActivateString());
+                activateString);
         if (userClientStub.isEmpty()) {
             throw new WrongActivateStringException();
         }
@@ -86,6 +95,7 @@ public class AuthorizationService {
                 userClientStub.get().getPasswordHash());
 
         userClientRepository.save(userClient);
+        userClientStubRepository.delete(userClientStub.get());
         return ResponseEntity.ok(new SuccessResponse());
     }
 
