@@ -15,7 +15,7 @@ paths:
             schema:
               type: object
               properties:
-                username:
+                email:
                   type: string
                 password:
                   type: string
@@ -90,14 +90,14 @@ paths:
             schema:
               type: object
               properties:
-                username:
+                email:
                   type: string
                 password:
                   type: string
       responses:
         '200':
           description: |-
-            User created
+            User created (but not activated)
           content:
             application/json:
               schema:
@@ -107,7 +107,32 @@ paths:
                     type: boolean
         '400':
           description: |-
-            This username is already taken
+            This email is already used
+  /auth/activate-user:
+    get:
+      parameters:
+        - in: query
+          name: activateString
+          required: true
+          schema:
+            type: string
+          description: Activation text send to email
+      operationId: activate-user
+      summary: Activate new user
+      responses:
+        '200':
+          description: |-
+            User activated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+        '400':
+          description: |-
+            This email is already used
   /auth/register-station:
     post:
       operationId: register-station
