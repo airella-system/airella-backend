@@ -15,18 +15,13 @@ import pl.edu.agh.airsystem.model.api.authorization.*;
 import pl.edu.agh.airsystem.model.api.response.Response;
 import pl.edu.agh.airsystem.model.api.response.SuccessResponse;
 import pl.edu.agh.airsystem.model.api.security.JWTToken;
-import pl.edu.agh.airsystem.model.database.Client;
-import pl.edu.agh.airsystem.model.database.Station;
-import pl.edu.agh.airsystem.model.database.StationClient;
-import pl.edu.agh.airsystem.model.database.UserClient;
-import pl.edu.agh.airsystem.repository.ClientRepository;
-import pl.edu.agh.airsystem.repository.StationClientRepository;
-import pl.edu.agh.airsystem.repository.StationRepository;
-import pl.edu.agh.airsystem.repository.UserClientRepository;
+import pl.edu.agh.airsystem.model.database.*;
+import pl.edu.agh.airsystem.repository.*;
 import pl.edu.agh.airsystem.security.util.JWTTokenUtil;
 
 import java.net.URI;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -35,14 +30,16 @@ public class AuthorizationService {
     private final JWTTokenUtil jwtTokenUtil;
     private final ClientRepository clientRepository;
     private final UserClientRepository userClientRepository;
+    private final UserClientStubRepository userClientStubRepository;
     private final StationClientRepository stationClientRepository;
     private final StationRepository stationRepository;
+    private final EmailSenderService emailSenderService;
 
     public ResponseEntity<Response> login(LoginRequest authenticationRequest) {
-        authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
+        authenticate(authenticationRequest.getEmail(), authenticationRequest.getPassword());
 
-        final UserClient userClient = userClientRepository.findByUsername(authenticationRequest.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException(authenticationRequest.getUsername()));
+        final UserClient userClient = userClientRepository.findByEmail(authenticationRequest.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException(authenticationRequest.getEmail()));
 
         final JWTToken accessToken = jwtTokenUtil.generateAccessToken(userClient);
 
@@ -65,12 +62,28 @@ public class AuthorizationService {
     }
 
     public ResponseEntity<Response> registerUser(RegisterUserRequest registerUserRequest) {
-        UserClient userClient = new UserClient(registerUserRequest.getUsername(),
-                new BCryptPasswordEncoder().encode(registerUserRequest.getPassword()));
-
-        if (userClientRepository.findByUsername(registerUserRequest.getUsername()).isPresent()) {
-            throw new UsernameAlreadyTakenException();
+        if (userClientRepository.findByEmail(registerUserRequest.getEmail()).isPresent()) {
+            throw new EmailAlreadyUsedException();
         }
+
+        UserClientStub userClientStub = new UserClientStub(registerUserRequest.getEmail(),
+                new BCryptPasswordEncoder().encode(registerUserRequest.getPassword()),
+                UUID.randomUUID().toString());
+
+        userClientStubRepository.save(userClientStub);
+        emailSenderService.sendActivationString(userClientStub.getEmail(), userClientStub.getActivateString());
+        return ResponseEntity.ok(new SuccessResponse());
+    }
+
+    public ResponseEntity<? extends Response> activateUser(ActivateUserRequest activateUserRequest) {
+        Optional<UserClientStub> userClientStub = userClientStubRepository.findByActivateString(
+                activateUserRequest.getActivateString());
+        if (userClientStub.isEmpty()) {
+            throw new WrongActivateStringException();
+        }
+
+        UserClient userClient = new UserClient(userClientStub.get().getEmail(),
+                userClientStub.get().getPasswordHash());
 
         userClientRepository.save(userClient);
         return ResponseEntity.ok(new SuccessResponse());
@@ -124,6 +137,7 @@ public class AuthorizationService {
         }
         throw new UserClientAuthenticationRequiredException();
     }
+
 
 }
 

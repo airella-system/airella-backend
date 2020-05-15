@@ -7,11 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pl.edu.agh.airsystem.model.api.authorization.*;
 import pl.edu.agh.airsystem.model.api.response.DataResponse;
-import pl.edu.agh.airsystem.model.api.authorization.LoginRequest;
-import pl.edu.agh.airsystem.model.api.authorization.RefreshTokenRequest;
-import pl.edu.agh.airsystem.model.api.authorization.RegisterStationRequest;
-import pl.edu.agh.airsystem.model.api.authorization.RegisterUserRequest;
 import pl.edu.agh.airsystem.model.api.response.Response;
 import pl.edu.agh.airsystem.service.AuthorizationService;
 
@@ -37,6 +34,12 @@ public class AuthorizationController {
     public ResponseEntity<? extends Response> registerUser(
             @RequestBody RegisterUserRequest registerUserRequest) {
         return authorizationService.registerUser(registerUserRequest);
+    }
+
+    @PostMapping("/activate-user")
+    public ResponseEntity<? extends Response> activateUser(
+            @RequestBody ActivateUserRequest activateUserRequest) {
+        return authorizationService.activateUser(activateUserRequest);
     }
 
     @PostMapping("/register-station")
