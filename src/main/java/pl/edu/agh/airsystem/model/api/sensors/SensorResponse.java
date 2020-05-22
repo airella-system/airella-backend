@@ -8,8 +8,8 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class SensorResponse {
-    private String id;
-    private String type;
-    private List<? extends MeasurementResponse> values;
-    private Double status;
+    private final String id;
+    private final String type;
+    private final List<? extends MeasurementResponse> values;
+    private final Double status;
 }
