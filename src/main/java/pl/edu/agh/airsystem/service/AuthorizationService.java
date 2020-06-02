@@ -121,7 +121,7 @@ public class AuthorizationService {
         return ResponseEntity
                 .created(uri)
                 .body(DataResponse.of(
-                        new RegisterStationResponse(stationClient.getRefreshToken())));
+                        new RegisterStationResponse(station.getId(), stationClient.getRefreshToken())));
     }
 
     private void authenticate(String username, String password) {

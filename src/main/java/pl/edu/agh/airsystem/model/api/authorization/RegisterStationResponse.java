@@ -10,5 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RegisterStationResponse {
+    private long id;
     private String refreshToken;
 }

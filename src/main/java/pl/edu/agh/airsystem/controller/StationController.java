@@ -32,21 +32,21 @@ public class StationController {
                 measurementQueryConverter.convert(measurementQueryRequest));
     }
 
-    @PutMapping("{stationId}/name")
+    @PostMapping("{stationId}/name")
     public ResponseEntity<? extends Response> setName(
             @PathVariable(value = "stationId") Long stationId,
             @RequestBody NameChangeRequest nameChangeRequest) {
         return stationService.setStationName(stationId, nameChangeRequest);
     }
 
-    @PutMapping("{stationId}/address")
+    @PostMapping("{stationId}/address")
     public ResponseEntity<? extends Response> setAddress(
             @PathVariable(value = "stationId") Long stationId,
             @RequestBody AddressChangeRequest addressChangeRequest) {
         return stationService.setStationAddress(stationId, addressChangeRequest);
     }
 
-    @PutMapping("{stationId}/location")
+    @PostMapping("{stationId}/location")
     public ResponseEntity<? extends Response> setLocation(
             @PathVariable(value = "stationId") Long stationId,
             @RequestBody LocationChangeRequest locationChangeRequest) {

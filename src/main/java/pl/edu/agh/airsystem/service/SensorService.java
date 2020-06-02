@@ -13,6 +13,7 @@ import pl.edu.agh.airsystem.model.api.query.MeasurementQuery;
 import pl.edu.agh.airsystem.model.api.response.Response;
 import pl.edu.agh.airsystem.model.api.response.SuccessResponse;
 import pl.edu.agh.airsystem.model.api.sensors.NewSensorRequest;
+import pl.edu.agh.airsystem.model.api.sensors.NewSensorResponse;
 import pl.edu.agh.airsystem.model.api.sensors.SensorResponse;
 import pl.edu.agh.airsystem.model.database.Sensor;
 import pl.edu.agh.airsystem.model.database.SensorType;
@@ -77,7 +78,7 @@ public class SensorService {
 
         return ResponseEntity
                 .created(uri)
-                .body(new SuccessResponse());
+                .body(DataResponse.of(new NewSensorResponse(sensor.getId())));
     }
 
     public ResponseEntity<DataResponse> getSensor(Long stationId, String sensorId, MeasurementQuery measurementQuery) {

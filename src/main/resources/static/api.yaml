@@ -159,6 +159,9 @@ paths:
                   data:
                     type: object
                     properties:
+                      id:
+                        type: integer
+                        description: "Id of newly registered station"
                       refreshToken:
                         type: string
                         description: "Token of newly registered station"
@@ -273,7 +276,7 @@ paths:
                   data:
                     $ref: '#/components/schemas/virtual-station'
   /stations/{stationId}/name:
-    put:
+    post:
       parameters:
         - in: path
           name: stationId
@@ -302,7 +305,7 @@ paths:
                     type: boolean
 
   /stations/{stationId}/address:
-    put:
+    post:
       parameters:
         - in: path
           name: stationId
@@ -330,7 +333,7 @@ paths:
                   success:
                     type: boolean
   /stations/{stationId}/location:
-    put:
+    post:
       parameters:
         - in: path
           name: stationId
@@ -388,6 +391,8 @@ paths:
               schema:
                 type: object
                 properties:
+                  id:
+                    type: integer
                   success:
                     type: boolean
   /stations/{stationId}/sensors/{sensorId}/measurements:
