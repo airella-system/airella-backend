@@ -121,7 +121,7 @@ public class AuthorizationService {
         return ResponseEntity
                 .created(uri)
                 .body(DataResponse.of(
-                        new RegisterStationResponse(station.getId(), stationClient.getRefreshToken())));
+                        new RegisterStationResponse(String.valueOf(station.getId()), stationClient.getRefreshToken())));
     }
 
     private void authenticate(String username, String password) {
@@ -135,7 +135,6 @@ public class AuthorizationService {
             return (StationClient) principal;
         }
         throw new StationClientAuthenticationRequiredException();
-
     }
 
     public UserClient checkAuthenticationAndGetUserClient() {
@@ -146,7 +145,6 @@ public class AuthorizationService {
         }
         throw new UserClientAuthenticationRequiredException();
     }
-
 
 }
 

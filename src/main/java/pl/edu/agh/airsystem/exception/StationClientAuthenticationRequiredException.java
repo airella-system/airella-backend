@@ -1,11 +1,11 @@
 package pl.edu.agh.airsystem.exception;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 public class StationClientAuthenticationRequiredException extends BaseErrorException {
     public StationClientAuthenticationRequiredException() {
-        super(BAD_REQUEST,
+        super(FORBIDDEN,
                 "STATION_CLIENT_REQUIRED",
-                "Only station can user this API.");
+                "Only station can use this API.");
     }
 }
