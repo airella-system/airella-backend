@@ -23,12 +23,16 @@ public class Generators {
                             new LinearGeneratorMeasurementDefinition(0, 100,
                                     1, 2, Duration.ofMinutes(10), Duration.ofMinutes(60))),
                     new GeneratorSensorDefinition(
-                            SensorType.PM25.getCode(), SensorType.PM25,
+                            SensorType.PM2_5.getCode(), SensorType.PM2_5,
                             new LinearGeneratorMeasurementDefinition(0, 100,
                                     1, 2, Duration.ofMinutes(10), Duration.ofMinutes(60))),
                     new GeneratorSensorDefinition(
                             SensorType.TEMP.getCode(), SensorType.TEMP,
                             new LinearGeneratorMeasurementDefinition(-10, 30,
+                                    1, 2, Duration.ofMinutes(10), Duration.ofMinutes(60))),
+                    new GeneratorSensorDefinition(
+                            SensorType.HUMIDITY.getCode(), SensorType.HUMIDITY,
+                            new LinearGeneratorMeasurementDefinition(0, 100,
                                     1, 2, Duration.ofMinutes(10), Duration.ofMinutes(60))));
 
     public static List<GeneratorStationDefinition> generatorStationDefinitions = List.of();

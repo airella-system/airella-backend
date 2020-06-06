@@ -10,7 +10,7 @@ import pl.edu.agh.airsystem.model.database.Location;
 @Setter
 @AllArgsConstructor
 public class BriefStationResponse {
-    private final long id;
+    private final String id;
     private final String name;
     private final Address address;
     private final Location location;

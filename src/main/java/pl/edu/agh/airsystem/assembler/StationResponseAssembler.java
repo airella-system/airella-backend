@@ -24,7 +24,7 @@ public class StationResponseAssembler {
                 .collect(toList());
 
         return new StationResponse(
-                station.getId(),
+                String.valueOf(station.getId()),
                 station.getName(),
                 station.getAddress(),
                 station.getLocation(),

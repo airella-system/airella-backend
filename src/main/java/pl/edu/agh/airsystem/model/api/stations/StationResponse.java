@@ -13,7 +13,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class StationResponse {
-    private final long id;
+    private final String id;
     private final String name;
     private final Address address;
     private final Location location;

@@ -14,7 +14,7 @@ public class BriefStationResponseAssembler {
 
     public BriefStationResponse assemble(Station station) {
         return new BriefStationResponse(
-                station.getId(),
+                String.valueOf(station.getId()),
                 station.getName(),
                 station.getAddress(),
                 station.getLocation(),

@@ -29,7 +29,7 @@ public class SensorInterpolationService {
         List<SensorType> sensorTypes = List.of(
                 SensorType.PM1,
                 SensorType.PM10,
-                SensorType.PM25,
+                SensorType.PM2_5,
                 SensorType.TEMP,
                 SensorType.HUMIDITY);
 

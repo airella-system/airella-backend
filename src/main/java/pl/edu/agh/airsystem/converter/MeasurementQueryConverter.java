@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
-import static pl.edu.agh.airsystem.model.api.query.MeasurementQueryStrategy.AVG;
+import static pl.edu.agh.airsystem.model.api.query.MeasurementQueryStrategy.LATEST;
 
 @Component
 public class MeasurementQueryConverter implements Converter<MeasurementQueryRequest, MeasurementQuery> {
@@ -23,7 +23,7 @@ public class MeasurementQueryConverter implements Converter<MeasurementQueryRequ
         Timespan timespan = null;
         Duration interval = null;
         List<SensorType> types = null;
-        MeasurementQueryStrategy strategy = AVG;
+        MeasurementQueryStrategy strategy = LATEST;
         boolean interpolate = true;
 
         if (measurementQueryRequest.getTimespan() != null) {
