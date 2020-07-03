@@ -32,6 +32,12 @@ public class StationController {
                 measurementQueryConverter.convert(measurementQueryRequest));
     }
 
+    @DeleteMapping("{stationId}")
+    public ResponseEntity<? extends Response> deleteStation(
+            @PathVariable(value = "stationId") Long stationId) {
+        return stationService.deleteStation(stationId);
+    }
+
     @PutMapping("{stationId}/name")
     public ResponseEntity<? extends Response> setName(
             @PathVariable(value = "stationId") Long stationId,

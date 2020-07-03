@@ -243,6 +243,28 @@ paths:
                     type: boolean
                   data:
                     $ref: '#/components/schemas/station'
+    delete:
+      parameters:
+        - in: path
+          name: stationId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: Station id
+      operationId: delete-station
+      summary: Deletes station
+      responses:
+        '200':
+          description: |-
+            Deletes station, including sensor ones.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
   /map/at:
     get:
       parameters:

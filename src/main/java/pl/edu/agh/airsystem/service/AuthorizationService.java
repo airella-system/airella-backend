@@ -146,5 +146,14 @@ public class AuthorizationService {
         throw new UserClientAuthenticationRequiredException();
     }
 
+    public Client checkAuthenticationAndGetClient() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = auth.getPrincipal();
+        if (principal instanceof Client) {
+            return (Client) principal;
+        }
+        throw new UserClientAuthenticationRequiredException();
+    }
+
 }
 

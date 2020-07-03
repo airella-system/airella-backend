@@ -11,10 +11,7 @@ import pl.edu.agh.airsystem.model.api.query.MeasurementQuery;
 import pl.edu.agh.airsystem.model.api.response.Response;
 import pl.edu.agh.airsystem.model.api.response.SuccessResponse;
 import pl.edu.agh.airsystem.model.api.stations.*;
-import pl.edu.agh.airsystem.model.database.Address;
-import pl.edu.agh.airsystem.model.database.Location;
-import pl.edu.agh.airsystem.model.database.Station;
-import pl.edu.agh.airsystem.model.database.StationClient;
+import pl.edu.agh.airsystem.model.database.*;
 import pl.edu.agh.airsystem.repository.AddressRepository;
 import pl.edu.agh.airsystem.repository.StationRepository;
 
@@ -41,6 +38,18 @@ public class StationService {
         Station station = resourceFinder.findStation(stationId);
         StationResponse stationResponse = stationResponseAssembler.assemble(station, measurementQuery);
         return ResponseEntity.ok(DataResponse.of(stationResponse));
+    }
+
+    public ResponseEntity<Response> deleteStation(Long stationId) {
+        Station station = resourceFinder.findStation(stationId);
+        Client client = authorizationService.checkAuthenticationAndGetClient();
+
+        if (client instanceof UserClient && client.getId() != station.getOwner().getId()
+                || client instanceof StationClient && client.getId() != station.getStationClient().getId()) {
+            throw new NotUsersStationException();
+        }
+        stationRepository.delete(station);
+        return ResponseEntity.ok(DataResponse.of(new SuccessResponse()));
     }
 
     public void ensureSelectedStationAuthorization(Station selectedStation) {
