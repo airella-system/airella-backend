@@ -8,7 +8,7 @@ import pl.edu.agh.airsystem.model.database.SensorType;
 import pl.edu.agh.airsystem.util.Timespan;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -27,8 +27,8 @@ public class MeasurementQueryConverter implements Converter<MeasurementQueryRequ
         boolean interpolate = true;
 
         if (measurementQueryRequest.getTimespan() != null) {
-            LocalDateTime startDate = LocalDateTime.parse(measurementQueryRequest.getTimespan().split("/")[0]);
-            LocalDateTime endDate = LocalDateTime.parse(measurementQueryRequest.getTimespan().split("/")[1]);
+            Instant startDate = Instant.parse(measurementQueryRequest.getTimespan().split("/")[0]);
+            Instant endDate = Instant.parse(measurementQueryRequest.getTimespan().split("/")[1]);
             timespan = new Timespan(startDate, endDate);
         }
 

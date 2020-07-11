@@ -206,15 +206,15 @@ paths:
           schema:
             type: string
             format: date-time
-          description: Timespan of queried measurements in ISO 8601 format
-          example: 2020-04-02T21:37:00/2020-04-05T22:48:00
+          description: Timespan of queried measurements in ISO 8601 format in UTC (must be 'Z' at the end)
+          example: 2020-04-02T21:37:00/2020-04-05T22:48:00Z
         - in: query
           name: interval
           required: false
           schema:
             type: string
             format: date-time
-          description: Interval bettwen queried measurements in ISO 8601 format
+          description: Interval between queried measurements in ISO 8601 format
           example: PT1H
         - in: query
           name: sensors

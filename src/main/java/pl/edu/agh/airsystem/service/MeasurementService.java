@@ -13,7 +13,7 @@ import pl.edu.agh.airsystem.model.database.Sensor;
 import pl.edu.agh.airsystem.model.database.StationClient;
 import pl.edu.agh.airsystem.util.MeasurementUtilsService;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Service
 @AllArgsConstructor
@@ -36,7 +36,7 @@ public class MeasurementService {
 
         Measurement measurement = new Measurement(
                 sensor,
-                LocalDateTime.now(),
+                Instant.now(),
                 newMeasurementRequest.getValue());
         measurementUtilsService.addNewMeasurement(sensor, measurement);
 

@@ -6,7 +6,7 @@ import pl.edu.agh.airsystem.model.api.sensors.MeasurementResponse;
 import pl.edu.agh.airsystem.model.api.sensors.SingleValueMeasurementResponse;
 import pl.edu.agh.airsystem.model.database.Sensor;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,8 +17,8 @@ public class MultipleQueryInvoker implements QueryInvoker {
 
     @Override
     public List<? extends MeasurementResponse> apply(Sensor sensor, MeasurementQuery measurementQuery) {
-        LocalDateTime startDate = measurementQuery.getTimespan().getStart();
-        LocalDateTime endDate = measurementQuery.getTimespan().getEnd();
+        Instant startDate = measurementQuery.getTimespan().getStart();
+        Instant endDate = measurementQuery.getTimespan().getEnd();
 
         List<MeasurementResponse> measurementResponses = new ArrayList<>();
         sensor.getMeasurements().stream()

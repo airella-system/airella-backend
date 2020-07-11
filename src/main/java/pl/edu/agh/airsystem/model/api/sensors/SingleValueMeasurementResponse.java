@@ -6,14 +6,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.edu.agh.airsystem.model.database.Measurement;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class SingleValueMeasurementResponse extends MeasurementResponse {
-    private LocalDateTime timestamp;
+    private Instant timestamp;
     private double value;
 
     public SingleValueMeasurementResponse(Measurement measurement) {

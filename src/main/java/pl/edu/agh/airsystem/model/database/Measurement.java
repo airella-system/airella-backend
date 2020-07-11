@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -24,10 +24,10 @@ public class Measurement {
     private Sensor sensor;
 
     @Column(columnDefinition = "TIMESTAMP")
-    private LocalDateTime timestamp;
+    private Instant timestamp;
     private double value;
 
-    public Measurement(Sensor sensor, LocalDateTime timestamp, double value) {
+    public Measurement(Sensor sensor, Instant timestamp, double value) {
         this.sensor = sensor;
         this.timestamp = timestamp;
         this.value = value;
