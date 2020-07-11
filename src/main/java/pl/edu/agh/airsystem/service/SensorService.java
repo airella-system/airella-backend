@@ -45,7 +45,7 @@ public class SensorService {
         return ResponseEntity.ok().body(DataResponse.of(sensors));
     }
 
-    private boolean filterSensorType(Sensor sensor, List<SensorType> types) {
+    public static boolean filterSensorType(Sensor sensor, List<SensorType> types) {
         if (types == null) return true;
         return types.contains(sensor.getType());
     }

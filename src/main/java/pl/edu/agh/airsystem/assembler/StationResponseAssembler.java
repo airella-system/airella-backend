@@ -6,6 +6,7 @@ import pl.edu.agh.airsystem.model.api.query.MeasurementQuery;
 import pl.edu.agh.airsystem.model.api.sensors.SensorResponse;
 import pl.edu.agh.airsystem.model.api.stations.StationResponse;
 import pl.edu.agh.airsystem.model.database.Station;
+import pl.edu.agh.airsystem.service.SensorService;
 import pl.edu.agh.airsystem.util.AirStatusService;
 
 import java.util.List;
@@ -20,7 +21,8 @@ public class StationResponseAssembler {
 
     public StationResponse assemble(Station station, MeasurementQuery measurementQuery) {
         List<SensorResponse> sensorResponses = station.getSensors().stream()
-                .map(e -> sensorResponseAssembler.assemble(e, measurementQuery))
+                .filter(sensor -> SensorService.filterSensorType(sensor, measurementQuery.getTypes()))
+                .map(sensor -> sensorResponseAssembler.assemble(sensor, measurementQuery))
                 .collect(toList());
 
         return new StationResponse(
