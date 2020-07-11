@@ -20,6 +20,8 @@ public class Station {
     private long id;
     private String name;
 
+    private String macAddress;
+
     @Embedded
     private Location location = new Location();
 

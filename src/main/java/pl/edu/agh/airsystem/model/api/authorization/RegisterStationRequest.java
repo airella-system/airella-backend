@@ -11,4 +11,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class RegisterStationRequest {
     private String stationRegistrationToken;
+    private String macAddress;
 }
