@@ -17,23 +17,27 @@ public class Generators {
             List.of(new GeneratorSensorDefinition(
                             SensorType.PM1.getCode(), SensorType.PM1,
                             new LinearGeneratorMeasurementDefinition(0, 100,
-                                    1, 2, Duration.ofMinutes(10), Duration.ofMinutes(60))),
+                                    5, 10, Duration.ofMinutes(10), Duration.ofMinutes(60))),
                     new GeneratorSensorDefinition(
                             SensorType.PM10.getCode(), SensorType.PM10,
                             new LinearGeneratorMeasurementDefinition(0, 100,
-                                    1, 2, Duration.ofMinutes(10), Duration.ofMinutes(60))),
+                                    5, 10, Duration.ofMinutes(10), Duration.ofMinutes(60))),
                     new GeneratorSensorDefinition(
                             SensorType.PM2_5.getCode(), SensorType.PM2_5,
                             new LinearGeneratorMeasurementDefinition(0, 100,
-                                    1, 2, Duration.ofMinutes(10), Duration.ofMinutes(60))),
+                                    5, 10, Duration.ofMinutes(10), Duration.ofMinutes(60))),
                     new GeneratorSensorDefinition(
                             SensorType.TEMP.getCode(), SensorType.TEMP,
                             new LinearGeneratorMeasurementDefinition(-10, 30,
-                                    1, 2, Duration.ofMinutes(10), Duration.ofMinutes(60))),
+                                    5, 10, Duration.ofMinutes(10), Duration.ofMinutes(60))),
+                    new GeneratorSensorDefinition(
+                            SensorType.PRESSURE.getCode(), SensorType.PRESSURE,
+                            new LinearGeneratorMeasurementDefinition(950, 1050,
+                                    50, 100, Duration.ofMinutes(10), Duration.ofMinutes(60))),
                     new GeneratorSensorDefinition(
                             SensorType.HUMIDITY.getCode(), SensorType.HUMIDITY,
                             new LinearGeneratorMeasurementDefinition(0, 100,
-                                    1, 2, Duration.ofMinutes(10), Duration.ofMinutes(60))));
+                                    5, 10, Duration.ofMinutes(10), Duration.ofMinutes(60))));
 
     public static List<GeneratorStationDefinition> generatorStationDefinitions = List.of();
 

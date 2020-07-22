@@ -531,7 +531,7 @@ components:
             $ref: '#/components/schemas/address'
           location:
             $ref: '#/components/schemas/location'
-          caqi:
+          aqi:
             type: number
     station:
       type: array
@@ -546,7 +546,7 @@ components:
             $ref: '#/components/schemas/address'
           location:
             $ref: '#/components/schemas/location'
-          caqi:
+          aqi:
             type: number
           sensors:
             type: array
@@ -557,7 +557,7 @@ components:
       items:
         type: object
         properties:
-          caqi:
+          aqi:
             type: number
           sensors:
             type: array

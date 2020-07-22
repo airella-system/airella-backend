@@ -10,6 +10,7 @@ public enum SensorType {
     PM2_5("pm2_5"),
     PM10("pm10"),
     TEMP("temperature"),
+    PRESSURE("pressure"),
     HUMIDITY("humidity");
 
     private final String code;

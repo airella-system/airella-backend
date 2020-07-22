@@ -9,5 +9,5 @@ import java.util.List;
 @AllArgsConstructor
 public class VirtualStationResponse {
     private final List<VirtualSensorResponse> sensors;
-    private Double caqi;
+    private Double aqi;
 }

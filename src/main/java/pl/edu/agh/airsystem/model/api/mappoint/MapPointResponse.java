@@ -11,5 +11,5 @@ import java.util.List;
 @AllArgsConstructor
 public class MapPointResponse {
     private final List<VirtualSensorResponse> virtualSensors;
-    private Double caqi;
+    private Double aqi;
 }
