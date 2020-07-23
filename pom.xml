@@ -11,7 +11,7 @@
     </parent>
     <groupId>pl.edu.agh</groupId>
     <artifactId>airella-backend</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
     <name>airella-backend</name>
     <description>Air quality measurement, data collection, and visualization
         system
