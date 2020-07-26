@@ -32,3 +32,7 @@ build/
 
 ### Swagger Docs ###
 /src/main/resources/public/docs/
+
+### Liquibase generated files ###
+/src/main/resources/liquibase-diffChangeLog.postgresql.sql
+/src/main/resources/liquibase-outputChangeLog.postgresql.sql
