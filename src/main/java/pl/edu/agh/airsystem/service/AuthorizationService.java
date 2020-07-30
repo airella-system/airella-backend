@@ -107,7 +107,6 @@ public class AuthorizationService {
         }
 
         Station station = new Station();
-        station.setMacAddress(registerStationRequest.getMacAddress());
         station.setOwner(userClient.get());
         StationClient stationClient = new StationClient(station);
         station.setStationClient(stationClient);
