@@ -496,6 +496,23 @@ paths:
                     type: boolean
                   data:
                     $ref: '#/components/schemas/station-brief'
+  /user/stations:
+    get:
+      operationId: get-user-stations
+      summary: Lists user stations
+      responses:
+        '200':
+          description: |-
+            Returns user stations. User needs to be logged in.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/station-brief'
 components:
   schemas:
     sensor-brief:
