@@ -16,7 +16,7 @@ public class Generators {
     public static List<GeneratorSensorDefinition> standardSensors =
             List.of(new GeneratorSensorDefinition(
                             SensorType.PM1.getCode(), SensorType.PM1,
-                            new LinearGeneratorMeasurementDefinition(0, 100,
+                            new LinearGeneratorMeasurementDefinition(0, 50,
                                     5, 10, Duration.ofMinutes(10), Duration.ofMinutes(60))),
                     new GeneratorSensorDefinition(
                             SensorType.PM10.getCode(), SensorType.PM10,

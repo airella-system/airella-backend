@@ -106,5 +106,16 @@ public class StationService {
 
         return ResponseEntity.ok(new SuccessResponse());
     }
-}
 
+    public ResponseEntity<? extends Response> getCurrentUserStations() {
+        UserClient userClient = authorizationService.checkAuthenticationAndGetUserClient();
+        return getUserStations(userClient);
+    }
+
+    public ResponseEntity<Response> getUserStations(UserClient userClient) {
+        List<BriefStationResponse> response = new ArrayList<>();
+        stationRepository.findByOwner(userClient).forEach(station -> response.add(briefStationResponseAssembler.assemble(station)));
+        return ResponseEntity.ok().body(DataResponse.of(response));
+    }
+
+}

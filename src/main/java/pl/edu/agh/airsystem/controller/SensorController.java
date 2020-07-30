@@ -41,5 +41,4 @@ public class SensorController {
         return sensorService.addSensor(stationId, newSensor);
     }
 
-
 }
