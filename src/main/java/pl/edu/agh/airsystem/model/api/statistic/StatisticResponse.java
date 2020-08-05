@@ -10,6 +10,6 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class StatisticResponse {
-    private final List<? extends StatisticValueResponse> values;
     private String id;
+    private final List<? extends StatisticValueResponse> values;
 }
