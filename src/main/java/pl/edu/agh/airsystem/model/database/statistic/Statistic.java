@@ -1,20 +1,21 @@
-package pl.edu.agh.airsystem.model.database;
+package pl.edu.agh.airsystem.model.database.statistic;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.edu.agh.airsystem.model.database.Station;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"station_db_id", "id"})})
-public class Sensor {
+public abstract class Statistic {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long dbId;
@@ -25,18 +26,14 @@ public class Sensor {
     @JoinColumn(name = "station_db_id")
     private Station station;
 
-    private SensorType type;
+    private StatisticType statisticType;
 
-    @OneToMany(mappedBy = "sensor", cascade = CascadeType.REMOVE)
-    private Set<Measurement> measurements;
+    private StatisticPrivacyMode statisticPrivacyMode;
 
-    @OneToOne
-    private Measurement latestMeasurement;
-
-    public Sensor(Station station, String id, SensorType sensorType) {
-        this.station = station;
+    public Statistic(String id, StatisticType statisticType, StatisticPrivacyMode statisticPrivacyMode) {
         this.id = id;
-        this.type = sensorType;
+        this.statisticType = statisticType;
+        this.statisticPrivacyMode = statisticPrivacyMode;
     }
 
 }

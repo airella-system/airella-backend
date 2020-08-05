@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.edu.agh.airsystem.model.database.statistic.Statistic;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -17,7 +18,11 @@ import java.util.List;
 public class Station {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private long dbId;
+
+    @Column(unique = true)
+    private String id;
+
     private String name;
 
     private StationVisibility stationVisibility = StationVisibility.PUBLIC;
@@ -36,4 +41,7 @@ public class Station {
 
     @OneToMany(mappedBy = "station", cascade = CascadeType.REMOVE)
     private List<Sensor> sensors = new ArrayList<>();
+
+    @OneToMany(mappedBy = "station", cascade = CascadeType.REMOVE)
+    private List<Statistic> statistics = new ArrayList<>();
 }

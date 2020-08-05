@@ -16,8 +16,8 @@ import static java.util.stream.Collectors.toList;
 @Component
 @AllArgsConstructor
 public class StationResponseAssembler {
-    private SensorResponseAssembler sensorResponseAssembler;
-    private AirStatusService airStatusService;
+    private final SensorResponseAssembler sensorResponseAssembler;
+    private final AirStatusService airStatusService;
 
     public StationResponse assemble(Station station, MeasurementQuery measurementQuery) {
         List<SensorResponse> sensorResponses = station.getSensors().stream()

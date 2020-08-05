@@ -1,6 +1,7 @@
 package pl.edu.agh.airsystem.service;
 
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -10,12 +11,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.edu.agh.airsystem.exception.*;
-import pl.edu.agh.airsystem.model.api.response.DataResponse;
 import pl.edu.agh.airsystem.model.api.authorization.*;
+import pl.edu.agh.airsystem.model.api.response.DataResponse;
 import pl.edu.agh.airsystem.model.api.response.Response;
 import pl.edu.agh.airsystem.model.api.response.SuccessResponse;
 import pl.edu.agh.airsystem.model.api.security.JWTToken;
 import pl.edu.agh.airsystem.model.database.*;
+import pl.edu.agh.airsystem.model.database.statistic.Statistic;
 import pl.edu.agh.airsystem.repository.*;
 import pl.edu.agh.airsystem.security.util.JWTTokenUtil;
 
@@ -35,6 +37,7 @@ public class AuthorizationService {
     private final StationClientRepository stationClientRepository;
     private final StationRepository stationRepository;
     private final EmailSenderService emailSenderService;
+    private final ResourceFinder resourceFinder;
 
     public ResponseEntity<Response> login(LoginRequest authenticationRequest) {
         authenticate(authenticationRequest.getEmail(), authenticationRequest.getPassword());
@@ -98,6 +101,19 @@ public class AuthorizationService {
         return ResponseEntity.ok(new SuccessResponse());
     }
 
+    public static String generateStationId() {
+        return RandomStringUtils.randomAlphanumeric(12);
+    }
+
+    public String generateUniqueStationId() {
+        String id;
+        do {
+            id = generateStationId();
+        } while (stationRepository.findById(id).isPresent());
+
+        return id;
+    }
+
     public ResponseEntity<Response> registerStation(RegisterStationRequest registerStationRequest) {
         Optional<UserClient> userClient = userClientRepository
                 .findByStationRegistrationToken(registerStationRequest.getStationRegistrationToken());
@@ -107,6 +123,7 @@ public class AuthorizationService {
         }
 
         Station station = new Station();
+        station.setId(generateUniqueStationId());
         station.setOwner(userClient.get());
         StationClient stationClient = new StationClient(station);
         station.setStationClient(stationClient);
@@ -155,5 +172,45 @@ public class AuthorizationService {
         throw new UserClientAuthenticationRequiredException();
     }
 
+    public Client getClient() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = auth.getPrincipal();
+        if (principal instanceof Client) {
+            return (Client) principal;
+        }
+        return null;
+    }
+
+    private UserClient getUserClient(Client client) {
+        UserClient userClient;
+        if (client instanceof UserClient) {
+            userClient = ((UserClient) client);
+        } else if (client instanceof StationClient) {
+            userClient = ((StationClient) client).getStation().getOwner();
+        } else {
+            throw new IllegalArgumentException("Unknown client type");
+        }
+        return userClient;
+    }
+
+    public void ensureClientHasStation(Client client, Station station) {
+        UserClient userClient = getUserClient(client);
+
+        if (userClient.getId() != station.getOwner().getId()) {
+            throw new NotUsersStationException();
+        }
+    }
+
+    public boolean checkIfClientHasStatistic(Client client, Statistic statistic) {
+        UserClient userClient = getUserClient(client);
+
+        return userClient.getId() == statistic.getStation().getOwner().getId();
+    }
+
+    public void ensureClientHasStatistic(Client client, Statistic statistic) {
+        if (!checkIfClientHasStatistic(client, statistic)) {
+            throw new NotUsersStationException();
+        }
+    }
 }
 

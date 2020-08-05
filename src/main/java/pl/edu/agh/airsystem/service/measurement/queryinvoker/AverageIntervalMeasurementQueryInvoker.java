@@ -1,4 +1,4 @@
-package pl.edu.agh.airsystem.service.queryinvoker;
+package pl.edu.agh.airsystem.service.measurement.queryinvoker;
 
 import org.springframework.stereotype.Component;
 import pl.edu.agh.airsystem.model.api.query.MeasurementQuery;
@@ -16,7 +16,7 @@ import static pl.edu.agh.airsystem.model.api.query.MeasurementQueryStrategy.AVG;
 import static pl.edu.agh.airsystem.util.Intervals.generateIntervals;
 
 @Component
-public class AverageIntervalQueryInvoker implements QueryInvoker {
+public class AverageIntervalMeasurementQueryInvoker implements MeasurementQueryInvoker {
 
     @Override
     public List<? extends MeasurementResponse> apply(Sensor sensor, MeasurementQuery measurementQuery) {

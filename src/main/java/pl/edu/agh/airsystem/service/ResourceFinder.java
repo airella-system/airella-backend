@@ -4,26 +4,34 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.edu.agh.airsystem.exception.SensorNotFoundException;
 import pl.edu.agh.airsystem.exception.StationNotFoundException;
+import pl.edu.agh.airsystem.exception.StatisticDoesNotExistException;
 import pl.edu.agh.airsystem.model.database.Sensor;
 import pl.edu.agh.airsystem.model.database.Station;
+import pl.edu.agh.airsystem.model.database.statistic.Statistic;
+import pl.edu.agh.airsystem.repository.SensorRepository;
 import pl.edu.agh.airsystem.repository.StationRepository;
+import pl.edu.agh.airsystem.repository.StatisticRepository;
 
 @Service
 @AllArgsConstructor
 public class ResourceFinder {
-    private StationRepository stationRepository;
+    private final StationRepository stationRepository;
+    private final SensorRepository sensorRepository;
+    private final StatisticRepository statisticRepository;
 
-    public Station findStation(long stationId) {
+    public Station findStation(String stationId) {
         return stationRepository.findById(stationId)
                 .orElseThrow(StationNotFoundException::new);
     }
 
-    public Sensor findSensorInStation(long stationId, String sensorId) {
-        Station station = findStation(stationId);
-        return station.getSensors().stream()
-                .filter(e -> e.getId().equals(sensorId))
-                .findFirst()
+    public Sensor findSensorInStation(String stationId, String sensorId) {
+        return sensorRepository.findByStation_IdAndId(stationId, sensorId)
                 .orElseThrow(SensorNotFoundException::new);
+    }
+
+    public Statistic findStationStatistic(String stationId, String statisticId) {
+        return statisticRepository.findByStation_IdAndId(stationId, statisticId)
+                .orElseThrow(StatisticDoesNotExistException::new);
     }
 
 }
