@@ -17,6 +17,7 @@ import pl.edu.agh.airsystem.repository.AddressRepository;
 import pl.edu.agh.airsystem.repository.MeasurementRepository;
 import pl.edu.agh.airsystem.repository.SensorRepository;
 import pl.edu.agh.airsystem.repository.StationRepository;
+import pl.edu.agh.airsystem.service.AuthorizationService;
 import pl.edu.agh.airsystem.util.MeasurementUtilsService;
 import pl.edu.agh.airsystem.util.Pair;
 import pl.edu.agh.airsystem.util.SensorUtilsService;
@@ -107,6 +108,7 @@ public class Generator {
             addressRepository.save(address);
 
             Station station = new Station();
+            station.setId(AuthorizationService.generateStationId());
             station.setName(stationDefinition.getName());
             station.setLocation(stationDefinition.getLocation());
             station.setAddress(stationDefinition.getAddress());

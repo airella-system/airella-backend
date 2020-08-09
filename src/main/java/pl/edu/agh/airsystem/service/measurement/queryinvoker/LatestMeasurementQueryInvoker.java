@@ -1,4 +1,4 @@
-package pl.edu.agh.airsystem.service.queryinvoker;
+package pl.edu.agh.airsystem.service.measurement.queryinvoker;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ import static pl.edu.agh.airsystem.model.api.query.MeasurementQueryStrategy.LATE
 
 @Component
 @AllArgsConstructor
-public class LatestQueryInvoker implements QueryInvoker {
+public class LatestMeasurementQueryInvoker implements MeasurementQueryInvoker {
     private SensorUtilsService sensorUtilsService;
 
     @Override

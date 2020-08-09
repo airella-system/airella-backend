@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.agh.airsystem.converter.MeasurementQueryConverter;
-import pl.edu.agh.airsystem.model.api.response.DataResponse;
 import pl.edu.agh.airsystem.model.api.query.MeasurementQueryRequest;
 import pl.edu.agh.airsystem.model.api.response.Response;
 import pl.edu.agh.airsystem.model.api.stations.AddressChangeRequest;
@@ -26,7 +25,7 @@ public class StationController {
 
     @GetMapping("{stationId}")
     public ResponseEntity<? extends Response> getStation(
-            @PathVariable(value = "stationId") Long stationId,
+            @PathVariable(value = "stationId") String stationId,
             MeasurementQueryRequest measurementQueryRequest) {
         return stationService.getStation(stationId,
                 measurementQueryConverter.convert(measurementQueryRequest));
@@ -34,27 +33,27 @@ public class StationController {
 
     @DeleteMapping("{stationId}")
     public ResponseEntity<? extends Response> deleteStation(
-            @PathVariable(value = "stationId") Long stationId) {
+            @PathVariable(value = "stationId") String stationId) {
         return stationService.deleteStation(stationId);
     }
 
     @PutMapping("{stationId}/name")
     public ResponseEntity<? extends Response> setName(
-            @PathVariable(value = "stationId") Long stationId,
+            @PathVariable(value = "stationId") String stationId,
             @RequestBody NameChangeRequest nameChangeRequest) {
         return stationService.setStationName(stationId, nameChangeRequest);
     }
 
     @PutMapping("{stationId}/address")
     public ResponseEntity<? extends Response> setAddress(
-            @PathVariable(value = "stationId") Long stationId,
+            @PathVariable(value = "stationId") String stationId,
             @RequestBody AddressChangeRequest addressChangeRequest) {
         return stationService.setStationAddress(stationId, addressChangeRequest);
     }
 
     @PutMapping("{stationId}/location")
     public ResponseEntity<? extends Response> setLocation(
-            @PathVariable(value = "stationId") Long stationId,
+            @PathVariable(value = "stationId") String stationId,
             @RequestBody LocationChangeRequest locationChangeRequest) {
         return stationService.setStationLocation(stationId, locationChangeRequest);
     }

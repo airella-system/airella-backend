@@ -1,6 +1,5 @@
 package pl.edu.agh.airsystem.controller;
 
-
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

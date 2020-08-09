@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
-
 public class FrontendController {
 
     // /{path:[^\.]+} matches any /path where path doesn't have any dot (isn't a file)

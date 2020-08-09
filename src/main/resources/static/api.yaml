@@ -197,7 +197,7 @@ paths:
           name: stationId
           required: true
           schema:
-            type: integer
+            type: string
             minimum: 1
           description: Station id
         - in: query
@@ -251,7 +251,7 @@ paths:
           name: stationId
           required: true
           schema:
-            type: integer
+            type: string
             minimum: 1
           description: Station id
       operationId: delete-station
@@ -306,7 +306,7 @@ paths:
           name: stationId
           required: true
           schema:
-            type: integer
+            type: string
             minimum: 1
           description: Station id
       operationId: update-station-name
@@ -335,7 +335,7 @@ paths:
           name: stationId
           required: true
           schema:
-            type: integer
+            type: string
             minimum: 1
           description: Station id
       operationId: update-station-address
@@ -363,7 +363,7 @@ paths:
           name: stationId
           required: true
           schema:
-            type: integer
+            type: string
             minimum: 1
           description: Station id
       operationId: update-station-location
@@ -391,7 +391,7 @@ paths:
           name: stationId
           required: true
           schema:
-            type: integer
+            type: string
             minimum: 1
           description: Station id
       operationId: add-sensor
@@ -426,7 +426,7 @@ paths:
           name: stationId
           required: true
           schema:
-            type: integer
+            type: string
             minimum: 1
           description: Station id
         - in: path
@@ -496,6 +496,222 @@ paths:
                     type: boolean
                   data:
                     $ref: '#/components/schemas/station-brief'
+  /user/stations:
+    get:
+      operationId: get-user-stations
+      summary: Lists user stations
+      responses:
+        '200':
+          description: |-
+            Returns user stations. User needs to be logged in.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/station-brief'
+  /stations/{stationId}/statistics/{statisticId}/values:
+    post:
+      parameters:
+        - in: path
+          name: stationId
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: Station id
+        - in: path
+          name: statisticId
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: Statistic id
+      operationId: add-to-statistic
+      summary: Add statistic value to statistic
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: object
+                  description: value of new statistic value
+      responses:
+        '200':
+          description: |-
+            Added new element to statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+  /stations/{stationId}/statistics:
+    post:
+      parameters:
+        - in: path
+          name: stationId
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: Station id
+      operationId: add-statistic
+      summary: Adds statistic to station
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                statisticPrivacyMode:
+                  type: string
+                  description: public or private
+                type:
+                  type: string
+                  description: public or private
+                id:
+                  type: string
+                  description: one_string_value, one_double_value, multi_string_value, multi_double_aggregatable_value, multi_double_value
+      responses:
+        '201':
+          description: |-
+            New statistic registered successfully. Id of statistic is returned in Location header.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: "Id of newly registered statistic"
+    get:
+      parameters:
+        - in: path
+          name: stationId
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: Station id
+      operationId: get-statistics
+      summary: Returns information about statistics for station
+      responses:
+        '200':
+          description: |-
+            Returns statistics about one station.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/statistics'
+  /stations/{stationId}/statistics/{statisticId}:
+    delete:
+      parameters:
+        - in: path
+          name: stationId
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: Station id
+        - in: path
+          name: statisticId
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: Statistic id
+      operationId: remove-statistic
+      summary: Remove statistic from station
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+      responses:
+        '200':
+          description: |-
+            Deletes statistic.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+    get:
+      parameters:
+        - in: path
+          name: stationId
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: Station id
+        - in: path
+          name: statisticId
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: Statistic id
+        - in: query
+          name: timespan
+          required: false
+          schema:
+            type: string
+            format: date-time
+          description: Timespan of queried measurements in ISO 8601 format in UTC (must be 'Z' at the end)
+          example: 2020-04-02T21:37:00/2020-04-05T22:48:00Z
+        - in: query
+          name: interval
+          required: false
+          schema:
+            type: string
+            format: date-time
+          description: Interval between queried measurements in ISO 8601 format
+          example: PT1H
+        - in: query
+          name: strategy
+          required: false
+          schema:
+            type: string
+          description: Strategy of agregating results - for example latest
+          example: latest
+      operationId: get-statistic
+      summary: Returns information about one statistic
+      responses:
+        '200':
+          description: |-
+            Returns information about one statistic.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/statistic'
 components:
   schemas:
     sensor-brief:
@@ -603,3 +819,27 @@ components:
           format: date-time
         value:
           type: number
+    statistic:
+      type: object
+      properties:
+        timespan:
+          type: object
+          properties:
+            start:
+              type: string
+              format: date-time
+            end:
+              type: string
+              format: date-time
+        timestamp:
+          type: string
+          format: date-time
+        value:
+          type: object
+    statistics:
+      type: object
+      properties:
+        statistics:
+          type: array
+          items:
+            $ref: '#/components/schemas/statistic'

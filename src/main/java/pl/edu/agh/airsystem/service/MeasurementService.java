@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import pl.edu.agh.airsystem.exception.NotUsersStationException;
-import pl.edu.agh.airsystem.model.api.response.DataResponse;
 import pl.edu.agh.airsystem.model.api.measurement.NewMeasurementRequest;
 import pl.edu.agh.airsystem.model.api.response.Response;
 import pl.edu.agh.airsystem.model.api.response.SuccessResponse;
@@ -23,7 +22,7 @@ public class MeasurementService {
     private final MeasurementUtilsService measurementUtilsService;
 
     public ResponseEntity<Response> addMeasurement(
-            Long stationId,
+            String stationId,
             String sensorId,
             NewMeasurementRequest newMeasurementRequest) {
         StationClient stationClient = authorizationService.checkAuthenticationAndGetStationClient();

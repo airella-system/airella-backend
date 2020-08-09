@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import pl.edu.agh.airsystem.assembler.BriefStationResponseAssembler;
 import pl.edu.agh.airsystem.assembler.StationResponseAssembler;
 import pl.edu.agh.airsystem.exception.NotUsersStationException;
-import pl.edu.agh.airsystem.model.api.response.DataResponse;
 import pl.edu.agh.airsystem.model.api.query.MeasurementQuery;
+import pl.edu.agh.airsystem.model.api.response.DataResponse;
 import pl.edu.agh.airsystem.model.api.response.Response;
 import pl.edu.agh.airsystem.model.api.response.SuccessResponse;
 import pl.edu.agh.airsystem.model.api.stations.*;
@@ -34,13 +34,13 @@ public class StationService {
         return ResponseEntity.ok().body(DataResponse.of(response));
     }
 
-    public ResponseEntity<Response> getStation(Long stationId, MeasurementQuery measurementQuery) {
+    public ResponseEntity<Response> getStation(String stationId, MeasurementQuery measurementQuery) {
         Station station = resourceFinder.findStation(stationId);
         StationResponse stationResponse = stationResponseAssembler.assemble(station, measurementQuery);
         return ResponseEntity.ok(DataResponse.of(stationResponse));
     }
 
-    public ResponseEntity<Response> deleteStation(Long stationId) {
+    public ResponseEntity<Response> deleteStation(String stationId) {
         Station station = resourceFinder.findStation(stationId);
         Client client = authorizationService.checkAuthenticationAndGetClient();
 
@@ -60,7 +60,7 @@ public class StationService {
     }
 
     public ResponseEntity<Response> setStationName(
-            Long stationId,
+            String stationId,
             NameChangeRequest nameChangeRequest) {
         Station station = resourceFinder.findStation(stationId);
         ensureSelectedStationAuthorization(station);
@@ -72,7 +72,7 @@ public class StationService {
     }
 
     public ResponseEntity<Response> setStationAddress(
-            Long stationId,
+            String stationId,
             AddressChangeRequest addressChangeRequest) {
         Station station = resourceFinder.findStation(stationId);
         ensureSelectedStationAuthorization(station);
@@ -92,7 +92,7 @@ public class StationService {
     }
 
     public ResponseEntity<Response> setStationLocation(
-            Long stationId,
+            String stationId,
             LocationChangeRequest locationChangeRequest) {
         Station station = resourceFinder.findStation(stationId);
         ensureSelectedStationAuthorization(station);
@@ -106,5 +106,16 @@ public class StationService {
 
         return ResponseEntity.ok(new SuccessResponse());
     }
-}
 
+    public ResponseEntity<? extends Response> getCurrentUserStations() {
+        UserClient userClient = authorizationService.checkAuthenticationAndGetUserClient();
+        return getUserStations(userClient);
+    }
+
+    public ResponseEntity<Response> getUserStations(UserClient userClient) {
+        List<BriefStationResponse> response = new ArrayList<>();
+        stationRepository.findByOwner(userClient).forEach(station -> response.add(briefStationResponseAssembler.assemble(station)));
+        return ResponseEntity.ok().body(DataResponse.of(response));
+    }
+
+}

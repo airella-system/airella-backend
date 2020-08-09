@@ -13,6 +13,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"station_db_id", "id"})})
 public class Sensor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +22,7 @@ public class Sensor {
     private String id;
 
     @ManyToOne
+    @JoinColumn(name = "station_db_id")
     private Station station;
 
     private SensorType type;
