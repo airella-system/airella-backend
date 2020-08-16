@@ -10,15 +10,38 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import pl.edu.agh.airsystem.exception.*;
-import pl.edu.agh.airsystem.model.api.authorization.*;
+import pl.edu.agh.airsystem.exception.AlreadyActivatedException;
+import pl.edu.agh.airsystem.exception.EmailAlreadyUsedException;
+import pl.edu.agh.airsystem.exception.EmailNotFoundException;
+import pl.edu.agh.airsystem.exception.EmailServiceErrorException;
+import pl.edu.agh.airsystem.exception.NotUsersStationException;
+import pl.edu.agh.airsystem.exception.StationClientAuthenticationRequiredException;
+import pl.edu.agh.airsystem.exception.UnknownUserEmailException;
+import pl.edu.agh.airsystem.exception.UserClientAuthenticationRequiredException;
+import pl.edu.agh.airsystem.exception.WrongActivateStringException;
+import pl.edu.agh.airsystem.exception.WrongTokenException;
+import pl.edu.agh.airsystem.model.api.authorization.LoginRequest;
+import pl.edu.agh.airsystem.model.api.authorization.LoginResponse;
+import pl.edu.agh.airsystem.model.api.authorization.RefreshTokenRequest;
+import pl.edu.agh.airsystem.model.api.authorization.RefreshTokenResponse;
+import pl.edu.agh.airsystem.model.api.authorization.RegisterStationRequest;
+import pl.edu.agh.airsystem.model.api.authorization.RegisterStationResponse;
+import pl.edu.agh.airsystem.model.api.authorization.RegisterUserRequest;
 import pl.edu.agh.airsystem.model.api.response.DataResponse;
 import pl.edu.agh.airsystem.model.api.response.Response;
 import pl.edu.agh.airsystem.model.api.response.SuccessResponse;
 import pl.edu.agh.airsystem.model.api.security.JWTToken;
-import pl.edu.agh.airsystem.model.database.*;
+import pl.edu.agh.airsystem.model.database.Client;
+import pl.edu.agh.airsystem.model.database.Station;
+import pl.edu.agh.airsystem.model.database.StationClient;
+import pl.edu.agh.airsystem.model.database.UserClient;
+import pl.edu.agh.airsystem.model.database.UserClientStub;
 import pl.edu.agh.airsystem.model.database.statistic.Statistic;
-import pl.edu.agh.airsystem.repository.*;
+import pl.edu.agh.airsystem.repository.ClientRepository;
+import pl.edu.agh.airsystem.repository.StationClientRepository;
+import pl.edu.agh.airsystem.repository.StationRepository;
+import pl.edu.agh.airsystem.repository.UserClientRepository;
+import pl.edu.agh.airsystem.repository.UserClientStubRepository;
 import pl.edu.agh.airsystem.security.util.JWTTokenUtil;
 
 import javax.mail.MessagingException;
@@ -86,17 +109,27 @@ public class AuthorizationService {
         return ResponseEntity.ok(new SuccessResponse());
     }
 
-    public ResponseEntity<? extends Response> activateUser(String activateString) {
-        Optional<UserClientStub> userClientStub = userClientStubRepository.findByActivateString(
-                activateString);
+    public ResponseEntity<? extends Response> activateUser(String email, String activateString) {
+        Optional<UserClient> userClient = userClientRepository.findByEmail(email);
+        if (userClient.isPresent()) {
+            throw new AlreadyActivatedException();
+        }
+
+        Optional<UserClientStub> userClientStub = userClientStubRepository.findByEmail(
+                email);
+
         if (userClientStub.isEmpty()) {
+            throw new UnknownUserEmailException();
+        }
+
+        if (!userClientStub.get().getActivateString().equals(activateString)) {
             throw new WrongActivateStringException();
         }
 
-        UserClient userClient = new UserClient(userClientStub.get().getEmail(),
+        UserClient newUserClient = new UserClient(userClientStub.get().getEmail(),
                 userClientStub.get().getPasswordHash());
 
-        userClientRepository.save(userClient);
+        userClientRepository.save(newUserClient);
         userClientStubRepository.delete(userClientStub.get());
         return ResponseEntity.ok(new SuccessResponse());
     }
