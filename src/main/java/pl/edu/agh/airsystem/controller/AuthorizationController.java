@@ -2,9 +2,16 @@ package pl.edu.agh.airsystem.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import pl.edu.agh.airsystem.model.api.authorization.*;
-import pl.edu.agh.airsystem.model.api.response.DataResponse;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import pl.edu.agh.airsystem.model.api.authorization.LoginRequest;
+import pl.edu.agh.airsystem.model.api.authorization.RefreshTokenRequest;
+import pl.edu.agh.airsystem.model.api.authorization.RegisterStationRequest;
+import pl.edu.agh.airsystem.model.api.authorization.RegisterUserRequest;
 import pl.edu.agh.airsystem.model.api.response.Response;
 import pl.edu.agh.airsystem.service.AuthorizationService;
 
@@ -34,8 +41,9 @@ public class AuthorizationController {
 
     @GetMapping("/activate-user")
     public ResponseEntity<? extends Response> activateUser(
-            @RequestParam String activateString) {
-        return authorizationService.activateUser(activateString);
+            @RequestParam String email,
+            @RequestParam String activationCode) {
+        return authorizationService.activateUser(email, activationCode);
     }
 
     @PostMapping("/register-station")
