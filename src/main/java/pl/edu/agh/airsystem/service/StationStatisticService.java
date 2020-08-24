@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.edu.agh.airsystem.assembler.StatisticResponseAssembler;
+import pl.edu.agh.airsystem.converter.StatisticPrivacyModeConverter;
+import pl.edu.agh.airsystem.converter.StatisticTypeConverter;
 import pl.edu.agh.airsystem.exception.StatisticAlreadyAddedException;
 import pl.edu.agh.airsystem.exception.StatisticDoesNotExistException;
 import pl.edu.agh.airsystem.exception.WrongNewStatisticValueType;
@@ -19,7 +21,14 @@ import pl.edu.agh.airsystem.model.api.statistic.StatisticResponse;
 import pl.edu.agh.airsystem.model.api.statistic.StatisticsResponse;
 import pl.edu.agh.airsystem.model.database.Client;
 import pl.edu.agh.airsystem.model.database.Station;
-import pl.edu.agh.airsystem.model.database.statistic.*;
+import pl.edu.agh.airsystem.model.database.statistic.MultipleValueStatistic;
+import pl.edu.agh.airsystem.model.database.statistic.OneValueStatistic;
+import pl.edu.agh.airsystem.model.database.statistic.Statistic;
+import pl.edu.agh.airsystem.model.database.statistic.StatisticPrivacyMode;
+import pl.edu.agh.airsystem.model.database.statistic.StatisticType;
+import pl.edu.agh.airsystem.model.database.statistic.StatisticValue;
+import pl.edu.agh.airsystem.model.database.statistic.StatisticValueDouble;
+import pl.edu.agh.airsystem.model.database.statistic.StatisticValueString;
 import pl.edu.agh.airsystem.repository.StatisticRepository;
 import pl.edu.agh.airsystem.repository.StatisticValueRepository;
 
@@ -48,12 +57,12 @@ public class StationStatisticService {
                 });
 
         Statistic statistic;
-        if (!addStatisticRequest.getType().isAreMultipleValues()) {
-            statistic = new OneValueStatistic(addStatisticRequest.getId(), addStatisticRequest.getType(),
-                    addStatisticRequest.getStatisticPrivacyMode());
+        StatisticType type = StatisticTypeConverter.convertStringToEnum(addStatisticRequest.getType());
+        StatisticPrivacyMode privacyMode = StatisticPrivacyModeConverter.convertStringToEnum(addStatisticRequest.getPrivacyMode());
+        if (!type.isAreMultipleValues()) {
+            statistic = new OneValueStatistic(addStatisticRequest.getId(), type, privacyMode);
         } else {
-            statistic = new MultipleValueStatistic(addStatisticRequest.getId(), addStatisticRequest.getType(),
-                    addStatisticRequest.getStatisticPrivacyMode());
+            statistic = new MultipleValueStatistic(addStatisticRequest.getId(), type, privacyMode);
         }
 
         statistic.setStation(station);
@@ -122,13 +131,13 @@ public class StationStatisticService {
         return ResponseEntity.ok(DataResponse.of(statisticResponse));
     }
 
-    public ResponseEntity<Response> getStatistics(String stationId) {
+    public ResponseEntity<Response> getStatistics(String stationId, StatisticValueQuery statisticQuery) {
         Station station = resourceFinder.findStation(stationId);
         Client client = authorizationService.getClient();
 
         List<StatisticResponse> statisticResponses = station.getStatistics().stream()
                 .filter(statistic -> checkIfStatisticIsVisible(client, statistic))
-                .map(statistic -> new StatisticResponse(statistic.getId(), null))
+                .map(statistic -> statisticResponseAssembler.assemble(statistic, statisticQuery))
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(DataResponse.of(new StatisticsResponse(statisticResponses)));

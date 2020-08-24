@@ -145,8 +145,6 @@ paths:
               properties:
                 stationRegistrationToken:
                   type: string
-                macAddress:
-                  type: string
       responses:
         '201':
           description: |-
@@ -570,15 +568,15 @@ paths:
             schema:
               type: object
               properties:
-                statisticPrivacyMode:
+                privacyMode:
                   type: string
                   description: public or private
                 type:
                   type: string
-                  description: public or private
+                  description: one_string_value, one_double_value, multi_string_value, multi_double_aggregatable_value, multi_double_value
                 id:
                   type: string
-                  description: one_string_value, one_double_value, multi_string_value, multi_double_aggregatable_value, multi_double_value
+                  description: id of statistic
       responses:
         '201':
           description: |-
