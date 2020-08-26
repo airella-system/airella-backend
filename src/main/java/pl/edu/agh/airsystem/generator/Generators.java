@@ -20,11 +20,11 @@ public class Generators {
                                     5, 10, Duration.ofMinutes(10), Duration.ofMinutes(60))),
                     new GeneratorSensorDefinition(
                             SensorType.PM10.getCode(), SensorType.PM10,
-                            new LinearGeneratorMeasurementDefinition(0, 100,
+                            new LinearGeneratorMeasurementDefinition(0, 200,
                                     5, 10, Duration.ofMinutes(10), Duration.ofMinutes(60))),
                     new GeneratorSensorDefinition(
                             SensorType.PM2_5.getCode(), SensorType.PM2_5,
-                            new LinearGeneratorMeasurementDefinition(0, 100,
+                            new LinearGeneratorMeasurementDefinition(0, 200,
                                     5, 10, Duration.ofMinutes(10), Duration.ofMinutes(60))),
                     new GeneratorSensorDefinition(
                             SensorType.TEMP.getCode(), SensorType.TEMP,
