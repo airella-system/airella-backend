@@ -32,7 +32,7 @@ public class Generators {
                                     5, 10, Duration.ofMinutes(10), Duration.ofMinutes(60))),
                     new GeneratorSensorDefinition(
                             SensorType.PRESSURE.getCode(), SensorType.PRESSURE,
-                            new LinearGeneratorMeasurementDefinition(950, 1050,
+                            new LinearGeneratorMeasurementDefinition(95000, 105000,
                                     50, 100, Duration.ofMinutes(10), Duration.ofMinutes(60))),
                     new GeneratorSensorDefinition(
                             SensorType.HUMIDITY.getCode(), SensorType.HUMIDITY,
