@@ -11,6 +11,7 @@ import pl.edu.agh.airsystem.model.database.Station;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -56,6 +57,7 @@ public class AirStatusService {
     public Double calculateAirQualityIndex(Station station) {
         return caqiForSensorTypesMap.keySet().stream()
                 .map(sensorType -> getCaqiForSensor(station, sensorType))
+                .filter(Objects::nonNull)
                 .max(Double::compareTo)
                 .orElse(null);
     }
