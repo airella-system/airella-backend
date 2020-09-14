@@ -444,10 +444,13 @@ paths:
               properties:
                 value:
                   type: number
+                date:
+                  type: string
+                  description: "Optional argument - date in ISO 8601 without timezone (must ends with \"Z\"). If not provided, current date will be taken."
       responses:
         '200':
           description: |-
-            Added new measurement with current date.
+            Added new measurement.
           content:
             application/json:
               schema:
@@ -637,14 +640,6 @@ paths:
           description: Statistic id
       operationId: remove-statistic
       summary: Remove statistic from station
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                success:
-                  type: boolean
       responses:
         '200':
           description: |-

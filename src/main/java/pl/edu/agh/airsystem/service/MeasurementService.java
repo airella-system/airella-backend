@@ -33,9 +33,16 @@ public class MeasurementService {
             throw new NotUsersStationException();
         }
 
+        Instant date;
+        if (newMeasurementRequest.getDate() != null) {
+            date = Instant.parse(newMeasurementRequest.getDate());
+        } else {
+            date = Instant.now();
+        }
+
         Measurement measurement = new Measurement(
                 sensor,
-                Instant.now(),
+                date,
                 newMeasurementRequest.getValue());
         measurementUtilsService.addNewMeasurement(sensor, measurement);
 

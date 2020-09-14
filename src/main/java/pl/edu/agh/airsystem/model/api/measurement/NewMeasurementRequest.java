@@ -11,4 +11,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class NewMeasurementRequest {
     private double value;
+    private String date;
 }
