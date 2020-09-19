@@ -62,9 +62,9 @@ public class StationStatisticService {
         StatisticType type = StatisticTypeConverter.convertStringToEnum(addStatisticRequest.getType());
         StatisticPrivacyMode privacyMode = StatisticPrivacyModeConverter.convertStringToEnum(addStatisticRequest.getPrivacyMode());
         if (!type.isAreMultipleValues()) {
-            statistic = new OneValueStatistic(addStatisticRequest.getId(), station, type, privacyMode);
+            statistic = new OneValueStatistic(addStatisticRequest.getId(), addStatisticRequest.getName(), station, type, privacyMode);
         } else {
-            statistic = new MultipleValueStatistic(addStatisticRequest.getId(), station, type, privacyMode);
+            statistic = new MultipleValueStatistic(addStatisticRequest.getId(), addStatisticRequest.getName(), station, type, privacyMode);
         }
 
         statistic.setStation(station);

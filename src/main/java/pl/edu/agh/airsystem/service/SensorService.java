@@ -63,6 +63,7 @@ public class SensorService {
 
         Sensor sensor = new Sensor(station,
                 newSensor.getId(),
+                newSensor.getName(),
                 SensorTypeConverter.convertStringToEnum(newSensor.getType()));
         station.getSensors().add(sensor);
 

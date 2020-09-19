@@ -120,6 +120,7 @@ public class Generator {
             Sensor sensor = new Sensor();
             sensor.setStation(station);
             sensor.setId(generatorSensorDefinition.getId());
+            sensor.setName(generatorSensorDefinition.getName());
             sensor.setType(generatorSensorDefinition.getType());
             sensor.setMeasurements(new HashSet<>());
             sensorRepository.save(sensor);
@@ -141,6 +142,7 @@ public class Generator {
                 case ONE_STRING_VALUE:
                 case ONE_DOUBLE_VALUE:
                     statistic = new OneValueStatistic(generatorStatisticDefinition.getId(),
+                            generatorStatisticDefinition.getName(),
                             station,
                             generatorStatisticDefinition.getType(),
                             generatorStatisticDefinition.getPrivacyMode());
@@ -149,6 +151,7 @@ public class Generator {
                 case MULTI_DOUBLE_AGGREGATABLE_VALUE:
                 case MULTI_DOUBLE_VALUE:
                     statistic = new MultipleValueStatistic(generatorStatisticDefinition.getId(),
+                            generatorStatisticDefinition.getName(),
                             station,
                             generatorStatisticDefinition.getType(),
                             generatorStatisticDefinition.getPrivacyMode());

@@ -8,6 +8,7 @@ import pl.edu.agh.airsystem.model.database.SensorType;
 @AllArgsConstructor
 public class GeneratorSensorDefinition {
     private String id;
+    private String name;
     private SensorType type;
     private GeneratorMeasurementDefinition generatorMeasurementDefinition;
 }

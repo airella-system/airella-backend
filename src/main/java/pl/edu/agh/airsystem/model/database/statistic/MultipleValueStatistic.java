@@ -26,8 +26,8 @@ public class MultipleValueStatistic extends Statistic {
     @OneToOne
     private StatisticValue latestStatisticValue;
 
-    public MultipleValueStatistic(String id, Station station, StatisticType statisticType, StatisticPrivacyMode statisticPrivacyMode) {
-        super(id, station, statisticType, statisticPrivacyMode);
+    public MultipleValueStatistic(String id, String name, Station station, StatisticType statisticType, StatisticPrivacyMode statisticPrivacyMode) {
+        super(id, name, station, statisticType, statisticPrivacyMode);
     }
 
     public void addValue(StatisticValue statisticValue) {

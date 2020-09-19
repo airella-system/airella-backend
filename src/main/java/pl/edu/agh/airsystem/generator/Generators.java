@@ -17,36 +17,42 @@ import static pl.edu.agh.airsystem.util.RandomUtils.randomBetween;
 public class Generators {
     public static List<GeneratorSensorDefinition> standardSensors =
             List.of(new GeneratorSensorDefinition(
-                            SensorType.PM1.getCode(), SensorType.PM1,
+                            SensorType.PM1.getCode(), "PM1", SensorType.PM1,
                             new LinearGeneratorMeasurementDefinition(0, 50,
                                     5, 10, Duration.ofMinutes(10), Duration.ofMinutes(60))),
                     new GeneratorSensorDefinition(
-                            SensorType.PM10.getCode(), SensorType.PM10,
+                            SensorType.PM10.getCode(), "PM10", SensorType.PM10,
                             new LinearGeneratorMeasurementDefinition(0, 200,
                                     5, 10, Duration.ofMinutes(10), Duration.ofMinutes(60))),
                     new GeneratorSensorDefinition(
-                            SensorType.PM2_5.getCode(), SensorType.PM2_5,
+                            SensorType.PM2_5.getCode(), "PM2_5", SensorType.PM2_5,
                             new LinearGeneratorMeasurementDefinition(0, 200,
                                     5, 10, Duration.ofMinutes(10), Duration.ofMinutes(60))),
                     new GeneratorSensorDefinition(
-                            SensorType.TEMP.getCode(), SensorType.TEMP,
+                            SensorType.TEMP.getCode(), "TEMP", SensorType.TEMP,
                             new LinearGeneratorMeasurementDefinition(-10, 30,
                                     5, 10, Duration.ofMinutes(10), Duration.ofMinutes(60))),
                     new GeneratorSensorDefinition(
-                            SensorType.PRESSURE.getCode(), SensorType.PRESSURE,
+                            SensorType.PRESSURE.getCode(), "PRESSURE", SensorType.PRESSURE,
                             new LinearGeneratorMeasurementDefinition(95000, 105000,
                                     50, 100, Duration.ofMinutes(10), Duration.ofMinutes(60))),
                     new GeneratorSensorDefinition(
-                            SensorType.HUMIDITY.getCode(), SensorType.HUMIDITY,
+                            SensorType.HUMIDITY.getCode(), "HUMIDITY", SensorType.HUMIDITY,
                             new LinearGeneratorMeasurementDefinition(0, 100,
                                     5, 10, Duration.ofMinutes(10), Duration.ofMinutes(60))));
 
     public static List<GeneratorStatisticDefinition> standardStatistics =
             List.of(new GeneratorStatisticDefinition(
-                    "voltage", StatisticType.MULTI_DOUBLE_AGGREGATABLE_VALUE,
-                    StatisticPrivacyMode.PUBLIC,
-                    new LinearMultipleDoubleValueStatisticGeneratorDefinition(0, 100,
-                            5, 10, Duration.ofMinutes(10), Duration.ofMinutes(60))));
+                            "voltage", "Voltage", StatisticType.MULTI_DOUBLE_AGGREGATABLE_VALUE,
+                            StatisticPrivacyMode.PUBLIC,
+                            new LinearMultipleDoubleValueStatisticGeneratorDefinition(0, 100,
+                                    5, 10, Duration.ofMinutes(10), Duration.ofMinutes(60))),
+                    new GeneratorStatisticDefinition(
+                            "internet", "Internet", StatisticType.MULTI_STRING_VALUE,
+                            StatisticPrivacyMode.PUBLIC,
+                            new LinearMultipleStringValueStatisticGeneratorDefinition(List.of("GSM", "WiFi", "NONE"),
+                                    Duration.ofMinutes(10), Duration.ofMinutes(60)))
+            );
 
 
     public static List<GeneratorStationDefinition> generatorStationDefinitions = List.of();
@@ -55,7 +61,7 @@ public class Generators {
         List<GeneratorStationDefinition> stationDefinitions =
                 new ArrayList<>(generatorStationDefinitions);
 
-        int NUM_OF_STATIONS = 1;
+        int NUM_OF_STATIONS = 300;
 
         Location from = new Location(50.137422, 19.783417);
         Location to = new Location(49.972368, 20.135403);

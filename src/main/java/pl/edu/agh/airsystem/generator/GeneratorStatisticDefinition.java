@@ -9,6 +9,7 @@ import pl.edu.agh.airsystem.model.database.statistic.StatisticType;
 @AllArgsConstructor
 public class GeneratorStatisticDefinition {
     private String id;
+    private String name;
     private StatisticType type;
     private StatisticPrivacyMode privacyMode;
     private GeneratorStatisticValueDefinition generatorStatisticValueDefinition;

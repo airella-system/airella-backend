@@ -11,6 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class AddStatisticRequest {
     private String id;
+    private String name;
     private String type;
     private String privacyMode;
 }

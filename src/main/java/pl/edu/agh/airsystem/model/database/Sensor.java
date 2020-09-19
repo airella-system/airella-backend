@@ -31,6 +31,7 @@ public class Sensor {
     private long dbId;
 
     private String id;
+    private String name;
 
     @ManyToOne
     @JoinColumn(name = "station_db_id")
@@ -44,9 +45,10 @@ public class Sensor {
     @OneToOne(cascade = CascadeType.REMOVE)
     private Measurement latestMeasurement;
 
-    public Sensor(Station station, String id, SensorType sensorType) {
+    public Sensor(Station station, String id, String name, SensorType sensorType) {
         this.station = station;
         this.id = id;
+        this.name = name;
         this.type = sensorType;
     }
 

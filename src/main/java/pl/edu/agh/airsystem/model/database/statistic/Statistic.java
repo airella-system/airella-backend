@@ -30,6 +30,7 @@ public abstract class Statistic {
     private long dbId;
 
     private String id;
+    private String name;
 
     @ManyToOne
     @JoinColumn(name = "station_db_id")
@@ -39,8 +40,9 @@ public abstract class Statistic {
 
     private StatisticPrivacyMode statisticPrivacyMode;
 
-    public Statistic(String id, Station station, StatisticType statisticType, StatisticPrivacyMode statisticPrivacyMode) {
+    public Statistic(String id, String name, Station station, StatisticType statisticType, StatisticPrivacyMode statisticPrivacyMode) {
         this.id = id;
+        this.name = name;
         this.station = station;
         this.statisticType = statisticType;
         this.statisticPrivacyMode = statisticPrivacyMode;

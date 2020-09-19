@@ -404,6 +404,9 @@ paths:
                   type: string
                 id:
                   type: string
+                name:
+                  type: string
+                  description: name of sensor (visible on frontend)
       responses:
         '201':
           description: |-
@@ -580,6 +583,9 @@ paths:
                 id:
                   type: string
                   description: id of statistic
+                name:
+                  type: string
+                  description: name of statistic (visible on frontend)
       responses:
         '201':
           description: |-
