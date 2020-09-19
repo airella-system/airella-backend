@@ -29,6 +29,7 @@ import pl.edu.agh.airsystem.model.database.statistic.StatisticType;
 import pl.edu.agh.airsystem.model.database.statistic.StatisticValue;
 import pl.edu.agh.airsystem.model.database.statistic.StatisticValueDouble;
 import pl.edu.agh.airsystem.model.database.statistic.StatisticValueString;
+import pl.edu.agh.airsystem.repository.StationRepository;
 import pl.edu.agh.airsystem.repository.StatisticRepository;
 import pl.edu.agh.airsystem.repository.StatisticValueRepository;
 
@@ -39,6 +40,7 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class StationStatisticService {
+    private final StationRepository stationRepository;
     private final StatisticRepository statisticRepository;
     private final StatisticValueRepository statisticValueRepository;
     private final AuthorizationService authorizationService;
@@ -60,13 +62,15 @@ public class StationStatisticService {
         StatisticType type = StatisticTypeConverter.convertStringToEnum(addStatisticRequest.getType());
         StatisticPrivacyMode privacyMode = StatisticPrivacyModeConverter.convertStringToEnum(addStatisticRequest.getPrivacyMode());
         if (!type.isAreMultipleValues()) {
-            statistic = new OneValueStatistic(addStatisticRequest.getId(), type, privacyMode);
+            statistic = new OneValueStatistic(addStatisticRequest.getId(), station, type, privacyMode);
         } else {
-            statistic = new MultipleValueStatistic(addStatisticRequest.getId(), type, privacyMode);
+            statistic = new MultipleValueStatistic(addStatisticRequest.getId(), station, type, privacyMode);
         }
 
         statistic.setStation(station);
         statisticRepository.save(statistic);
+        station.getStatistics().add(statistic);
+        stationRepository.save(station);
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .replacePath("/api/stations/{id}/statistics/{id2}")

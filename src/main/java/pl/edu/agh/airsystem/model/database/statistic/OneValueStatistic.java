@@ -4,9 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.edu.agh.airsystem.model.database.Station;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
 
 @Getter
@@ -15,11 +17,11 @@ import javax.persistence.OneToOne;
 @NoArgsConstructor
 @Entity
 public class OneValueStatistic extends Statistic {
-    @OneToOne(mappedBy = "statistic", cascade = CascadeType.REMOVE)
+    @OneToOne(mappedBy = "statistic", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private StatisticValue value;
 
-    public OneValueStatistic(String id, StatisticType statisticType, StatisticPrivacyMode statisticPrivacyMode) {
-        super(id, statisticType, statisticPrivacyMode);
+    public OneValueStatistic(String id, Station station, StatisticType statisticType, StatisticPrivacyMode statisticPrivacyMode) {
+        super(id, station, statisticType, statisticPrivacyMode);
     }
 
 }

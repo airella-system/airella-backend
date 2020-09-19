@@ -14,4 +14,6 @@ public class GeneratorStationDefinition {
     private Location location;
     private Address address;
     private List<GeneratorSensorDefinition> generatorSensorDefinitions;
+    private List<GeneratorStatisticDefinition> GeneratorStatisticDefinitions;
+
 }

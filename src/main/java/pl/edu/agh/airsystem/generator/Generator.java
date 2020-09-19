@@ -13,14 +13,21 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import pl.edu.agh.airsystem.model.database.Address;
 import pl.edu.agh.airsystem.model.database.Sensor;
 import pl.edu.agh.airsystem.model.database.Station;
+import pl.edu.agh.airsystem.model.database.statistic.MultipleValueStatistic;
+import pl.edu.agh.airsystem.model.database.statistic.OneValueStatistic;
+import pl.edu.agh.airsystem.model.database.statistic.Statistic;
 import pl.edu.agh.airsystem.repository.AddressRepository;
 import pl.edu.agh.airsystem.repository.MeasurementRepository;
 import pl.edu.agh.airsystem.repository.SensorRepository;
 import pl.edu.agh.airsystem.repository.StationRepository;
+import pl.edu.agh.airsystem.repository.StatisticRepository;
+import pl.edu.agh.airsystem.repository.StatisticValueRepository;
 import pl.edu.agh.airsystem.service.AuthorizationService;
 import pl.edu.agh.airsystem.util.MeasurementUtilsService;
 import pl.edu.agh.airsystem.util.Pair;
 import pl.edu.agh.airsystem.util.SensorUtilsService;
+import pl.edu.agh.airsystem.util.StatisticUtilsService;
+import pl.edu.agh.airsystem.util.StatisticValueUtilsService;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -42,6 +49,11 @@ public class Generator {
     private final SensorUtilsService sensorUtilsService;
     private final MeasurementUtilsService measurementUtilsService;
 
+    private final StatisticRepository statisticRepository;
+    private final StatisticUtilsService statisticUtilsService;
+    private final StatisticValueRepository statisticValueRepository;
+    private final StatisticValueUtilsService statisticValueUtilsService;
+
     @EventListener(ContextRefreshedEvent.class)
     public void onApplicationEvent(ContextRefreshedEvent event) {
         event.getApplicationContext().getBean(Generator.class).postConstruct();
@@ -54,7 +66,9 @@ public class Generator {
         List<GeneratorStationDefinition> generatorStationDefinitions =
                 Generators.getGeneratorStationDefinitions();
 
-        List<Pair<Sensor, GeneratorMeasurementInstance>> pairs = new ArrayList<>();
+        List<Pair<Sensor, GeneratorMeasurementInstance>> sensorToMeasurementGenerator = new ArrayList<>();
+        List<Pair<Statistic, GeneratorStatisticValueInstance>> statisticToStatisticValueGenerator = new ArrayList<>();
+
         for (GeneratorStationDefinition stationDefinition : generatorStationDefinitions) {
             log.info("Generator is preparing station: " + stationDefinition.getName());
 
@@ -66,18 +80,30 @@ public class Generator {
                 instance.catchUpMeasurements(sensor,
                         sensorRepository, sensorUtilsService, measurementRepository,
                         measurementUtilsService, taskScheduler);
-                pairs.add(new Pair<>(sensor, instance));
+                sensorToMeasurementGenerator.add(new Pair<>(sensor, instance));
+            }
+
+            for (GeneratorStatisticDefinition statisticDefinition : stationDefinition.getGeneratorStatisticDefinitions()) {
+                Statistic statistic = getOrCreateStatistic(station, statisticDefinition);
+                GeneratorStatisticValueInstance instance = statisticDefinition.getGeneratorStatisticValueDefinition().createInstance();
+                instance.catchUpStatistics(statistic,
+                        statisticUtilsService, statisticRepository, statisticValueUtilsService,
+                        statisticValueRepository, taskScheduler);
+                statisticToStatisticValueGenerator.add(new Pair<>(statistic, instance));
             }
         }
 
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
             public void afterCommit() {
-                for (Pair<Sensor, GeneratorMeasurementInstance> pair : pairs) {
-                    log.info("Generator is working on sensor from station: "
-                            + pair.getKey().getStation().getName());
+                for (Pair<Sensor, GeneratorMeasurementInstance> pair : sensorToMeasurementGenerator) {
                     pair.getValue().startMeasurementsGenerator(pair.getKey(),
                             sensorRepository, sensorUtilsService, measurementRepository,
                             measurementUtilsService, taskScheduler);
+                }
+                for (Pair<Statistic, GeneratorStatisticValueInstance> pair : statisticToStatisticValueGenerator) {
+                    pair.getValue().startStatisticsGenerator(pair.getKey(),
+                            statisticUtilsService, statisticRepository, statisticValueUtilsService,
+                            statisticValueRepository, taskScheduler);
                 }
                 log.info("Generator has ended it's job!");
             }
@@ -97,7 +123,44 @@ public class Generator {
             sensor.setType(generatorSensorDefinition.getType());
             sensor.setMeasurements(new HashSet<>());
             sensorRepository.save(sensor);
+            station.getSensors().add(sensor);
+            stationRepository.save(station);
             return sensor;
+        }
+    }
+
+    private Statistic getOrCreateStatistic(Station station, GeneratorStatisticDefinition generatorStatisticDefinition) {
+        Optional<Statistic> foundStatistic = station.getStatistics().stream()
+                .filter(statistic -> statistic.getId().equals(generatorStatisticDefinition.getId()))
+                .findFirst();
+        if (foundStatistic.isPresent()) {
+            return foundStatistic.get();
+        } else {
+            Statistic statistic;
+            switch (generatorStatisticDefinition.getType()) {
+                case ONE_STRING_VALUE:
+                case ONE_DOUBLE_VALUE:
+                    statistic = new OneValueStatistic(generatorStatisticDefinition.getId(),
+                            station,
+                            generatorStatisticDefinition.getType(),
+                            generatorStatisticDefinition.getPrivacyMode());
+                    break;
+                case MULTI_STRING_VALUE:
+                case MULTI_DOUBLE_AGGREGATABLE_VALUE:
+                case MULTI_DOUBLE_VALUE:
+                    statistic = new MultipleValueStatistic(generatorStatisticDefinition.getId(),
+                            station,
+                            generatorStatisticDefinition.getType(),
+                            generatorStatisticDefinition.getPrivacyMode());
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + generatorStatisticDefinition.getType());
+            }
+            statisticRepository.save(statistic);
+            station.getStatistics().add(statistic);
+            stationRepository.save(station);
+            System.out.println(stationRepository.findById(station.getDbId()).get().getStatistics().size());
+            return statistic;
         }
     }
 

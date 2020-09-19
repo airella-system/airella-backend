@@ -6,7 +6,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.edu.agh.airsystem.model.database.statistic.Statistic;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.PreRemove;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,10 +43,10 @@ public class Station {
     @ManyToOne
     private UserClient owner;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     private StationClient stationClient;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     private Address address;
 
     @OneToMany(mappedBy = "station", cascade = CascadeType.REMOVE)
@@ -44,4 +54,9 @@ public class Station {
 
     @OneToMany(mappedBy = "station", cascade = CascadeType.REMOVE)
     private List<Statistic> statistics = new ArrayList<>();
+
+    @PreRemove
+    private void preRemove() {
+        owner.getStations().remove(this);
+    }
 }

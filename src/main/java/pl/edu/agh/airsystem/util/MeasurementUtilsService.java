@@ -15,6 +15,7 @@ public class MeasurementUtilsService {
 
     public void addNewMeasurement(Sensor sensor, Measurement measurement) {
         sensor.setLatestMeasurement(measurement);
+        sensor.getMeasurements().add(measurement);
         measurementRepository.save(measurement);
         sensorRepository.save(sensor);
     }

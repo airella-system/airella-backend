@@ -23,7 +23,6 @@ public class LatestStatisticValueQueryInvoker implements StatisticValueQueryInvo
     @Override
     public List<? extends StatisticValueResponse> apply(Statistic statistic, StatisticValueQuery statisticValueQueryRequest) {
         List<StatisticValueResponse> statisticValueResponses = new ArrayList<>();
-
         StatisticValue statisticValue = null;
         if (statistic instanceof OneValueStatistic) {
             statisticValue = ((OneValueStatistic) statistic).getValue();

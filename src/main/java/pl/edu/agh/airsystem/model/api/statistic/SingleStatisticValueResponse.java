@@ -17,8 +17,10 @@ public class SingleStatisticValueResponse extends StatisticValueResponse {
     private Object value;
 
     public SingleStatisticValueResponse(StatisticValue statisticValue) {
-        this.timestamp = statisticValue.getTimestamp();
-        this.value = statisticValue.getValue();
+        if (statisticValue != null) {
+            this.timestamp = statisticValue.getTimestamp();
+            this.value = statisticValue.getValue();
+        }
     }
 
 }

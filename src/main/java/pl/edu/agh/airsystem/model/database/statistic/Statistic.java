@@ -6,7 +6,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.edu.agh.airsystem.model.database.Station;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Getter
 @Setter
@@ -30,8 +39,9 @@ public abstract class Statistic {
 
     private StatisticPrivacyMode statisticPrivacyMode;
 
-    public Statistic(String id, StatisticType statisticType, StatisticPrivacyMode statisticPrivacyMode) {
+    public Statistic(String id, Station station, StatisticType statisticType, StatisticPrivacyMode statisticPrivacyMode) {
         this.id = id;
+        this.station = station;
         this.statisticType = statisticType;
         this.statisticPrivacyMode = statisticPrivacyMode;
     }

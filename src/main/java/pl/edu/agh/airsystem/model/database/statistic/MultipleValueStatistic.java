@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.edu.agh.airsystem.model.database.Station;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -25,8 +26,8 @@ public class MultipleValueStatistic extends Statistic {
     @OneToOne
     private StatisticValue latestStatisticValue;
 
-    public MultipleValueStatistic(String id, StatisticType statisticType, StatisticPrivacyMode statisticPrivacyMode) {
-        super(id, statisticType, statisticPrivacyMode);
+    public MultipleValueStatistic(String id, Station station, StatisticType statisticType, StatisticPrivacyMode statisticPrivacyMode) {
+        super(id, station, statisticType, statisticPrivacyMode);
     }
 
     public void addValue(StatisticValue statisticValue) {
