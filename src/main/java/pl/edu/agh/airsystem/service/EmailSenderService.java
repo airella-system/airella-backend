@@ -42,7 +42,6 @@ public class EmailSenderService {
         ClassPathResource resource = new ClassPathResource("accountActivation/email.html");
         String messageContent = ResourceReader.asString(resource);
         messageContent = messageContent.replace("ACTIVATION_LINK", activationLink);
-        System.out.println(messageContent);
 
         Message message = new MimeMessage(session);
         message.setFrom(new InternetAddress(username));

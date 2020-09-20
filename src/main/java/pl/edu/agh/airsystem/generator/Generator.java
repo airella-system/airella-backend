@@ -162,7 +162,6 @@ public class Generator {
             statisticRepository.save(statistic);
             station.getStatistics().add(statistic);
             stationRepository.save(station);
-            System.out.println(stationRepository.findById(station.getDbId()).get().getStatistics().size());
             return statistic;
         }
     }
