@@ -61,7 +61,7 @@ public class Generators {
         List<GeneratorStationDefinition> stationDefinitions =
                 new ArrayList<>(generatorStationDefinitions);
 
-        int NUM_OF_STATIONS = 300;
+        int NUM_OF_STATIONS = 100;
 
         Location from = new Location(50.137422, 19.783417);
         Location to = new Location(49.972368, 20.135403);
