@@ -2,6 +2,7 @@ package pl.edu.agh.airsystem.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.edu.agh.airsystem.exception.SensorNotFoundException;
 import pl.edu.agh.airsystem.exception.StationNotFoundException;
 import pl.edu.agh.airsystem.exception.StatisticDoesNotExistException;
@@ -13,6 +14,7 @@ import pl.edu.agh.airsystem.repository.StationRepository;
 import pl.edu.agh.airsystem.repository.StatisticRepository;
 
 @Service
+@Transactional
 @AllArgsConstructor
 public class ResourceFinder {
     private final StationRepository stationRepository;

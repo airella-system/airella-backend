@@ -3,6 +3,7 @@ package pl.edu.agh.airsystem.service;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.edu.agh.airsystem.assembler.SensorResponseAssembler;
 import pl.edu.agh.airsystem.converter.SensorTypeConverter;
@@ -26,6 +27,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @AllArgsConstructor
 public class SensorService {
     private final ResourceFinder resourceFinder;

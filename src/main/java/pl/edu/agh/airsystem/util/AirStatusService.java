@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.edu.agh.airsystem.model.database.Measurement;
 import pl.edu.agh.airsystem.model.database.Sensor;
 import pl.edu.agh.airsystem.model.database.SensorType;
@@ -14,6 +15,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @Service
+@Transactional
 @AllArgsConstructor
 public class AirStatusService {
     private SensorUtilsService sensorUtilsService;

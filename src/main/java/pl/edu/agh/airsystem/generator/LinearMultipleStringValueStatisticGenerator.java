@@ -2,8 +2,6 @@ package pl.edu.agh.airsystem.generator;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.TaskScheduler;
-import pl.edu.agh.airsystem.model.database.statistic.MultipleValueStatistic;
-import pl.edu.agh.airsystem.model.database.statistic.Statistic;
 import pl.edu.agh.airsystem.model.database.statistic.StatisticValue;
 import pl.edu.agh.airsystem.model.database.statistic.StatisticValueString;
 import pl.edu.agh.airsystem.repository.StatisticRepository;
@@ -47,14 +45,14 @@ public class LinearMultipleStringValueStatisticGenerator
     }
 
     void generateAndAddNewStatisticValue(StatisticValueUtilsService statisticValueUtilsService,
-                                         MultipleValueStatistic statistic, Instant current) {
+                                         long statisticDbId, Instant current) {
 
-        StatisticValueString statisticValueString = new StatisticValueString(statistic, current, currentValue);
-        statisticValueUtilsService.addNewStatisticValue(statistic, statisticValueString);
+        StatisticValueString statisticValueString = new StatisticValueString(null, current, currentValue);
+        statisticValueUtilsService.addNewStatisticValue(statisticDbId, statisticValueString);
     }
 
     @Override
-    public void catchUpStatistics(Statistic statistic,
+    public void catchUpStatistics(long statisticDbId,
                                   StatisticUtilsService statisticUtilsService,
                                   StatisticRepository statisticRepository,
                                   StatisticValueUtilsService statisticValueUtilsService,
@@ -64,7 +62,7 @@ public class LinearMultipleStringValueStatisticGenerator
         Instant current;
         Instant to = Instant.now();
 
-        Optional<StatisticValue> statisticValue = statisticUtilsService.findLatestMeasurementInSensor((MultipleValueStatistic) statistic);
+        Optional<StatisticValue> statisticValue = statisticUtilsService.findLatestMeasurementInSensor(statisticDbId);
         if (statisticValue.isPresent()) {
             from = statisticValue.get().getTimestamp();
         } else {
@@ -73,33 +71,33 @@ public class LinearMultipleStringValueStatisticGenerator
         current = Instant.from(from).plus(getTimeStep());
         while (current.isBefore(to)) {
             generateNextValue();
-            generateAndAddNewStatisticValue(statisticValueUtilsService, (MultipleValueStatistic) statistic, Instant.now());
+            generateAndAddNewStatisticValue(statisticValueUtilsService, statisticDbId, Instant.now());
             current = current.plus(getTimeStep());
         }
     }
 
     @Override
-    public void startStatisticsGenerator(Statistic statistic,
+    public void startStatisticsGenerator(long statisticDbId,
                                          StatisticUtilsService statisticUtilsService,
                                          StatisticRepository statisticRepository,
                                          StatisticValueUtilsService statisticValueUtilsService,
                                          StatisticValueRepository statisticValueRepository,
                                          TaskScheduler taskScheduler) {
-        scheduleNextIteration(statistic, statisticUtilsService, statisticRepository, statisticValueUtilsService, statisticValueRepository, taskScheduler);
+        scheduleNextIteration(statisticDbId, statisticUtilsService, statisticRepository, statisticValueUtilsService, statisticValueRepository, taskScheduler);
     }
 
-    private void generatorIteration(Statistic statistic,
+    private void generatorIteration(long statisticDbId,
                                     StatisticUtilsService statisticUtilsService,
                                     StatisticRepository statisticRepository,
                                     StatisticValueUtilsService statisticValueUtilsService,
                                     StatisticValueRepository statisticValueRepository,
                                     TaskScheduler taskScheduler) {
         generateNextValue();
-        generateAndAddNewStatisticValue(statisticValueUtilsService, (MultipleValueStatistic) statistic, Instant.now());
-        scheduleNextIteration(statistic, statisticUtilsService, statisticRepository, statisticValueUtilsService, statisticValueRepository, taskScheduler);
+        generateAndAddNewStatisticValue(statisticValueUtilsService, statisticDbId, Instant.now());
+        scheduleNextIteration(statisticDbId, statisticUtilsService, statisticRepository, statisticValueUtilsService, statisticValueRepository, taskScheduler);
     }
 
-    private void scheduleNextIteration(Statistic statistic,
+    private void scheduleNextIteration(long statisticDbId,
                                        StatisticUtilsService statisticUtilsService,
                                        StatisticRepository statisticRepository,
                                        StatisticValueUtilsService statisticValueUtilsService,
@@ -108,7 +106,7 @@ public class LinearMultipleStringValueStatisticGenerator
         Instant now = Instant.now();
         Instant next = now.plus(getTimeStep());
 
-        taskScheduler.schedule(() -> generatorIteration(statistic, statisticUtilsService, statisticRepository, statisticValueUtilsService, statisticValueRepository, taskScheduler),
+        taskScheduler.schedule(() -> generatorIteration(statisticDbId, statisticUtilsService, statisticRepository, statisticValueUtilsService, statisticValueRepository, taskScheduler),
                 next.atZone(ZoneId.systemDefault()).toInstant());
     }
 

@@ -6,12 +6,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.edu.agh.airsystem.model.database.UserClient;
 import pl.edu.agh.airsystem.repository.UserClientRepository;
 
 import static java.util.Collections.emptyList;
 
 @Service
+@Transactional
 @AllArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
     private UserClientRepository userClientRepository;

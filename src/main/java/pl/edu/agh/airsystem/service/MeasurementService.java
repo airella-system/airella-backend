@@ -3,6 +3,7 @@ package pl.edu.agh.airsystem.service;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.edu.agh.airsystem.exception.NotUsersStationException;
 import pl.edu.agh.airsystem.model.api.measurement.NewMeasurementRequest;
 import pl.edu.agh.airsystem.model.api.response.Response;
@@ -15,6 +16,7 @@ import pl.edu.agh.airsystem.util.MeasurementUtilsService;
 import java.time.Instant;
 
 @Service
+@Transactional
 @AllArgsConstructor
 public class MeasurementService {
     private final ResourceFinder resourceFinder;

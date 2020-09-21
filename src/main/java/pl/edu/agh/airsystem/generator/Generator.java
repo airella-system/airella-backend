@@ -8,8 +8,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.support.TransactionSynchronizationAdapter;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 import pl.edu.agh.airsystem.model.database.Address;
 import pl.edu.agh.airsystem.model.database.Sensor;
 import pl.edu.agh.airsystem.model.database.Station;
@@ -77,7 +75,7 @@ public class Generator {
             for (GeneratorSensorDefinition sensorDefinition : stationDefinition.getGeneratorSensorDefinitions()) {
                 Sensor sensor = getOrCreateSensor(station, sensorDefinition);
                 GeneratorMeasurementInstance instance = sensorDefinition.getGeneratorMeasurementDefinition().createInstance();
-                instance.catchUpMeasurements(sensor,
+                instance.catchUpMeasurements(sensor.getDbId(),
                         sensorRepository, sensorUtilsService, measurementRepository,
                         measurementUtilsService, taskScheduler);
                 sensorToMeasurementGenerator.add(new Pair<>(sensor, instance));
@@ -86,28 +84,25 @@ public class Generator {
             for (GeneratorStatisticDefinition statisticDefinition : stationDefinition.getGeneratorStatisticDefinitions()) {
                 Statistic statistic = getOrCreateStatistic(station, statisticDefinition);
                 GeneratorStatisticValueInstance instance = statisticDefinition.getGeneratorStatisticValueDefinition().createInstance();
-                instance.catchUpStatistics(statistic,
+                instance.catchUpStatistics(statistic.getDbId(),
                         statisticUtilsService, statisticRepository, statisticValueUtilsService,
                         statisticValueRepository, taskScheduler);
                 statisticToStatisticValueGenerator.add(new Pair<>(statistic, instance));
             }
         }
 
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
-            public void afterCommit() {
                 for (Pair<Sensor, GeneratorMeasurementInstance> pair : sensorToMeasurementGenerator) {
-                    pair.getValue().startMeasurementsGenerator(pair.getKey(),
+                    pair.getValue().startMeasurementsGenerator(pair.getKey().getDbId(),
                             sensorRepository, sensorUtilsService, measurementRepository,
                             measurementUtilsService, taskScheduler);
                 }
                 for (Pair<Statistic, GeneratorStatisticValueInstance> pair : statisticToStatisticValueGenerator) {
-                    pair.getValue().startStatisticsGenerator(pair.getKey(),
+                    pair.getValue().startStatisticsGenerator(pair.getKey().getDbId(),
                             statisticUtilsService, statisticRepository, statisticValueUtilsService,
                             statisticValueRepository, taskScheduler);
                 }
                 log.info("Generator has ended it's job!");
-            }
-        });
+
     }
 
     private Sensor getOrCreateSensor(Station station, GeneratorSensorDefinition generatorSensorDefinition) {

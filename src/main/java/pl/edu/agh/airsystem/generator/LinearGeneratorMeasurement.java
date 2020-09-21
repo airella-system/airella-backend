@@ -3,7 +3,6 @@ package pl.edu.agh.airsystem.generator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.TaskScheduler;
 import pl.edu.agh.airsystem.model.database.Measurement;
-import pl.edu.agh.airsystem.model.database.Sensor;
 import pl.edu.agh.airsystem.repository.MeasurementRepository;
 import pl.edu.agh.airsystem.repository.SensorRepository;
 import pl.edu.agh.airsystem.util.MeasurementUtilsService;
@@ -63,16 +62,16 @@ public class LinearGeneratorMeasurement
 
     void generateAndAddNewMeasurement(MeasurementRepository measurementRepository,
                                       MeasurementUtilsService measurementUtilsService,
-                                      SensorRepository sensorRepository, Sensor sensor, Instant current) {
+                                      SensorRepository sensorRepository, long sensorDbId, Instant current) {
         Measurement measurement = new Measurement(
-                sensor,
+                null,
                 current,
                 currentValue);
-        measurementUtilsService.addNewMeasurement(sensor, measurement);
+        measurementUtilsService.addNewMeasurement(sensorDbId, measurement);
     }
 
     @Override
-    public void catchUpMeasurements(Sensor sensor,
+    public void catchUpMeasurements(long sensorDbId,
                                     SensorRepository sensorRepository,
                                     SensorUtilsService sensorUtilsService,
                                     MeasurementRepository repository,
@@ -82,7 +81,7 @@ public class LinearGeneratorMeasurement
         Instant current;
         Instant to = Instant.now();
 
-        Optional<Measurement> measurement = sensorUtilsService.findLatestMeasurementInSensor(sensor);
+        Optional<Measurement> measurement = sensorUtilsService.findLatestMeasurementInSensor(sensorDbId);
         if (measurement.isPresent()) {
             from = measurement.get().getTimestamp();
         } else {
@@ -91,33 +90,33 @@ public class LinearGeneratorMeasurement
         current = Instant.from(from).plus(getTimeStep());
         while (current.isBefore(to)) {
             generateNextValue();
-            generateAndAddNewMeasurement(repository, measurementUtilsService, sensorRepository, sensor, current);
+            generateAndAddNewMeasurement(repository, measurementUtilsService, sensorRepository, sensorDbId, current);
             current = current.plus(getTimeStep());
         }
     }
 
     @Override
-    public void startMeasurementsGenerator(Sensor sensor,
+    public void startMeasurementsGenerator(long sensorDbId,
                                            SensorRepository sensorRepository,
                                            SensorUtilsService sensorUtilsService,
                                            MeasurementRepository repository,
                                            MeasurementUtilsService measurementUtilsService,
                                            TaskScheduler taskScheduler) {
-        scheduleNextIteration(sensor, sensorRepository, sensorUtilsService, repository, measurementUtilsService, taskScheduler);
+        scheduleNextIteration(sensorDbId, sensorRepository, sensorUtilsService, repository, measurementUtilsService, taskScheduler);
     }
 
-    private void generatorIteration(Sensor sensor,
+    private void generatorIteration(long sensorDbId,
                                     SensorRepository sensorRepository,
                                     SensorUtilsService sensorUtilsService,
                                     MeasurementRepository repository,
                                     MeasurementUtilsService measurementUtilsService,
                                     TaskScheduler taskScheduler) {
         generateNextValue();
-        generateAndAddNewMeasurement(repository, measurementUtilsService, sensorRepository, sensor, Instant.now());
-        scheduleNextIteration(sensor, sensorRepository, sensorUtilsService, repository, measurementUtilsService, taskScheduler);
+        generateAndAddNewMeasurement(repository, measurementUtilsService, sensorRepository, sensorDbId, Instant.now());
+        scheduleNextIteration(sensorDbId, sensorRepository, sensorUtilsService, repository, measurementUtilsService, taskScheduler);
     }
 
-    private void scheduleNextIteration(Sensor sensor,
+    private void scheduleNextIteration(long sensorDbId,
                                        SensorRepository sensorRepository,
                                        SensorUtilsService sensorUtilsService,
                                        MeasurementRepository repository,
@@ -126,7 +125,7 @@ public class LinearGeneratorMeasurement
         Instant now = Instant.now();
         Instant next = now.plus(getTimeStep());
 
-        taskScheduler.schedule(() -> generatorIteration(sensor, sensorRepository, sensorUtilsService, repository, measurementUtilsService, taskScheduler),
+        taskScheduler.schedule(() -> generatorIteration(sensorDbId, sensorRepository, sensorUtilsService, repository, measurementUtilsService, taskScheduler),
                 next.atZone(ZoneId.systemDefault()).toInstant());
     }
 

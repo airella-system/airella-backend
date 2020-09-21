@@ -3,6 +3,7 @@ package pl.edu.agh.airsystem.service;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.edu.agh.airsystem.assembler.StatisticResponseAssembler;
 import pl.edu.agh.airsystem.converter.StatisticPrivacyModeConverter;
@@ -38,6 +39,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @AllArgsConstructor
 public class StationStatisticService {
     private final StationRepository stationRepository;

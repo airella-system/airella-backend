@@ -3,10 +3,19 @@ package pl.edu.agh.airsystem.service;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.edu.agh.airsystem.assembler.VirtualStationResponseAssembler;
 import pl.edu.agh.airsystem.model.api.response.DataResponse;
-import pl.edu.agh.airsystem.model.database.*;
-import pl.edu.agh.airsystem.util.*;
+import pl.edu.agh.airsystem.model.database.Location;
+import pl.edu.agh.airsystem.model.database.Measurement;
+import pl.edu.agh.airsystem.model.database.Sensor;
+import pl.edu.agh.airsystem.model.database.SensorType;
+import pl.edu.agh.airsystem.model.database.Station;
+import pl.edu.agh.airsystem.util.InverseDistanceWeighting;
+import pl.edu.agh.airsystem.util.NearStation;
+import pl.edu.agh.airsystem.util.NearestStationsFinder;
+import pl.edu.agh.airsystem.util.SensorUtilsService;
+import pl.edu.agh.airsystem.util.StationUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,6 +25,7 @@ import java.util.Optional;
 import static java.util.stream.Collectors.toList;
 
 @Service
+@Transactional
 @AllArgsConstructor
 public class SensorInterpolationService {
     private SensorUtilsService sensorUtilsService;

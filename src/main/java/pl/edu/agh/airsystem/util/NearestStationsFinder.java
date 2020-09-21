@@ -2,6 +2,7 @@ package pl.edu.agh.airsystem.util;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import pl.edu.agh.airsystem.model.database.Location;
 import pl.edu.agh.airsystem.model.database.Station;
 import pl.edu.agh.airsystem.repository.StationRepository;
@@ -14,6 +15,7 @@ import static java.util.stream.Collectors.toList;
 import static pl.edu.agh.airsystem.util.GeographicUtils.distance;
 
 @Component
+@Transactional
 @AllArgsConstructor
 public class NearestStationsFinder {
     private StationRepository stationRepository;

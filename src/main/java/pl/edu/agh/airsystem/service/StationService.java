@@ -3,6 +3,7 @@ package pl.edu.agh.airsystem.service;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.edu.agh.airsystem.assembler.BriefStationResponseAssembler;
 import pl.edu.agh.airsystem.assembler.StationResponseAssembler;
 import pl.edu.agh.airsystem.exception.NotUsersStationException;
@@ -10,8 +11,17 @@ import pl.edu.agh.airsystem.model.api.query.MeasurementQuery;
 import pl.edu.agh.airsystem.model.api.response.DataResponse;
 import pl.edu.agh.airsystem.model.api.response.Response;
 import pl.edu.agh.airsystem.model.api.response.SuccessResponse;
-import pl.edu.agh.airsystem.model.api.stations.*;
-import pl.edu.agh.airsystem.model.database.*;
+import pl.edu.agh.airsystem.model.api.stations.AddressChangeRequest;
+import pl.edu.agh.airsystem.model.api.stations.BriefStationResponse;
+import pl.edu.agh.airsystem.model.api.stations.LocationChangeRequest;
+import pl.edu.agh.airsystem.model.api.stations.NameChangeRequest;
+import pl.edu.agh.airsystem.model.api.stations.StationResponse;
+import pl.edu.agh.airsystem.model.database.Address;
+import pl.edu.agh.airsystem.model.database.Client;
+import pl.edu.agh.airsystem.model.database.Location;
+import pl.edu.agh.airsystem.model.database.Station;
+import pl.edu.agh.airsystem.model.database.StationClient;
+import pl.edu.agh.airsystem.model.database.UserClient;
 import pl.edu.agh.airsystem.repository.AddressRepository;
 import pl.edu.agh.airsystem.repository.StationRepository;
 
@@ -19,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 @AllArgsConstructor
 public class StationService {
     private final StationRepository stationRepository;

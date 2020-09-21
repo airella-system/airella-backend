@@ -3,6 +3,7 @@ package pl.edu.agh.airsystem.service;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.edu.agh.airsystem.util.ResourceReader;
 
 import javax.mail.Message;
@@ -15,6 +16,7 @@ import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
 @Service
+@Transactional
 @AllArgsConstructor
 public class EmailSenderService {
 
