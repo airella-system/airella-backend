@@ -24,6 +24,8 @@ public class StatisticResponseAssembler {
 
         return new StatisticResponse(
                 String.valueOf(statistic.getId()),
+                statistic.getStatisticType(),
+                statistic.getStatisticPrivacyMode(),
                 statisticValueResponses);
     }
 
