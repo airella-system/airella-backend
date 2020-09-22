@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class MultipleValueStatistic extends Statistic {
+public class MultipleValueFloatStatistic extends Statistic {
 
     @OneToMany(mappedBy = "statistic", cascade = CascadeType.REMOVE)
     private List<StatisticValue> values = new ArrayList<>();
@@ -26,13 +26,11 @@ public class MultipleValueStatistic extends Statistic {
     @OneToOne
     private StatisticValue latestStatisticValue;
 
-    public MultipleValueStatistic(String id, String name, Station station, StatisticType statisticType, StatisticPrivacyMode statisticPrivacyMode) {
-        super(id, name, station, statisticType, statisticPrivacyMode);
-    }
+    private String metric;
 
-    public void addValue(StatisticValue statisticValue) {
-        values.add(statisticValue);
-        latestStatisticValue = statisticValue;
+    public MultipleValueFloatStatistic(String id, String name, String metric, Station station, StatisticType statisticType, StatisticPrivacyMode statisticPrivacyMode) {
+        super(id, name, station, statisticType, statisticPrivacyMode);
+        this.metric = metric;
     }
 
 }

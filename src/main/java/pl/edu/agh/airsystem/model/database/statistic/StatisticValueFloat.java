@@ -13,10 +13,10 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class StatisticValueDouble extends StatisticValue {
+public class StatisticValueFloat extends StatisticValue {
     private double value;
 
-    public StatisticValueDouble(Statistic statistic, Instant timestamp, double value) {
+    public StatisticValueFloat(Statistic statistic, Instant timestamp, double value) {
         super(statistic, timestamp);
         this.value = value;
     }

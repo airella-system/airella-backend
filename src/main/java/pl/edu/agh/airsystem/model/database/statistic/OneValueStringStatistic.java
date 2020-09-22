@@ -16,11 +16,11 @@ import javax.persistence.OneToOne;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class OneValueStatistic extends Statistic {
+public class OneValueStringStatistic extends Statistic {
     @OneToOne(mappedBy = "statistic", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private StatisticValue value;
 
-    public OneValueStatistic(String id, String name, Station station, StatisticType statisticType, StatisticPrivacyMode statisticPrivacyMode) {
+    public OneValueStringStatistic(String id, String name, Station station, StatisticType statisticType, StatisticPrivacyMode statisticPrivacyMode) {
         super(id, name, station, statisticType, statisticPrivacyMode);
     }
 

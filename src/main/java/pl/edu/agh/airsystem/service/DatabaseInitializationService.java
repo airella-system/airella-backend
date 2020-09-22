@@ -4,9 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.edu.agh.airsystem.model.database.Role;
 import pl.edu.agh.airsystem.model.database.UserClient;
-import pl.edu.agh.airsystem.repository.StationClientRepository;
-import pl.edu.agh.airsystem.repository.StationRepository;
 import pl.edu.agh.airsystem.repository.UserClientRepository;
 
 import javax.annotation.PostConstruct;
@@ -16,9 +15,6 @@ import javax.annotation.PostConstruct;
 @AllArgsConstructor
 public class DatabaseInitializationService {
     private final UserClientRepository userClientRepository;
-    private final StationClientRepository stationClientRepository;
-    private final StationRepository stationRepository;
-    private final EmailSenderService essa;
 
     @PostConstruct
     private void postConstruct() {
@@ -26,6 +22,8 @@ public class DatabaseInitializationService {
         if (userClientRepository.findByEmail("admin@gmail.com").isEmpty()) {
             UserClient admin = new UserClient("admin@gmail.com",
                     new BCryptPasswordEncoder().encode("admin"));
+            admin.getRoles().add(Role.ROLE_USER);
+            admin.getRoles().add(Role.ROLE_ADMIN);
             userClientRepository.save(admin);
         }
     }

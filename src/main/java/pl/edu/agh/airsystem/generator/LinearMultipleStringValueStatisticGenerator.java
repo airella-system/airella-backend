@@ -6,8 +6,6 @@ import pl.edu.agh.airsystem.model.database.statistic.StatisticValue;
 import pl.edu.agh.airsystem.model.database.statistic.StatisticValueString;
 import pl.edu.agh.airsystem.repository.StatisticRepository;
 import pl.edu.agh.airsystem.repository.StatisticValueRepository;
-import pl.edu.agh.airsystem.util.StatisticUtilsService;
-import pl.edu.agh.airsystem.util.StatisticValueUtilsService;
 
 import java.time.Duration;
 import java.time.Instant;

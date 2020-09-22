@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum StatisticPrivacyMode {
-    PRIVATE("private"), PUBLIC("public");
+    PRIVATE("PRIVATE"), PUBLIC("PUBLIC");
 
     private final String code;
 }

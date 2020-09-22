@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.edu.agh.airsystem.assembler.BriefStationResponseAssembler;
 import pl.edu.agh.airsystem.assembler.StationResponseAssembler;
-import pl.edu.agh.airsystem.exception.NotUsersStationException;
 import pl.edu.agh.airsystem.model.api.query.MeasurementQuery;
 import pl.edu.agh.airsystem.model.api.response.DataResponse;
 import pl.edu.agh.airsystem.model.api.response.Response;
@@ -20,7 +19,6 @@ import pl.edu.agh.airsystem.model.database.Address;
 import pl.edu.agh.airsystem.model.database.Client;
 import pl.edu.agh.airsystem.model.database.Location;
 import pl.edu.agh.airsystem.model.database.Station;
-import pl.edu.agh.airsystem.model.database.StationClient;
 import pl.edu.agh.airsystem.model.database.UserClient;
 import pl.edu.agh.airsystem.repository.AddressRepository;
 import pl.edu.agh.airsystem.repository.StationRepository;
@@ -54,27 +52,16 @@ public class StationService {
     public ResponseEntity<Response> deleteStation(String stationId) {
         Station station = resourceFinder.findStation(stationId);
         Client client = authorizationService.checkAuthenticationAndGetClient();
-
-        if (client instanceof UserClient && client.getId() != station.getOwner().getId()
-                || client instanceof StationClient && client.getId() != station.getStationClient().getId()) {
-            throw new NotUsersStationException();
-        }
+        authorizationService.ensureClientHasStation(client, station);
         stationRepository.delete(station);
         return ResponseEntity.ok(DataResponse.of(new SuccessResponse()));
-    }
-
-    public void ensureSelectedStationAuthorization(Station selectedStation) {
-        StationClient loggedStation = authorizationService.checkAuthenticationAndGetStationClient();
-        if (selectedStation.getStationClient().getId() != loggedStation.getId()) {
-            throw new NotUsersStationException();
-        }
     }
 
     public ResponseEntity<Response> setStationName(
             String stationId,
             NameChangeRequest nameChangeRequest) {
         Station station = resourceFinder.findStation(stationId);
-        ensureSelectedStationAuthorization(station);
+        authorizationService.ensureSelectedStationAuthorization(station);
 
         station.setName(nameChangeRequest.getName());
         stationRepository.save(station);
@@ -86,7 +73,7 @@ public class StationService {
             String stationId,
             AddressChangeRequest addressChangeRequest) {
         Station station = resourceFinder.findStation(stationId);
-        ensureSelectedStationAuthorization(station);
+        authorizationService.ensureSelectedStationAuthorization(station);
 
         Address address = new Address(
                 addressChangeRequest.getCountry(),
@@ -106,7 +93,7 @@ public class StationService {
             String stationId,
             LocationChangeRequest locationChangeRequest) {
         Station station = resourceFinder.findStation(stationId);
-        ensureSelectedStationAuthorization(station);
+        authorizationService.ensureSelectedStationAuthorization(station);
 
         Location location = new Location(
                 locationChangeRequest.getLatitude(),

@@ -3,11 +3,9 @@ package pl.edu.agh.airsystem.generator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.TaskScheduler;
 import pl.edu.agh.airsystem.model.database.statistic.StatisticValue;
-import pl.edu.agh.airsystem.model.database.statistic.StatisticValueDouble;
+import pl.edu.agh.airsystem.model.database.statistic.StatisticValueFloat;
 import pl.edu.agh.airsystem.repository.StatisticRepository;
 import pl.edu.agh.airsystem.repository.StatisticValueRepository;
-import pl.edu.agh.airsystem.util.StatisticUtilsService;
-import pl.edu.agh.airsystem.util.StatisticValueUtilsService;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -64,8 +62,8 @@ public class LinearMultipleDoubleValueStatisticGenerator
     void generateAndAddNewStatisticValue(StatisticValueUtilsService statisticValueUtilsService,
                                          long statisticDbId, Instant current) {
 
-        StatisticValueDouble statisticValueDouble = new StatisticValueDouble(null, current, currentValue);
-        statisticValueUtilsService.addNewStatisticValue(statisticDbId, statisticValueDouble);
+        StatisticValueFloat statisticValueFloat = new StatisticValueFloat(null, current, currentValue);
+        statisticValueUtilsService.addNewStatisticValue(statisticDbId, statisticValueFloat);
     }
 
     @Override

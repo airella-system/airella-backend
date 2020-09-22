@@ -33,6 +33,7 @@ import pl.edu.agh.airsystem.model.api.response.Response;
 import pl.edu.agh.airsystem.model.api.response.SuccessResponse;
 import pl.edu.agh.airsystem.model.api.security.JWTToken;
 import pl.edu.agh.airsystem.model.database.Client;
+import pl.edu.agh.airsystem.model.database.Role;
 import pl.edu.agh.airsystem.model.database.Station;
 import pl.edu.agh.airsystem.model.database.StationClient;
 import pl.edu.agh.airsystem.model.database.UserClient;
@@ -228,16 +229,34 @@ public class AuthorizationService {
         return userClient;
     }
 
-    public void ensureClientHasStation(Client client, Station station) {
-        UserClient userClient = getUserClient(client);
+    public boolean checkIfClientHasStation(Client client, Station station) {
+        if (client.getRoles().contains(Role.ROLE_ADMIN)) return true;
+        if (client instanceof UserClient && client.getId() != station.getOwner().getId()
+                || client instanceof StationClient && client.getId() != station.getStationClient().getId()) {
+            return false;
+        }
+        return true;
+    }
 
-        if (userClient.getId() != station.getOwner().getId()) {
+    public void ensureClientHasStation(Client client, Station station) {
+        if (checkIfClientHasStation(client, station)) {
             throw new NotUsersStationException();
         }
     }
 
+    public void ensureSelectedStationAuthorization(Station selectedStation) {
+        Client client = checkAuthenticationAndGetClient();
+        ensureClientHasStation(client, selectedStation);
+    }
+
     public boolean checkIfClientHasStatistic(Client client, Statistic statistic) {
+        if (client.getRoles().contains(Role.ROLE_ADMIN)) return true;
         UserClient userClient = getUserClient(client);
+
+        if (client instanceof UserClient && client.getId() != statistic.getStation().getOwner().getId()
+                || client instanceof StationClient && client.getId() != statistic.getStation().getStationClient().getId()) {
+            return false;
+        }
 
         return userClient.getId() == statistic.getStation().getOwner().getId();
     }
