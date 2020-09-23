@@ -24,6 +24,7 @@ public class MeasurementUtilsService {
 
     public void addNewMeasurement(long sensorDbId, Measurement measurement) {
         Sensor sensor = sensorRepository.findById(sensorDbId).get();
+        measurement.setSensor(sensor);
         sensor.setLatestMeasurement(measurement);
         sensor.getMeasurements().add(measurement);
         measurementRepository.save(measurement);
