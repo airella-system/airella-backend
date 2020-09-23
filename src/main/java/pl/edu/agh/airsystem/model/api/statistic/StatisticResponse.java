@@ -13,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class StatisticResponse {
     private String id;
+    private String name;
     private StatisticType statisticType;
     private StatisticPrivacyMode statisticPrivacyMode;
     private final List<? extends StatisticValueResponse> values;

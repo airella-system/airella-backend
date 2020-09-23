@@ -12,8 +12,8 @@ import java.util.List;
 public class MultipleFloatsStatisticResponse extends StatisticResponse {
     private String metric;
 
-    public MultipleFloatsStatisticResponse(String id, StatisticType statisticType, StatisticPrivacyMode statisticPrivacyMode, String metric, List<? extends StatisticValueResponse> values) {
-        super(id, statisticType, statisticPrivacyMode, values);
+    public MultipleFloatsStatisticResponse(String id, String name, StatisticType statisticType, StatisticPrivacyMode statisticPrivacyMode, String metric, List<? extends StatisticValueResponse> values) {
+        super(id, name, statisticType, statisticPrivacyMode, values);
         this.metric = metric;
     }
 }

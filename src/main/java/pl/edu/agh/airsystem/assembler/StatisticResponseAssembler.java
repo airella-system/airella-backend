@@ -32,6 +32,7 @@ public class StatisticResponseAssembler {
                 OneValueStringStatistic typedStatistic = (OneValueStringStatistic) statistic;
                 return new StatisticResponse(
                         String.valueOf(statistic.getId()),
+                        statistic.getName(),
                         statistic.getStatisticType(),
                         statistic.getStatisticPrivacyMode(),
                         statisticValueResponses);
@@ -40,6 +41,7 @@ public class StatisticResponseAssembler {
                 MultipleValueEnumStatistic typedStatistic = (MultipleValueEnumStatistic) statistic;
                 return new MultipleEnumsStatisticResponse(
                         String.valueOf(statistic.getId()),
+                        statistic.getName(),
                         statistic.getStatisticType(),
                         statistic.getStatisticPrivacyMode(),
                         typedStatistic.getStatisticEnumDefinitions(),
@@ -49,6 +51,7 @@ public class StatisticResponseAssembler {
                 MultipleValueFloatStatistic typedStatistic = (MultipleValueFloatStatistic) statistic;
                 return new MultipleFloatsStatisticResponse(
                         String.valueOf(statistic.getId()),
+                        statistic.getName(),
                         statistic.getStatisticType(),
                         statistic.getStatisticPrivacyMode(),
                         typedStatistic.getMetric(),

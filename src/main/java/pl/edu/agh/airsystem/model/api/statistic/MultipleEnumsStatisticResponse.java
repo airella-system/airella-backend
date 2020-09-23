@@ -13,8 +13,8 @@ import java.util.List;
 public class MultipleEnumsStatisticResponse extends StatisticResponse {
     private List<StatisticEnumDefinition> enumDefinitions;
 
-    public MultipleEnumsStatisticResponse(String id, StatisticType statisticType, StatisticPrivacyMode statisticPrivacyMode, List<StatisticEnumDefinition> enumDefinitions, List<? extends StatisticValueResponse> values) {
-        super(id, statisticType, statisticPrivacyMode, values);
+    public MultipleEnumsStatisticResponse(String id, String name, StatisticType statisticType, StatisticPrivacyMode statisticPrivacyMode, List<StatisticEnumDefinition> enumDefinitions, List<? extends StatisticValueResponse> values) {
+        super(id, name, statisticType, statisticPrivacyMode, values);
         this.enumDefinitions = enumDefinitions;
     }
 }
