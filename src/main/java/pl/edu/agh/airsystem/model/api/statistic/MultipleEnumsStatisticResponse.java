@@ -2,8 +2,6 @@ package pl.edu.agh.airsystem.model.api.statistic;
 
 import lombok.Getter;
 import lombok.Setter;
-import pl.edu.agh.airsystem.model.database.statistic.StatisticPrivacyMode;
-import pl.edu.agh.airsystem.model.database.statistic.StatisticType;
 
 import java.util.List;
 
@@ -11,9 +9,11 @@ import java.util.List;
 @Setter
 public class MultipleEnumsStatisticResponse extends StatisticResponse {
     private List<StatisticEnumDefinitionDTO> enumDefinitions;
+    private String chartType;
 
-    public MultipleEnumsStatisticResponse(String id, String name, StatisticType statisticType, StatisticPrivacyMode statisticPrivacyMode, List<StatisticEnumDefinitionDTO> enumDefinitions, List<? extends StatisticValueResponse> values) {
+    public MultipleEnumsStatisticResponse(String id, String name, String statisticType, String statisticPrivacyMode, List<StatisticEnumDefinitionDTO> enumDefinitions, List<? extends StatisticValueResponse> values, String chartType) {
         super(id, name, statisticType, statisticPrivacyMode, values);
         this.enumDefinitions = enumDefinitions;
+        this.chartType = chartType;
     }
 }

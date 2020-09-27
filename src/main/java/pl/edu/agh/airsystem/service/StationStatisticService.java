@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.edu.agh.airsystem.assembler.StatisticResponseAssembler;
+import pl.edu.agh.airsystem.converter.StatisticChartTypeConverter;
 import pl.edu.agh.airsystem.converter.StatisticPrivacyModeConverter;
 import pl.edu.agh.airsystem.converter.StatisticTypeConverter;
 import pl.edu.agh.airsystem.exception.StatisticAlreadyAddedException;
@@ -27,6 +28,7 @@ import pl.edu.agh.airsystem.model.database.statistic.MultipleValueEnumStatistic;
 import pl.edu.agh.airsystem.model.database.statistic.MultipleValueFloatStatistic;
 import pl.edu.agh.airsystem.model.database.statistic.OneValueStringStatistic;
 import pl.edu.agh.airsystem.model.database.statistic.Statistic;
+import pl.edu.agh.airsystem.model.database.statistic.StatisticChartType;
 import pl.edu.agh.airsystem.model.database.statistic.StatisticEnumDefinition;
 import pl.edu.agh.airsystem.model.database.statistic.StatisticPrivacyMode;
 import pl.edu.agh.airsystem.model.database.statistic.StatisticType;
@@ -73,13 +75,17 @@ public class StationStatisticService {
             case ONE_STRING:
                 statistic = new OneValueStringStatistic(addStatisticRequest.getId(), addStatisticRequest.getName(), station, type, privacyMode);
                 break;
-            case MULTIPLE_ENUMS:
+            case MULTIPLE_ENUMS: {
+                StatisticChartType statisticChartType = StatisticChartTypeConverter.convertStringToEnum(addStatisticRequest.getChartType());
                 List<StatisticEnumDefinition> enums = addStatisticRequest.getEnumDefinitions().stream().map(StatisticEnumDefinition::new).collect(toList());
-                statistic = new MultipleValueEnumStatistic(addStatisticRequest.getId(), addStatisticRequest.getName(), enums, station, type, privacyMode);
-                break;
-            case MULTIPLE_FLOATS:
-                statistic = new MultipleValueFloatStatistic(addStatisticRequest.getId(), addStatisticRequest.getName(), addStatisticRequest.getMetric(), station, type, privacyMode);
-                break;
+                statistic = new MultipleValueEnumStatistic(addStatisticRequest.getId(), addStatisticRequest.getName(), enums, statisticChartType, station, type, privacyMode);
+            }
+            break;
+            case MULTIPLE_FLOATS: {
+                StatisticChartType statisticChartType = StatisticChartTypeConverter.convertStringToEnum(addStatisticRequest.getChartType());
+                statistic = new MultipleValueFloatStatistic(addStatisticRequest.getId(), addStatisticRequest.getName(), addStatisticRequest.getMetric(), statisticChartType, station, type, privacyMode);
+            }
+            break;
             default:
                 throw new IllegalStateException("Unexpected value: " + type);
         }

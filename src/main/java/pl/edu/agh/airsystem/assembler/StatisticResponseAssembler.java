@@ -35,8 +35,8 @@ public class StatisticResponseAssembler {
                 return new StatisticResponse(
                         String.valueOf(statistic.getId()),
                         statistic.getName(),
-                        statistic.getStatisticType(),
-                        statistic.getStatisticPrivacyMode(),
+                        statistic.getStatisticType().getCode(),
+                        statistic.getStatisticPrivacyMode().getCode(),
                         statisticValueResponses);
             }
             case MULTIPLE_ENUMS: {
@@ -44,21 +44,23 @@ public class StatisticResponseAssembler {
                 return new MultipleEnumsStatisticResponse(
                         String.valueOf(statistic.getId()),
                         statistic.getName(),
-                        statistic.getStatisticType(),
-                        statistic.getStatisticPrivacyMode(),
+                        statistic.getStatisticType().getCode(),
+                        statistic.getStatisticPrivacyMode().getCode(),
                         typedStatistic.getStatisticEnumDefinitions().stream()
                                 .map(StatisticEnumDefinitionDTO::new).collect(Collectors.toList()),
-                        statisticValueResponses);
+                        statisticValueResponses,
+                        typedStatistic.getChartType().getCode());
             }
             case MULTIPLE_FLOATS: {
                 MultipleValueFloatStatistic typedStatistic = (MultipleValueFloatStatistic) statistic;
                 return new MultipleFloatsStatisticResponse(
                         String.valueOf(statistic.getId()),
                         statistic.getName(),
-                        statistic.getStatisticType(),
-                        statistic.getStatisticPrivacyMode(),
+                        statistic.getStatisticType().getCode(),
+                        statistic.getStatisticPrivacyMode().getCode(),
                         typedStatistic.getMetric(),
-                        statisticValueResponses);
+                        statisticValueResponses,
+                        typedStatistic.getChartType().getCode());
             }
         }
         return null;

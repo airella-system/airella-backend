@@ -15,6 +15,7 @@ import pl.edu.agh.airsystem.model.database.statistic.MultipleValueEnumStatistic;
 import pl.edu.agh.airsystem.model.database.statistic.MultipleValueFloatStatistic;
 import pl.edu.agh.airsystem.model.database.statistic.OneValueStringStatistic;
 import pl.edu.agh.airsystem.model.database.statistic.Statistic;
+import pl.edu.agh.airsystem.model.database.statistic.StatisticChartType;
 import pl.edu.agh.airsystem.model.database.statistic.StatisticEnumDefinition;
 import pl.edu.agh.airsystem.repository.AddressRepository;
 import pl.edu.agh.airsystem.repository.MeasurementRepository;
@@ -149,6 +150,7 @@ public class Generator {
                                     .stream()
                                     .map(it -> new StatisticEnumDefinition(it.getId(), it.getName()))
                                     .collect(Collectors.toList()),
+                            StatisticChartType.LINE,
                             station,
                             generatorStatisticDefinition.getType(),
                             generatorStatisticDefinition.getPrivacyMode());
@@ -157,6 +159,7 @@ public class Generator {
                     statistic = new MultipleValueFloatStatistic(generatorStatisticDefinition.getId(),
                             generatorStatisticDefinition.getName(),
                             generatorStatisticDefinition.getMetric(),
+                            StatisticChartType.LINE,
                             station,
                             generatorStatisticDefinition.getType(),
                             generatorStatisticDefinition.getPrivacyMode());

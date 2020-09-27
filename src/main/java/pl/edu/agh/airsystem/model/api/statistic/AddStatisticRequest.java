@@ -18,4 +18,5 @@ public class AddStatisticRequest {
     private String privacyMode;
     private List<StatisticEnumDefinitionDTO> enumDefinitions;
     private String metric;
+    private String chartType;
 }

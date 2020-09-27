@@ -27,13 +27,16 @@ public class MultipleValueEnumStatistic extends Statistic {
     @OneToOne
     private StatisticValue latestStatisticValue;
 
+    private StatisticChartType chartType;
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "statistic_db_id")
     private List<StatisticEnumDefinition> statisticEnumDefinitions;
 
-    public MultipleValueEnumStatistic(String id, String name, List<StatisticEnumDefinition> statisticEnumDefinitions, Station station, StatisticType statisticType, StatisticPrivacyMode statisticPrivacyMode) {
+    public MultipleValueEnumStatistic(String id, String name, List<StatisticEnumDefinition> statisticEnumDefinitions, StatisticChartType chartType, Station station, StatisticType statisticType, StatisticPrivacyMode statisticPrivacyMode) {
         super(id, name, station, statisticType, statisticPrivacyMode);
         this.statisticEnumDefinitions = statisticEnumDefinitions;
+        this.chartType = chartType;
     }
 
 }

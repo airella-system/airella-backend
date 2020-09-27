@@ -27,10 +27,12 @@ public class MultipleValueFloatStatistic extends Statistic {
     private StatisticValue latestStatisticValue;
 
     private String metric;
+    private StatisticChartType chartType;
 
-    public MultipleValueFloatStatistic(String id, String name, String metric, Station station, StatisticType statisticType, StatisticPrivacyMode statisticPrivacyMode) {
+    public MultipleValueFloatStatistic(String id, String name, String metric, StatisticChartType chartType, Station station, StatisticType statisticType, StatisticPrivacyMode statisticPrivacyMode) {
         super(id, name, station, statisticType, statisticPrivacyMode);
         this.metric = metric;
+        this.chartType = chartType;
     }
 
 }
