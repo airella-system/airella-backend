@@ -61,7 +61,6 @@ public class LinearMultipleDoubleValueStatisticGenerator
 
     void generateAndAddNewStatisticValue(StatisticValueUtilsService statisticValueUtilsService,
                                          long statisticDbId, Instant current) {
-
         StatisticValueFloat statisticValueFloat = new StatisticValueFloat(null, current, currentValue);
         statisticValueUtilsService.addNewStatisticValue(statisticDbId, statisticValueFloat);
     }
@@ -86,7 +85,7 @@ public class LinearMultipleDoubleValueStatisticGenerator
         current = Instant.from(from).plus(getTimeStep());
         while (current.isBefore(to)) {
             generateNextValue();
-            generateAndAddNewStatisticValue(statisticValueUtilsService, statisticDbId, Instant.now());
+            generateAndAddNewStatisticValue(statisticValueUtilsService, statisticDbId, current);
             current = current.plus(getTimeStep());
         }
     }
