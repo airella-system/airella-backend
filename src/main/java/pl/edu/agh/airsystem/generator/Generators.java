@@ -54,7 +54,7 @@ public class Generators {
                             new ArrayList<>(List.of(new StatisticEnumDefinition("GSM", "GSM"),
                                     new StatisticEnumDefinition("WIFI", "WiFi"),
                                     new StatisticEnumDefinition("NONE", "None"))),
-                            new LinearMultipleStringValueStatisticGeneratorDefinition(List.of("GSM", "WiFi", "NONE"),
+                            new LinearMultipleStringValueStatisticGeneratorDefinition(List.of("GSM", "WIFI", "NONE"),
                                     Duration.ofMinutes(10), Duration.ofMinutes(60)))
             );
 

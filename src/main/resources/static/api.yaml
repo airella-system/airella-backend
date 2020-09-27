@@ -576,16 +576,24 @@ paths:
               properties:
                 privacyMode:
                   type: string
-                  description: public or private
+                  description: PUBLIC or PRIVATE
                 type:
                   type: string
-                  description: one_string_value, one_double_value, multi_string_value, multi_double_aggregatable_value, multi_double_value
+                  description: ONE_STRING, MULTIPLE_ENUMS, MULTIPLE_FLOATS
                 id:
                   type: string
                   description: id of statistic
                 name:
                   type: string
                   description: name of statistic (visible on frontend)
+                enumDefinitions:
+                  type: array
+                  description: only applicable to MULTIPLE_ENUMS type
+                  items:
+                    $ref: '#/components/schemas/enum-definition'
+                metric:
+                  type: string
+                  description: only applicable to MULTIPLE_FLOATS type - defines metric which will be displayed on frontend (for example V if this is statistic about voltage)
       responses:
         '201':
           description: |-
@@ -713,6 +721,15 @@ paths:
                     $ref: '#/components/schemas/statistic'
 components:
   schemas:
+    enum-definition:
+      type: object
+      properties:
+        id:
+          type: string
+          description: identifier of enum
+        name:
+          type: string
+          description: name of statistic for user (visible from frontend)
     sensor-brief:
       type: object
       properties:
@@ -724,6 +741,8 @@ components:
       type: object
       properties:
         id:
+          type: string
+        name:
           type: string
         type:
           type: string
@@ -818,7 +837,7 @@ components:
           format: date-time
         value:
           type: number
-    statistic:
+    statistic-value:
       type: object
       properties:
         timespan:
@@ -835,6 +854,29 @@ components:
           format: date-time
         value:
           type: object
+    statistic:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        privacyMode:
+          type: string
+        metric:
+          type: string
+          description: Only if type is MULTIPLE_FLOATS
+        enumDefinitions:
+          type: array
+          description: Only if type is MULTIPLE_ENUMS
+          items:
+            ref: '#/components/schemas/enum-definition'
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/statistic-value'
     statistics:
       type: object
       properties:

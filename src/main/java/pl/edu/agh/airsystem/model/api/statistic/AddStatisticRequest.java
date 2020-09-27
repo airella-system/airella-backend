@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.edu.agh.airsystem.model.database.statistic.StatisticEnumDefinition;
 
 import java.util.List;
 
@@ -17,6 +16,6 @@ public class AddStatisticRequest {
     private String name;
     private String type;
     private String privacyMode;
-    private List<StatisticEnumDefinition> listOfEnumValues;
+    private List<StatisticEnumDefinitionDTO> enumDefinitions;
     private String metric;
 }

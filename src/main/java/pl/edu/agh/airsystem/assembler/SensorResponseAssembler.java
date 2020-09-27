@@ -25,6 +25,7 @@ public class SensorResponseAssembler {
                 .orElse(null);
 
         return new SensorResponse(sensor.getId(),
+                sensor.getName(),
                 sensor.getType().getCode(),
                 measurementResponses,
                 airStatusService.calculateSensorStatus(sensor));

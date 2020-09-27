@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.edu.agh.airsystem.model.api.statistic.StatisticEnumDefinitionDTO;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,5 +27,10 @@ public class StatisticEnumDefinition {
     public StatisticEnumDefinition(String id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public StatisticEnumDefinition(StatisticEnumDefinitionDTO enumDefinitionDTO) {
+        this.id = enumDefinitionDTO.getId();
+        this.name = enumDefinitionDTO.getName();
     }
 }

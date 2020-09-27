@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import pl.edu.agh.airsystem.model.api.query.StatisticValueQuery;
 import pl.edu.agh.airsystem.model.api.statistic.MultipleEnumsStatisticResponse;
 import pl.edu.agh.airsystem.model.api.statistic.MultipleFloatsStatisticResponse;
+import pl.edu.agh.airsystem.model.api.statistic.StatisticEnumDefinitionDTO;
 import pl.edu.agh.airsystem.model.api.statistic.StatisticResponse;
 import pl.edu.agh.airsystem.model.api.statistic.StatisticValueResponse;
 import pl.edu.agh.airsystem.model.database.statistic.MultipleValueEnumStatistic;
@@ -14,6 +15,7 @@ import pl.edu.agh.airsystem.model.database.statistic.Statistic;
 import pl.edu.agh.airsystem.service.statistic.queryinvoker.StatisticValueQueryInvoker;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
@@ -44,7 +46,8 @@ public class StatisticResponseAssembler {
                         statistic.getName(),
                         statistic.getStatisticType(),
                         statistic.getStatisticPrivacyMode(),
-                        typedStatistic.getStatisticEnumDefinitions(),
+                        typedStatistic.getStatisticEnumDefinitions().stream()
+                                .map(StatisticEnumDefinitionDTO::new).collect(Collectors.toList()),
                         statisticValueResponses);
             }
             case MULTIPLE_FLOATS: {

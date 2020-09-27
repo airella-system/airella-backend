@@ -74,7 +74,8 @@ public class StationStatisticService {
                 statistic = new OneValueStringStatistic(addStatisticRequest.getId(), addStatisticRequest.getName(), station, type, privacyMode);
                 break;
             case MULTIPLE_ENUMS:
-                statistic = new MultipleValueEnumStatistic(addStatisticRequest.getId(), addStatisticRequest.getName(), addStatisticRequest.getListOfEnumValues(), station, type, privacyMode);
+                List<StatisticEnumDefinition> enums = addStatisticRequest.getEnumDefinitions().stream().map(StatisticEnumDefinition::new).collect(toList());
+                statistic = new MultipleValueEnumStatistic(addStatisticRequest.getId(), addStatisticRequest.getName(), enums, station, type, privacyMode);
                 break;
             case MULTIPLE_FLOATS:
                 statistic = new MultipleValueFloatStatistic(addStatisticRequest.getId(), addStatisticRequest.getName(), addStatisticRequest.getMetric(), station, type, privacyMode);

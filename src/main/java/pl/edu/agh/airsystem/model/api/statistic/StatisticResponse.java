@@ -14,7 +14,7 @@ import java.util.List;
 public class StatisticResponse {
     private String id;
     private String name;
-    private StatisticType statisticType;
-    private StatisticPrivacyMode statisticPrivacyMode;
+    private StatisticType type;
+    private StatisticPrivacyMode privacyMode;
     private final List<? extends StatisticValueResponse> values;
 }
