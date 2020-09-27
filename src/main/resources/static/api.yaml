@@ -872,7 +872,7 @@ components:
           type: array
           description: Only if type is MULTIPLE_ENUMS
           items:
-            ref: '#/components/schemas/enum-definition'
+            $ref: '#/components/schemas/enum-definition'
         values:
           type: array
           items:
