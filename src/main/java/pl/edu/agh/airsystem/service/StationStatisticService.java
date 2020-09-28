@@ -132,7 +132,7 @@ public class StationStatisticService {
                     throw new WrongNewStatisticValueType();
                 }
                 statisticValue = new StatisticValueString(statistic, instant, (String) value);
-                typedStatistic.setValue((StatisticValueString) statisticValue);
+                typedStatistic.setValue(statisticValue);
             }
             break;
             case MULTIPLE_ENUMS: {
@@ -142,18 +142,18 @@ public class StationStatisticService {
                     throw new WrongNewStatisticValueType();
                 }
                 statisticValue = new StatisticValueString(statistic, instant, (String) value);
-                typedStatistic.getValues().add((StatisticValueString) statisticValue);
-                typedStatistic.setLatestStatisticValue((StatisticValueString) statisticValue);
+                typedStatistic.getValues().add(statisticValue);
+                typedStatistic.setLatestStatisticValue(statisticValue);
             }
             break;
             case MULTIPLE_FLOATS: {
                 MultipleValueFloatStatistic typedStatistic = (MultipleValueFloatStatistic) statistic;
-                if (!(value instanceof Double)) {
+                if (!(value instanceof Number)) {
                     throw new WrongNewStatisticValueType();
                 }
-                statisticValue = new StatisticValueFloat(statistic, instant, (Double) value);
-                typedStatistic.getValues().add((StatisticValueFloat) statisticValue);
-                typedStatistic.setLatestStatisticValue((StatisticValueFloat) statisticValue);
+                statisticValue = new StatisticValueFloat(statistic, instant, (double) value);
+                typedStatistic.getValues().add(statisticValue);
+                typedStatistic.setLatestStatisticValue(statisticValue);
             }
             break;
         }
