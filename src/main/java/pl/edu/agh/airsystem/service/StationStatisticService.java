@@ -151,7 +151,7 @@ public class StationStatisticService {
                 if (!(value instanceof Number)) {
                     throw new WrongNewStatisticValueType();
                 }
-                statisticValue = new StatisticValueFloat(statistic, instant, (double) value);
+                statisticValue = new StatisticValueFloat(statistic, instant, ((Number) value).doubleValue());
                 typedStatistic.getValues().add(statisticValue);
                 typedStatistic.setLatestStatisticValue(statisticValue);
             }
