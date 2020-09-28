@@ -239,7 +239,7 @@ public class AuthorizationService {
     }
 
     public void ensureClientHasStation(Client client, Station station) {
-        if (checkIfClientHasStation(client, station)) {
+        if (!checkIfClientHasStation(client, station)) {
             throw new NotUsersStationException();
         }
     }
