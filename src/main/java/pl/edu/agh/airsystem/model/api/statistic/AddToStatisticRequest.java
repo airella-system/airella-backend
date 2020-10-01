@@ -11,4 +11,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class AddToStatisticRequest {
     private Object value;
+    private String date;
 }

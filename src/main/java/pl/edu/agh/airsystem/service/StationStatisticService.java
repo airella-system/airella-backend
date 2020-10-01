@@ -122,7 +122,13 @@ public class StationStatisticService {
         authorizationService.ensureClientHasStatistic(client, statistic);
 
         Object value = addToStatisticRequest.getValue();
-        Instant instant = Instant.now();
+
+        Instant date;
+        if (addToStatisticRequest.getDate() != null) {
+            date = Instant.parse(addToStatisticRequest.getDate());
+        } else {
+            date = Instant.now();
+        }
 
         StatisticValue statisticValue = null;
         switch (statistic.getStatisticType()) {
@@ -131,7 +137,7 @@ public class StationStatisticService {
                 if (!(value instanceof String)) {
                     throw new WrongNewStatisticValueType();
                 }
-                statisticValue = new StatisticValueString(statistic, instant, (String) value);
+                statisticValue = new StatisticValueString(statistic, date, (String) value);
                 typedStatistic.setValue(statisticValue);
             }
             break;
@@ -141,7 +147,7 @@ public class StationStatisticService {
                         !(typedStatistic.getStatisticEnumDefinitions().stream().map(StatisticEnumDefinition::getId).collect(toList())).contains(value)) {
                     throw new WrongNewStatisticValueType();
                 }
-                statisticValue = new StatisticValueString(statistic, instant, (String) value);
+                statisticValue = new StatisticValueString(statistic, date, (String) value);
                 typedStatistic.getValues().add(statisticValue);
                 typedStatistic.setLatestStatisticValue(statisticValue);
             }
@@ -151,7 +157,7 @@ public class StationStatisticService {
                 if (!(value instanceof Number)) {
                     throw new WrongNewStatisticValueType();
                 }
-                statisticValue = new StatisticValueFloat(statistic, instant, ((Number) value).doubleValue());
+                statisticValue = new StatisticValueFloat(statistic, date, ((Number) value).doubleValue());
                 typedStatistic.getValues().add(statisticValue);
                 typedStatistic.setLatestStatisticValue(statisticValue);
             }
