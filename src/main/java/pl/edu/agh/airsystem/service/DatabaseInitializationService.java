@@ -13,9 +13,8 @@ import javax.annotation.PostConstruct;
 
 @Service
 @Transactional
-@NoArgsConstructor
 public class DatabaseInitializationService {
-    private UserClientRepository userClientRepository;
+    private final UserClientRepository userClientRepository;
 
     @Value("${airella.admin.special.enabled}")
     private boolean adminEnabled;
