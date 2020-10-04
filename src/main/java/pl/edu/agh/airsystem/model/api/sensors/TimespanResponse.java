@@ -12,6 +12,6 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TimespanResponse {
-    private Instant start;
-    private Instant end;
+    private String start;
+    private String end;
 }
