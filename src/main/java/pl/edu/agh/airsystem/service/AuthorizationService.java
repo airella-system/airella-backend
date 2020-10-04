@@ -97,18 +97,26 @@ public class AuthorizationService {
             throw new EmailAlreadyUsedException();
         }
 
-        UserClientStub userClientStub = new UserClientStub(registerUserRequest.getEmail(),
-                new BCryptPasswordEncoder().encode(registerUserRequest.getPassword()),
-                UUID.randomUUID().toString());
+        if (emailSenderService.isEmailActivationEnabled()) {
+            UserClientStub userClientStub = new UserClientStub(registerUserRequest.getEmail(),
+                    new BCryptPasswordEncoder().encode(registerUserRequest.getPassword()),
+                    UUID.randomUUID().toString());
 
-        try {
-            emailSenderService.sendActivationString(userClientStub.getEmail(), userClientStub.getActivateString());
-        } catch (MessagingException e) {
-            e.printStackTrace();
-            throw new EmailServiceErrorException();
+            try {
+                emailSenderService.sendActivationString(userClientStub.getEmail(), userClientStub.getActivateString());
+            } catch (MessagingException e) {
+                e.printStackTrace();
+                throw new EmailServiceErrorException();
+            }
+
+            userClientStubRepository.save(userClientStub);
+        } else {
+            UserClient newUserClient = new UserClient(registerUserRequest.getEmail(),
+                    new BCryptPasswordEncoder().encode(registerUserRequest.getPassword()));
+
+            userClientRepository.save(newUserClient);
         }
 
-        userClientStubRepository.save(userClientStub);
         return ResponseEntity.ok(new SuccessResponse());
     }
 

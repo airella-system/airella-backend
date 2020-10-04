@@ -1,6 +1,8 @@
 package pl.edu.agh.airsystem.service;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,20 +19,40 @@ import java.util.Properties;
 
 @Service
 @Transactional
-@AllArgsConstructor
+@NoArgsConstructor
 public class EmailSenderService {
 
-    private final String username = System.getenv("EMAIL_LOGIN");
-    private final String password = System.getenv("EMAIL_PASSWORD");
-    private final String domain = System.getenv("DOMAIN");
+    @Value("${airella.email.activation.enabled}")
+    private boolean emailActivationEnabled;
+
+    @Value("${airella.email.activation.smtp.host}")
+    private String host;
+
+    @Value("${airella.email.activation.smtp.port}")
+    private String port;
+
+    @Value("${airella.email.activation.smtp.auth}")
+    private boolean authEnabled;
+
+    @Value("${airella.email.activation.smtp.starttls.enable}")
+    private boolean startTlsEnable;
+
+    @Value("${airella.email.activation.credentials.username}")
+    private String username;
+
+    @Value("${airella.email.activation.credentials.password}")
+    private String password;
+
+    @Value("${airella.domain}")
+    private String domain;
 
 
     public void sendActivationString(String email, String activateString) throws MessagingException {
         Properties prop = new Properties();
-        prop.put("mail.smtp.host", "smtp.gmail.com");
-        prop.put("mail.smtp.port", "587");
-        prop.put("mail.smtp.auth", "true");
-        prop.put("mail.smtp.starttls.enable", "true");
+        prop.put("mail.smtp.host", host);
+        prop.put("mail.smtp.port", port);
+        prop.put("mail.smtp.auth", authEnabled);
+        prop.put("mail.smtp.starttls.enable", startTlsEnable);
 
         Session session = Session.getInstance(prop,
                 new javax.mail.Authenticator() {
@@ -57,4 +79,7 @@ public class EmailSenderService {
         Transport.send(message);
     }
 
+    public boolean isEmailActivationEnabled() {
+        return emailActivationEnabled;
+    }
 }

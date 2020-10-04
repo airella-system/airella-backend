@@ -15,10 +15,10 @@ import java.util.function.Function;
 @Component
 public class JWTTokenUtil {
 
-    @Value("${jwt.access_token_expiration_time}")
+    @Value("${airella.authorization.jwt.access_token_expiration_time}")
     private long jwtTokenExpirationTime;
 
-    @Value("${jwt.secret}")
+    @Value("${airella.authorization.jwt.secret}")
     private String secret;
 
 
