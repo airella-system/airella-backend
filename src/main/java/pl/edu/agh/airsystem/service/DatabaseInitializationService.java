@@ -26,6 +26,10 @@ public class DatabaseInitializationService {
     @Value("${airella.admin.special.password}")
     private String adminPassword;
 
+    public DatabaseInitializationService(UserClientRepository userClientRepository) {
+        this.userClientRepository = userClientRepository;
+    }
+
     @PostConstruct
     private void postConstruct() {
         if (adminEnabled) {
