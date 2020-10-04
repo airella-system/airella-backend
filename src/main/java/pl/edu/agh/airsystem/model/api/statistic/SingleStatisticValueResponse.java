@@ -13,12 +13,12 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SingleStatisticValueResponse extends StatisticValueResponse {
-    private Instant timestamp;
+    private String timestamp;
     private Object value;
 
     public SingleStatisticValueResponse(StatisticValue statisticValue) {
         if (statisticValue != null) {
-            this.timestamp = statisticValue.getTimestamp();
+            this.timestamp = statisticValue.getTimestamp().toString();
             this.value = statisticValue.getValue();
         }
     }

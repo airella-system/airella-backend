@@ -8,10 +8,10 @@ import java.time.Instant;
 @Getter
 @Setter
 public class IntervalTimeMeasurementResponse extends IntervalMeasurementResponse {
-    private Instant timestamp;
+    private String timestamp;
 
     public IntervalTimeMeasurementResponse(TimespanResponse timespanResponse,
-                                           Instant timestamp, Double value) {
+                                           String timestamp, Double value) {
         super(timespanResponse, value);
         this.timestamp = timestamp;
     }

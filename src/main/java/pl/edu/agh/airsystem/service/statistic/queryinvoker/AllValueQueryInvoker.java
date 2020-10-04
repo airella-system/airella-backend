@@ -22,7 +22,7 @@ public class AllValueQueryInvoker implements StatisticValueQueryInvoker {
     public List<? extends StatisticValueResponse> apply(Statistic statistic, StatisticValueQuery statisticValueQueryRequest) {
         List<OneStatisticValueResponse> statisticValueResponses =
                 statisticValueRepository.findAllByStatisticAndTimestampAfterAndTimestampBeforeOrderByTimestampDesc(statistic, statisticValueQueryRequest.getTimespan().getStart(), statisticValueQueryRequest.getTimespan().getEnd()).stream()
-                        .map(e -> new OneStatisticValueResponse(e.getTimestamp(), e.getValue())).collect(Collectors.toList());
+                        .map(e -> new OneStatisticValueResponse(e.getTimestamp().toString(), e.getValue())).collect(Collectors.toList());
 
         return statisticValueResponses;
     }

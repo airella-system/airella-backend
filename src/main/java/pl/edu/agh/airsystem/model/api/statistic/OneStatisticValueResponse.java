@@ -12,6 +12,6 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OneStatisticValueResponse extends StatisticValueResponse {
-    private Instant timestamp;
+    private String timestamp;
     private Object value;
 }

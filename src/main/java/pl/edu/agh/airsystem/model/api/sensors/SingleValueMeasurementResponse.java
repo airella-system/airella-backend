@@ -13,11 +13,11 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SingleValueMeasurementResponse extends MeasurementResponse {
-    private Instant timestamp;
+    private String timestamp;
     private double value;
 
     public SingleValueMeasurementResponse(Measurement measurement) {
-        this.timestamp = measurement.getTimestamp();
+        this.timestamp = measurement.getTimestamp().toString();
         this.value = measurement.getValue();
     }
 

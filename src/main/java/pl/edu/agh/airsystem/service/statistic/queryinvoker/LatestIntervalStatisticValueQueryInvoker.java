@@ -35,7 +35,7 @@ public class LatestIntervalStatisticValueQueryInvoker implements StatisticValueQ
 
             statisticValueRepository.findFirstByStatisticAndTimestampAfterAndTimestampBeforeOrderByTimestampDesc(statistic, interval.getStart(), interval.getEnd())
                     .ifPresentOrElse(e -> statisticValueResponses.add(
-                            new IntervalTimeStatisticValueResponse(timespan, e.getTimestamp(), e.getValue())),
+                            new IntervalTimeStatisticValueResponse(timespan, e.getTimestamp().toString(), e.getValue())),
                             () -> statisticValueResponses.add(
                                     new IntervalTimeStatisticValueResponse(timespan, null, null)));
         }

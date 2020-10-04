@@ -9,10 +9,10 @@ import java.time.Instant;
 @Getter
 @Setter
 public class IntervalTimeStatisticValueResponse extends IntervalStatisticValueResponse {
-    private Instant timestamp;
+    private String timestamp;
 
     public IntervalTimeStatisticValueResponse(TimespanResponse timespanResponse,
-                                              Instant timestamp, Object value) {
+                                              String timestamp, Object value) {
         super(timespanResponse, value);
         this.timestamp = timestamp;
     }
