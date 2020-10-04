@@ -15,11 +15,7 @@ import pl.edu.agh.airsystem.model.api.stations.BriefStationResponse;
 import pl.edu.agh.airsystem.model.api.stations.LocationChangeRequest;
 import pl.edu.agh.airsystem.model.api.stations.NameChangeRequest;
 import pl.edu.agh.airsystem.model.api.stations.StationResponse;
-import pl.edu.agh.airsystem.model.database.Address;
-import pl.edu.agh.airsystem.model.database.Client;
-import pl.edu.agh.airsystem.model.database.Location;
-import pl.edu.agh.airsystem.model.database.Station;
-import pl.edu.agh.airsystem.model.database.UserClient;
+import pl.edu.agh.airsystem.model.database.*;
 import pl.edu.agh.airsystem.repository.AddressRepository;
 import pl.edu.agh.airsystem.repository.StationRepository;
 
@@ -112,7 +108,11 @@ public class StationService {
 
     public ResponseEntity<Response> getUserStations(UserClient userClient) {
         List<BriefStationResponse> response = new ArrayList<>();
-        stationRepository.findByOwner(userClient).forEach(station -> response.add(briefStationResponseAssembler.assemble(station)));
+        if (userClient.getRoles().contains(Role.ROLE_ADMIN)) {
+            stationRepository.findAll().forEach(station -> response.add(briefStationResponseAssembler.assemble(station)));
+        } else {
+            stationRepository.findByOwner(userClient).forEach(station -> response.add(briefStationResponseAssembler.assemble(station)));
+        }
         return ResponseEntity.ok().body(DataResponse.of(response));
     }
 
