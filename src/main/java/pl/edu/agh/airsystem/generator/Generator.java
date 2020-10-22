@@ -11,9 +11,12 @@ import org.springframework.stereotype.Component;
 import pl.edu.agh.airsystem.model.database.Address;
 import pl.edu.agh.airsystem.model.database.Sensor;
 import pl.edu.agh.airsystem.model.database.Station;
-import pl.edu.agh.airsystem.model.database.statistic.MultipleValueStatistic;
-import pl.edu.agh.airsystem.model.database.statistic.OneValueStatistic;
+import pl.edu.agh.airsystem.model.database.statistic.MultipleValueEnumStatistic;
+import pl.edu.agh.airsystem.model.database.statistic.MultipleValueFloatStatistic;
+import pl.edu.agh.airsystem.model.database.statistic.OneValueStringStatistic;
 import pl.edu.agh.airsystem.model.database.statistic.Statistic;
+import pl.edu.agh.airsystem.model.database.statistic.StatisticChartType;
+import pl.edu.agh.airsystem.model.database.statistic.StatisticEnumDefinition;
 import pl.edu.agh.airsystem.repository.AddressRepository;
 import pl.edu.agh.airsystem.repository.MeasurementRepository;
 import pl.edu.agh.airsystem.repository.SensorRepository;
@@ -24,14 +27,13 @@ import pl.edu.agh.airsystem.service.AuthorizationService;
 import pl.edu.agh.airsystem.util.MeasurementUtilsService;
 import pl.edu.agh.airsystem.util.Pair;
 import pl.edu.agh.airsystem.util.SensorUtilsService;
-import pl.edu.agh.airsystem.util.StatisticUtilsService;
-import pl.edu.agh.airsystem.util.StatisticValueUtilsService;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -134,19 +136,30 @@ public class Generator {
         } else {
             Statistic statistic;
             switch (generatorStatisticDefinition.getType()) {
-                case ONE_STRING_VALUE:
-                case ONE_DOUBLE_VALUE:
-                    statistic = new OneValueStatistic(generatorStatisticDefinition.getId(),
+                case ONE_STRING:
+                    statistic = new OneValueStringStatistic(generatorStatisticDefinition.getId(),
                             generatorStatisticDefinition.getName(),
                             station,
                             generatorStatisticDefinition.getType(),
                             generatorStatisticDefinition.getPrivacyMode());
                     break;
-                case MULTI_STRING_VALUE:
-                case MULTI_DOUBLE_AGGREGATABLE_VALUE:
-                case MULTI_DOUBLE_VALUE:
-                    statistic = new MultipleValueStatistic(generatorStatisticDefinition.getId(),
+                case MULTIPLE_ENUMS:
+                    statistic = new MultipleValueEnumStatistic(generatorStatisticDefinition.getId(),
                             generatorStatisticDefinition.getName(),
+                            generatorStatisticDefinition.getStatisticEnumDefinitions()
+                                    .stream()
+                                    .map(it -> new StatisticEnumDefinition(it.getId(), it.getName()))
+                                    .collect(Collectors.toList()),
+                            StatisticChartType.LINE,
+                            station,
+                            generatorStatisticDefinition.getType(),
+                            generatorStatisticDefinition.getPrivacyMode());
+                    break;
+                case MULTIPLE_FLOATS:
+                    statistic = new MultipleValueFloatStatistic(generatorStatisticDefinition.getId(),
+                            generatorStatisticDefinition.getName(),
+                            generatorStatisticDefinition.getMetric(),
+                            StatisticChartType.LINE,
                             station,
                             generatorStatisticDefinition.getType(),
                             generatorStatisticDefinition.getPrivacyMode());

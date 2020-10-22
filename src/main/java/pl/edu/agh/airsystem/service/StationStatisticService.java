@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.edu.agh.airsystem.assembler.StatisticResponseAssembler;
+import pl.edu.agh.airsystem.converter.StatisticChartTypeConverter;
 import pl.edu.agh.airsystem.converter.StatisticPrivacyModeConverter;
 import pl.edu.agh.airsystem.converter.StatisticTypeConverter;
 import pl.edu.agh.airsystem.exception.StatisticAlreadyAddedException;
@@ -21,22 +22,28 @@ import pl.edu.agh.airsystem.model.api.statistic.AddToStatisticRequest;
 import pl.edu.agh.airsystem.model.api.statistic.StatisticResponse;
 import pl.edu.agh.airsystem.model.api.statistic.StatisticsResponse;
 import pl.edu.agh.airsystem.model.database.Client;
+import pl.edu.agh.airsystem.model.database.Role;
 import pl.edu.agh.airsystem.model.database.Station;
-import pl.edu.agh.airsystem.model.database.statistic.MultipleValueStatistic;
-import pl.edu.agh.airsystem.model.database.statistic.OneValueStatistic;
+import pl.edu.agh.airsystem.model.database.statistic.MultipleValueEnumStatistic;
+import pl.edu.agh.airsystem.model.database.statistic.MultipleValueFloatStatistic;
+import pl.edu.agh.airsystem.model.database.statistic.OneValueStringStatistic;
 import pl.edu.agh.airsystem.model.database.statistic.Statistic;
+import pl.edu.agh.airsystem.model.database.statistic.StatisticChartType;
+import pl.edu.agh.airsystem.model.database.statistic.StatisticEnumDefinition;
 import pl.edu.agh.airsystem.model.database.statistic.StatisticPrivacyMode;
 import pl.edu.agh.airsystem.model.database.statistic.StatisticType;
 import pl.edu.agh.airsystem.model.database.statistic.StatisticValue;
-import pl.edu.agh.airsystem.model.database.statistic.StatisticValueDouble;
+import pl.edu.agh.airsystem.model.database.statistic.StatisticValueFloat;
 import pl.edu.agh.airsystem.model.database.statistic.StatisticValueString;
 import pl.edu.agh.airsystem.repository.StationRepository;
 import pl.edu.agh.airsystem.repository.StatisticRepository;
 import pl.edu.agh.airsystem.repository.StatisticValueRepository;
 
 import java.net.URI;
+import java.time.Instant;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @Transactional
@@ -63,10 +70,24 @@ public class StationStatisticService {
         Statistic statistic;
         StatisticType type = StatisticTypeConverter.convertStringToEnum(addStatisticRequest.getType());
         StatisticPrivacyMode privacyMode = StatisticPrivacyModeConverter.convertStringToEnum(addStatisticRequest.getPrivacyMode());
-        if (!type.isAreMultipleValues()) {
-            statistic = new OneValueStatistic(addStatisticRequest.getId(), addStatisticRequest.getName(), station, type, privacyMode);
-        } else {
-            statistic = new MultipleValueStatistic(addStatisticRequest.getId(), addStatisticRequest.getName(), station, type, privacyMode);
+
+        switch (type) {
+            case ONE_STRING:
+                statistic = new OneValueStringStatistic(addStatisticRequest.getId(), addStatisticRequest.getName(), station, type, privacyMode);
+                break;
+            case MULTIPLE_ENUMS: {
+                StatisticChartType statisticChartType = StatisticChartTypeConverter.convertStringToEnum(addStatisticRequest.getChartType());
+                List<StatisticEnumDefinition> enums = addStatisticRequest.getEnumDefinitions().stream().map(StatisticEnumDefinition::new).collect(toList());
+                statistic = new MultipleValueEnumStatistic(addStatisticRequest.getId(), addStatisticRequest.getName(), enums, statisticChartType, station, type, privacyMode);
+            }
+            break;
+            case MULTIPLE_FLOATS: {
+                StatisticChartType statisticChartType = StatisticChartTypeConverter.convertStringToEnum(addStatisticRequest.getChartType());
+                statistic = new MultipleValueFloatStatistic(addStatisticRequest.getId(), addStatisticRequest.getName(), addStatisticRequest.getMetric(), statisticChartType, station, type, privacyMode);
+            }
+            break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + type);
         }
 
         statistic.setStation(station);
@@ -102,22 +123,45 @@ public class StationStatisticService {
 
         Object value = addToStatisticRequest.getValue();
 
-        Class<?> typeClass = statistic.getStatisticType().getTypeClass();
-        if (!typeClass.isInstance(addToStatisticRequest.getValue())) {
-            throw new WrongNewStatisticValueType();
+        Instant date;
+        if (addToStatisticRequest.getDate() != null) {
+            date = Instant.parse(addToStatisticRequest.getDate());
+        } else {
+            date = Instant.now();
         }
 
         StatisticValue statisticValue = null;
-        if (value instanceof String) {
-            statisticValue = new StatisticValueString((String) value);
-        } else if (value instanceof Double) {
-            statisticValue = new StatisticValueDouble((Double) value);
-        }
-
-        if (statistic instanceof OneValueStatistic) {
-            ((OneValueStatistic) statistic).setValue(statisticValue);
-        } else if (statistic instanceof MultipleValueStatistic) {
-            ((MultipleValueStatistic) statistic).addValue(statisticValue);
+        switch (statistic.getStatisticType()) {
+            case ONE_STRING: {
+                OneValueStringStatistic typedStatistic = (OneValueStringStatistic) statistic;
+                if (!(value instanceof String)) {
+                    throw new WrongNewStatisticValueType();
+                }
+                statisticValue = new StatisticValueString(statistic, date, (String) value);
+                typedStatistic.setValue(statisticValue);
+            }
+            break;
+            case MULTIPLE_ENUMS: {
+                MultipleValueEnumStatistic typedStatistic = (MultipleValueEnumStatistic) statistic;
+                if (!(value instanceof String) ||
+                        !(typedStatistic.getStatisticEnumDefinitions().stream().map(StatisticEnumDefinition::getId).collect(toList())).contains(value)) {
+                    throw new WrongNewStatisticValueType();
+                }
+                statisticValue = new StatisticValueString(statistic, date, (String) value);
+                typedStatistic.getValues().add(statisticValue);
+                typedStatistic.setLatestStatisticValue(statisticValue);
+            }
+            break;
+            case MULTIPLE_FLOATS: {
+                MultipleValueFloatStatistic typedStatistic = (MultipleValueFloatStatistic) statistic;
+                if (!(value instanceof Number)) {
+                    throw new WrongNewStatisticValueType();
+                }
+                statisticValue = new StatisticValueFloat(statistic, date, ((Number) value).doubleValue());
+                typedStatistic.getValues().add(statisticValue);
+                typedStatistic.setLatestStatisticValue(statisticValue);
+            }
+            break;
         }
 
         statisticValueRepository.save(statisticValue);
@@ -144,13 +188,14 @@ public class StationStatisticService {
         List<StatisticResponse> statisticResponses = station.getStatistics().stream()
                 .filter(statistic -> checkIfStatisticIsVisible(client, statistic))
                 .map(statistic -> statisticResponseAssembler.assemble(statistic, statisticQuery))
-                .collect(Collectors.toList());
+                .collect(toList());
 
         return ResponseEntity.ok(DataResponse.of(new StatisticsResponse(statisticResponses)));
 
     }
 
     private boolean checkIfStatisticIsVisible(Client client, Statistic statistic) {
+        if (client != null && client.getRoles().contains(Role.ROLE_ADMIN)) return true;
         if (statistic.getStatisticPrivacyMode() == StatisticPrivacyMode.PUBLIC) {
             return true;
         } else {

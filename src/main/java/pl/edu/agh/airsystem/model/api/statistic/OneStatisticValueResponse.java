@@ -1,4 +1,4 @@
-package pl.edu.agh.airsystem.model.api.sensors;
+package pl.edu.agh.airsystem.model.api.statistic;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import java.time.Instant;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TimespanResponse {
-    private String start;
-    private String end;
+public class OneStatisticValueResponse extends StatisticValueResponse {
+    private String timestamp;
+    private Object value;
 }

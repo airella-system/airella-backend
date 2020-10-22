@@ -6,8 +6,6 @@ import pl.edu.agh.airsystem.model.database.statistic.StatisticValue;
 import pl.edu.agh.airsystem.model.database.statistic.StatisticValueString;
 import pl.edu.agh.airsystem.repository.StatisticRepository;
 import pl.edu.agh.airsystem.repository.StatisticValueRepository;
-import pl.edu.agh.airsystem.util.StatisticUtilsService;
-import pl.edu.agh.airsystem.util.StatisticValueUtilsService;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -46,7 +44,6 @@ public class LinearMultipleStringValueStatisticGenerator
 
     void generateAndAddNewStatisticValue(StatisticValueUtilsService statisticValueUtilsService,
                                          long statisticDbId, Instant current) {
-
         StatisticValueString statisticValueString = new StatisticValueString(null, current, currentValue);
         statisticValueUtilsService.addNewStatisticValue(statisticDbId, statisticValueString);
     }
@@ -71,7 +68,7 @@ public class LinearMultipleStringValueStatisticGenerator
         current = Instant.from(from).plus(getTimeStep());
         while (current.isBefore(to)) {
             generateNextValue();
-            generateAndAddNewStatisticValue(statisticValueUtilsService, statisticDbId, Instant.now());
+            generateAndAddNewStatisticValue(statisticValueUtilsService, statisticDbId, current);
             current = current.plus(getTimeStep());
         }
     }

@@ -31,12 +31,12 @@ public class LatestIntervalMeasurementQueryInvoker implements MeasurementQueryIn
         List<IntervalMeasurementResponse> measurementResponses = new ArrayList<>();
         for (Interval interval : intervals) {
             TimespanResponse timespan = new TimespanResponse(
-                    interval.getStart(),
-                    interval.getEnd());
+                    interval.getStart().toString(),
+                    interval.getEnd().toString());
 
             measurementRepository.findFirstBySensorAndTimestampAfterAndTimestampBeforeOrderByTimestampDesc(sensor, interval.getStart(), interval.getEnd())
                     .ifPresentOrElse(e -> measurementResponses.add(
-                            new IntervalTimeMeasurementResponse(timespan, e.getTimestamp(), e.getValue())),
+                            new IntervalTimeMeasurementResponse(timespan, e.getTimestamp().toString(), e.getValue())),
                             () -> measurementResponses.add(
                                     new IntervalTimeMeasurementResponse(timespan, null, null)));
         }

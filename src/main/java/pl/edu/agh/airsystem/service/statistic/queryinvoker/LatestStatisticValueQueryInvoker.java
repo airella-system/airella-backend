@@ -5,8 +5,9 @@ import org.springframework.stereotype.Component;
 import pl.edu.agh.airsystem.model.api.query.StatisticValueQuery;
 import pl.edu.agh.airsystem.model.api.statistic.SingleStatisticValueResponse;
 import pl.edu.agh.airsystem.model.api.statistic.StatisticValueResponse;
-import pl.edu.agh.airsystem.model.database.statistic.MultipleValueStatistic;
-import pl.edu.agh.airsystem.model.database.statistic.OneValueStatistic;
+import pl.edu.agh.airsystem.model.database.statistic.MultipleValueEnumStatistic;
+import pl.edu.agh.airsystem.model.database.statistic.MultipleValueFloatStatistic;
+import pl.edu.agh.airsystem.model.database.statistic.OneValueStringStatistic;
 import pl.edu.agh.airsystem.model.database.statistic.Statistic;
 import pl.edu.agh.airsystem.model.database.statistic.StatisticValue;
 
@@ -24,10 +25,17 @@ public class LatestStatisticValueQueryInvoker implements StatisticValueQueryInvo
     public List<? extends StatisticValueResponse> apply(Statistic statistic, StatisticValueQuery statisticValueQueryRequest) {
         List<StatisticValueResponse> statisticValueResponses = new ArrayList<>();
         StatisticValue statisticValue = null;
-        if (statistic instanceof OneValueStatistic) {
-            statisticValue = ((OneValueStatistic) statistic).getValue();
-        } else if (statistic instanceof MultipleValueStatistic) {
-            statisticValue = ((MultipleValueStatistic) statistic).getLatestStatisticValue();
+
+        switch (statistic.getStatisticType()) {
+            case ONE_STRING:
+                statisticValue = ((OneValueStringStatistic) statistic).getValue();
+                break;
+            case MULTIPLE_ENUMS:
+                statisticValue = ((MultipleValueEnumStatistic) statistic).getLatestStatisticValue();
+                break;
+            case MULTIPLE_FLOATS:
+                statisticValue = ((MultipleValueFloatStatistic) statistic).getLatestStatisticValue();
+                break;
         }
 
         statisticValueResponses.add(new SingleStatisticValueResponse(statisticValue));

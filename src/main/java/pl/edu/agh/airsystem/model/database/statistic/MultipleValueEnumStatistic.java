@@ -8,6 +8,7 @@ import pl.edu.agh.airsystem.model.database.Station;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class MultipleValueStatistic extends Statistic {
+public class MultipleValueEnumStatistic extends Statistic {
 
     @OneToMany(mappedBy = "statistic", cascade = CascadeType.REMOVE)
     private List<StatisticValue> values = new ArrayList<>();
@@ -26,13 +27,16 @@ public class MultipleValueStatistic extends Statistic {
     @OneToOne
     private StatisticValue latestStatisticValue;
 
-    public MultipleValueStatistic(String id, String name, Station station, StatisticType statisticType, StatisticPrivacyMode statisticPrivacyMode) {
-        super(id, name, station, statisticType, statisticPrivacyMode);
-    }
+    private StatisticChartType chartType;
 
-    public void addValue(StatisticValue statisticValue) {
-        values.add(statisticValue);
-        latestStatisticValue = statisticValue;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "statistic_db_id")
+    private List<StatisticEnumDefinition> statisticEnumDefinitions;
+
+    public MultipleValueEnumStatistic(String id, String name, List<StatisticEnumDefinition> statisticEnumDefinitions, StatisticChartType chartType, Station station, StatisticType statisticType, StatisticPrivacyMode statisticPrivacyMode) {
+        super(id, name, station, statisticType, statisticPrivacyMode);
+        this.statisticEnumDefinitions = statisticEnumDefinitions;
+        this.chartType = chartType;
     }
 
 }

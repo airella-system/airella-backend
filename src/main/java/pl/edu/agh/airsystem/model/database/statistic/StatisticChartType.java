@@ -5,8 +5,10 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum StatisticPrivacyMode {
-    PRIVATE("PRIVATE"), PUBLIC("PUBLIC");
+public enum StatisticChartType {
+    LINE("LINE"),
+    SCATTER("SCATTER");
 
     private final String code;
+
 }

@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -14,4 +16,7 @@ public class AddStatisticRequest {
     private String name;
     private String type;
     private String privacyMode;
+    private List<StatisticEnumDefinitionDTO> enumDefinitions;
+    private String metric;
+    private String chartType;
 }

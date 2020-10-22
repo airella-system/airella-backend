@@ -30,12 +30,12 @@ public class LatestIntervalStatisticValueQueryInvoker implements StatisticValueQ
         List<IntervalStatisticValueResponse> statisticValueResponses = new ArrayList<>();
         for (Interval interval : intervals) {
             TimespanResponse timespan = new TimespanResponse(
-                    interval.getStart(),
-                    interval.getEnd());
+                    interval.getStart().toString(),
+                    interval.getEnd().toString());
 
             statisticValueRepository.findFirstByStatisticAndTimestampAfterAndTimestampBeforeOrderByTimestampDesc(statistic, interval.getStart(), interval.getEnd())
                     .ifPresentOrElse(e -> statisticValueResponses.add(
-                            new IntervalTimeStatisticValueResponse(timespan, e.getTimestamp(), e.getValue())),
+                            new IntervalTimeStatisticValueResponse(timespan, e.getTimestamp().toString(), e.getValue())),
                             () -> statisticValueResponses.add(
                                     new IntervalTimeStatisticValueResponse(timespan, null, null)));
         }

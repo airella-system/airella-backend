@@ -6,6 +6,6 @@ public class UserClientAuthenticationRequiredException extends BaseErrorExceptio
     public UserClientAuthenticationRequiredException() {
         super(FORBIDDEN,
                 "USER_CLIENT_REQUIRED",
-                "Only user can user this API.");
+                "Only authenticated user can use this API.");
     }
 }

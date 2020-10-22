@@ -3,6 +3,7 @@ package pl.edu.agh.airsystem.generator;
 import pl.edu.agh.airsystem.model.database.Address;
 import pl.edu.agh.airsystem.model.database.Location;
 import pl.edu.agh.airsystem.model.database.SensorType;
+import pl.edu.agh.airsystem.model.database.statistic.StatisticEnumDefinition;
 import pl.edu.agh.airsystem.model.database.statistic.StatisticPrivacyMode;
 import pl.edu.agh.airsystem.model.database.statistic.StatisticType;
 import pl.edu.agh.airsystem.util.GeneratorUtils;
@@ -43,14 +44,17 @@ public class Generators {
 
     public static List<GeneratorStatisticDefinition> standardStatistics =
             List.of(new GeneratorStatisticDefinition(
-                            "voltage", "Voltage", StatisticType.MULTI_DOUBLE_AGGREGATABLE_VALUE,
-                            StatisticPrivacyMode.PUBLIC,
+                            "voltage", "Voltage", StatisticType.MULTIPLE_FLOATS,
+                            StatisticPrivacyMode.PUBLIC, "V", null,
                             new LinearMultipleDoubleValueStatisticGeneratorDefinition(0, 100,
                                     5, 10, Duration.ofMinutes(10), Duration.ofMinutes(60))),
                     new GeneratorStatisticDefinition(
-                            "internet", "Internet", StatisticType.MULTI_STRING_VALUE,
-                            StatisticPrivacyMode.PUBLIC,
-                            new LinearMultipleStringValueStatisticGeneratorDefinition(List.of("GSM", "WiFi", "NONE"),
+                            "internet", "Internet", StatisticType.MULTIPLE_ENUMS,
+                            StatisticPrivacyMode.PUBLIC, null,
+                            new ArrayList<>(List.of(new StatisticEnumDefinition("GSM", "GSM"),
+                                    new StatisticEnumDefinition("WIFI", "WiFi"),
+                                    new StatisticEnumDefinition("NONE", "None"))),
+                            new LinearMultipleStringValueStatisticGeneratorDefinition(List.of("GSM", "WIFI", "NONE"),
                                     Duration.ofMinutes(10), Duration.ofMinutes(60)))
             );
 

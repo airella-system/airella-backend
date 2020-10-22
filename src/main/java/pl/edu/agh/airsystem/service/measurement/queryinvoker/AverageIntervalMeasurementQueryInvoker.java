@@ -26,8 +26,8 @@ public class AverageIntervalMeasurementQueryInvoker implements MeasurementQueryI
         List<IntervalMeasurementResponse> measurementResponses = new ArrayList<>();
         for (Interval interval : intervals) {
             TimespanResponse timespan = new TimespanResponse(
-                    interval.getStart(),
-                    interval.getEnd());
+                    interval.getStart().toString(),
+                    interval.getEnd().toString());
             sensor.getMeasurements().stream()
                     .filter(e -> e.getTimestamp().isAfter(interval.getStart()))
                     .filter(e -> e.getTimestamp().isBefore(interval.getEnd()))
