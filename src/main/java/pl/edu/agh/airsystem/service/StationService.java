@@ -16,17 +16,25 @@ import pl.edu.agh.airsystem.model.api.stations.LocationChangeRequest;
 import pl.edu.agh.airsystem.model.api.stations.NameChangeRequest;
 import pl.edu.agh.airsystem.model.api.stations.StationResponse;
 import pl.edu.agh.airsystem.model.database.*;
+import pl.edu.agh.airsystem.model.database.statistic.Statistic;
 import pl.edu.agh.airsystem.repository.AddressRepository;
+import pl.edu.agh.airsystem.repository.MeasurementRepository;
 import pl.edu.agh.airsystem.repository.StationRepository;
+import pl.edu.agh.airsystem.repository.StatisticValueRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
 @AllArgsConstructor
 public class StationService {
     private final StationRepository stationRepository;
+    private final MeasurementRepository measurementRepository;
+    private final StatisticValueRepository statisticValueRepository;
     private final AddressRepository addressRepository;
     private final ResourceFinder resourceFinder;
     private final AuthorizationService authorizationService;
@@ -49,6 +57,17 @@ public class StationService {
         Station station = resourceFinder.findStation(stationId);
         Client client = authorizationService.checkAuthenticationAndGetClient();
         authorizationService.ensureClientHasStation(client, station);
+
+        Set<Long> sensorsDbIds = station.getSensors().stream()
+                .map(Sensor::getDbId)
+                .collect(Collectors.toSet());
+
+        Set<Long> statisticsDbIds = station.getStatistics().stream()
+                .map(Statistic::getDbId)
+                .collect(Collectors.toSet());
+
+        measurementRepository.deleteAllMeasurementsForSelectedSensors(sensorsDbIds);
+        statisticValueRepository.deleteAllMeasurementsForSelectedStatistics(statisticsDbIds);
         stationRepository.delete(station);
         return ResponseEntity.ok(DataResponse.of(new SuccessResponse()));
     }

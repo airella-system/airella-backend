@@ -1,12 +1,15 @@
 package pl.edu.agh.airsystem.repository;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import pl.edu.agh.airsystem.model.database.Measurement;
 import pl.edu.agh.airsystem.model.database.Sensor;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface MeasurementRepository extends CrudRepository<Measurement, Long> {
     Optional<Measurement> findById(long id);
@@ -15,4 +18,6 @@ public interface MeasurementRepository extends CrudRepository<Measurement, Long>
 
     Optional<Measurement> findFirstBySensorAndTimestampAfterAndTimestampBeforeOrderByTimestampDesc(Sensor sensor, Instant after, Instant before);
 
+    @Query("DELETE FROM Measurement m WHERE m.sensor.dbId IN (:ids)")
+    void deleteAllMeasurementsForSelectedSensors(@Param("ids") Set<Long> ids);
 }
