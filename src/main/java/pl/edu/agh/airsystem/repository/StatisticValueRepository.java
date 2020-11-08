@@ -1,8 +1,10 @@
 package pl.edu.agh.airsystem.repository;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 import pl.edu.agh.airsystem.model.database.statistic.Statistic;
 import pl.edu.agh.airsystem.model.database.statistic.StatisticValue;
 
@@ -16,6 +18,8 @@ public interface StatisticValueRepository extends CrudRepository<StatisticValue,
 
     List<StatisticValue> findAllByStatisticAndTimestampAfterAndTimestampBeforeOrderByTimestampDesc(Statistic statistic, Instant after, Instant before);
 
+    @Transactional
+    @Modifying
     @Query("DELETE FROM StatisticValue sv WHERE sv.statistic.dbId IN (:ids)")
     void deleteAllMeasurementsForSelectedStatistics(@Param("ids") Set<Long> ids);
 }
