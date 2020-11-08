@@ -61,7 +61,6 @@ public class StationService {
         Client client = authorizationService.checkAuthenticationAndGetClient();
         authorizationService.ensureClientHasStation(client, station);
 
-        long t01 = System.nanoTime();
         Set<Long> sensorsDbIds = station.getSensors().stream()
                 .map(Sensor::getDbId)
                 .collect(Collectors.toSet());
@@ -70,9 +69,6 @@ public class StationService {
                 .map(Statistic::getDbId)
                 .collect(Collectors.toSet());
 
-        long t0 = System.nanoTime();
-        System.out.println("T-1: " + (t0-t01));
-
         station.getSensors().forEach(sensor -> {
             sensor.setLatestMeasurement(null);
             sensorRepository.saveAndFlush(sensor);
@@ -80,26 +76,18 @@ public class StationService {
 
         station.getStatistics().forEach(statistic -> {
             if (statistic instanceof OneValueStringStatistic) {
-                ((OneValueStringStatistic)statistic).setValue(null);
-            }else if (statistic instanceof MultipleValueFloatStatistic) {
-                ((MultipleValueFloatStatistic)statistic).setLatestStatisticValue(null);
-            }else if (statistic instanceof MultipleValueEnumStatistic) {
-                ((MultipleValueEnumStatistic)statistic).setLatestStatisticValue(null);
+                ((OneValueStringStatistic) statistic).setValue(null);
+            } else if (statistic instanceof MultipleValueFloatStatistic) {
+                ((MultipleValueFloatStatistic) statistic).setLatestStatisticValue(null);
+            } else if (statistic instanceof MultipleValueEnumStatistic) {
+                ((MultipleValueEnumStatistic) statistic).setLatestStatisticValue(null);
             }
             statisticRepository.saveAndFlush(statistic);
         });
 
-        long t1 = System.nanoTime();
-        System.out.println("T0: " + (t1-t0));
         measurementRepository.deleteAllMeasurementsForSelectedSensors(sensorsDbIds);
-        long t2 = System.nanoTime();
-        System.out.println("T1: " + (t2-t1));
         statisticValueRepository.deleteAllMeasurementsForSelectedStatistics(statisticsDbIds);
-        long t3 = System.nanoTime();
-        System.out.println("T2: " + (t3-t2));
         stationRepository.delete(station);
-        long t4 = System.nanoTime();
-        System.out.println("T3: " + (t4-t3));
         return ResponseEntity.ok(DataResponse.of(new SuccessResponse()));
     }
 
