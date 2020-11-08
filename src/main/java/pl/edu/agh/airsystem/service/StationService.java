@@ -16,11 +16,11 @@ import pl.edu.agh.airsystem.model.api.stations.LocationChangeRequest;
 import pl.edu.agh.airsystem.model.api.stations.NameChangeRequest;
 import pl.edu.agh.airsystem.model.api.stations.StationResponse;
 import pl.edu.agh.airsystem.model.database.*;
+import pl.edu.agh.airsystem.model.database.statistic.MultipleValueEnumStatistic;
+import pl.edu.agh.airsystem.model.database.statistic.MultipleValueFloatStatistic;
+import pl.edu.agh.airsystem.model.database.statistic.OneValueStringStatistic;
 import pl.edu.agh.airsystem.model.database.statistic.Statistic;
-import pl.edu.agh.airsystem.repository.AddressRepository;
-import pl.edu.agh.airsystem.repository.MeasurementRepository;
-import pl.edu.agh.airsystem.repository.StationRepository;
-import pl.edu.agh.airsystem.repository.StatisticValueRepository;
+import pl.edu.agh.airsystem.repository.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +32,8 @@ import java.util.stream.Stream;
 @Transactional
 @AllArgsConstructor
 public class StationService {
+    private final StatisticRepository statisticRepository;
+    private final SensorRepository sensorRepository;
     private final StationRepository stationRepository;
     private final MeasurementRepository measurementRepository;
     private final StatisticValueRepository statisticValueRepository;
@@ -66,9 +68,32 @@ public class StationService {
                 .map(Statistic::getDbId)
                 .collect(Collectors.toSet());
 
+        station.getSensors().forEach(sensor -> {
+            sensor.setLatestMeasurement(null);
+            sensorRepository.save(sensor);
+        });
+
+        station.getStatistics().forEach(statistic -> {
+            if (statistic instanceof OneValueStringStatistic) {
+                ((OneValueStringStatistic)statistic).setValue(null);
+            }else if (statistic instanceof MultipleValueFloatStatistic) {
+                ((MultipleValueFloatStatistic)statistic).setLatestStatisticValue(null);
+            }else if (statistic instanceof MultipleValueEnumStatistic) {
+                ((MultipleValueEnumStatistic)statistic).setLatestStatisticValue(null);
+            }
+            statisticRepository.save(statistic);
+        });
+
+        long t1 = System.nanoTime();
         measurementRepository.deleteAllMeasurementsForSelectedSensors(sensorsDbIds);
+        long t2 = System.nanoTime();
+        System.out.println("T1: " + (t2-t1));
         statisticValueRepository.deleteAllMeasurementsForSelectedStatistics(statisticsDbIds);
+        long t3 = System.nanoTime();
+        System.out.println("T2: " + (t3-t2));
         stationRepository.delete(station);
+        long t4 = System.nanoTime();
+        System.out.println("T3: " + (t4-t3));
         return ResponseEntity.ok(DataResponse.of(new SuccessResponse()));
     }
 
