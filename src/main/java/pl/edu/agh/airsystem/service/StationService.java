@@ -60,6 +60,7 @@ public class StationService {
         Client client = authorizationService.checkAuthenticationAndGetClient();
         authorizationService.ensureClientHasStation(client, station);
 
+        long t01 = System.nanoTime();
         Set<Long> sensorsDbIds = station.getSensors().stream()
                 .map(Sensor::getDbId)
                 .collect(Collectors.toSet());
@@ -67,6 +68,9 @@ public class StationService {
         Set<Long> statisticsDbIds = station.getStatistics().stream()
                 .map(Statistic::getDbId)
                 .collect(Collectors.toSet());
+
+        long t0 = System.nanoTime();
+        System.out.println("T-1: " + (t0-t01));
 
         station.getSensors().forEach(sensor -> {
             sensor.setLatestMeasurement(null);
@@ -84,7 +88,9 @@ public class StationService {
             statisticRepository.save(statistic);
         });
 
+
         long t1 = System.nanoTime();
+        System.out.println("T0: " + (t1-t0));
         measurementRepository.deleteAllMeasurementsForSelectedSensors(sensorsDbIds);
         long t2 = System.nanoTime();
         System.out.println("T1: " + (t2-t1));
