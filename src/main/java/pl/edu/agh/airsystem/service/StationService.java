@@ -55,6 +55,7 @@ public class StationService {
         return ResponseEntity.ok(DataResponse.of(stationResponse));
     }
 
+    @Transactional
     public ResponseEntity<Response> deleteStation(String stationId) {
         Station station = resourceFinder.findStation(stationId);
         Client client = authorizationService.checkAuthenticationAndGetClient();
@@ -74,7 +75,7 @@ public class StationService {
 
         station.getSensors().forEach(sensor -> {
             sensor.setLatestMeasurement(null);
-            sensorRepository.save(sensor);
+            sensorRepository.saveAndFlush(sensor);
         });
 
         station.getStatistics().forEach(statistic -> {
@@ -85,9 +86,8 @@ public class StationService {
             }else if (statistic instanceof MultipleValueEnumStatistic) {
                 ((MultipleValueEnumStatistic)statistic).setLatestStatisticValue(null);
             }
-            statisticRepository.save(statistic);
+            statisticRepository.saveAndFlush(statistic);
         });
-
 
         long t1 = System.nanoTime();
         System.out.println("T0: " + (t1-t0));
