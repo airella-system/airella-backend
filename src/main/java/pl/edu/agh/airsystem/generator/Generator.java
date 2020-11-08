@@ -44,8 +44,7 @@ public class Generator {
     @Qualifier("generatorTaskScheduler")
     TaskScheduler taskScheduler;
 
-    @Value("${airella.station.generator.enabled}")
-    private final boolean generatorEnabled;
+    private final GeneratorUtil generatorUtil;
 
     private final StationRepository stationRepository;
     private final AddressRepository addressRepository;
@@ -66,7 +65,7 @@ public class Generator {
 
     @Transactional
     public void postConstruct() {
-        if (!generatorEnabled)
+        if (!generatorUtil.isGeneratorEnabled())
             return;
 
         log.info("Generator is working...");
