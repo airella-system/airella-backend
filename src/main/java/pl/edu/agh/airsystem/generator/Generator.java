@@ -65,8 +65,10 @@ public class Generator {
 
     @Transactional
     public void postConstruct() {
-        if (!generatorUtil.isGeneratorEnabled())
+        if (!generatorUtil.isGeneratorEnabled()) {
+            log.info("Generator disabled");
             return;
+        }
 
         log.info("Generator is working...");
 
