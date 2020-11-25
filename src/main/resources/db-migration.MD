@@ -1,6 +1,6 @@
 To generate full SQL:
 1. Rename liquibase-init.properties to liquibase.properties
-2. Run Maven Package goal
+2. Run Maven Package goal with -DskipTests
 3. Run Maven liquibase:diff goal
 4. SQL will be saved in liquibase-diffChangeLog.postgresql.sql
 

@@ -7,8 +7,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum StatisticValueQueryStrategy {
-    LATEST("latest"),
-    ALL("all");
+    AVG("avg"), LATEST("latest"), ALL("all");
 
     private String code;
 }

@@ -18,6 +18,9 @@ public interface StatisticValueRepository extends CrudRepository<StatisticValue,
 
     List<StatisticValue> findAllByStatisticAndTimestampAfterAndTimestampBeforeOrderByTimestampDesc(Statistic statistic, Instant after, Instant before);
 
+    @Query("SELECT AVG(m.value) FROM StatisticValueFloat m WHERE m.statistic=(:statistic) AND m.timestamp < (:before) AND m.timestamp > (:after)")
+    Double findAverageByStatisticAndTimestampAfterAndTimestampBefore(@Param("statistic") Statistic statistic, @Param("after") Instant after, @Param("before") Instant before);
+
     @Transactional
     @Modifying
     @Query("DELETE FROM StatisticValue sv WHERE sv.statistic.dbId IN (:ids)")

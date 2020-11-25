@@ -1,5 +1,6 @@
 package pl.edu.agh.airsystem.service.measurement.queryinvoker;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.airsystem.model.api.query.MeasurementQuery;
 import pl.edu.agh.airsystem.model.api.sensors.MeasurementResponse;
@@ -14,6 +15,7 @@ import java.util.List;
 import static pl.edu.agh.airsystem.model.api.query.MeasurementQueryStrategy.ALL;
 
 @Component
+@AllArgsConstructor
 public class MultipleMeasurementQueryInvoker implements MeasurementQueryInvoker {
 
     private MeasurementRepository measurementRepository;
