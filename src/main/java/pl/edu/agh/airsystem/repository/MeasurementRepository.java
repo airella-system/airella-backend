@@ -20,6 +20,8 @@ public interface MeasurementRepository extends CrudRepository<Measurement, Long>
 
     Optional<Measurement> findFirstBySensorAndTimestampAfterAndTimestampBeforeOrderByTimestampDesc(Sensor sensor, Instant after, Instant before);
 
+    Optional<Measurement> findFirstBySensorAndTimestampBeforeOrderByTimestampDesc(Sensor sensor, Instant before);
+
     @Query("SELECT AVG(m.value) FROM Measurement m WHERE m.sensor=(:sensor) AND m.timestamp < (:before) AND m.timestamp > (:after)")
     Double findAverageBySensorAndTimestampAfterAndTimestampBefore(@Param("sensor") Sensor sensor, @Param("after") Instant after, @Param("before") Instant before);
 
