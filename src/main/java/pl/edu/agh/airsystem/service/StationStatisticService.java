@@ -149,7 +149,14 @@ public class StationStatisticService {
                 }
                 statisticValue = new StatisticValueString(statistic, date, (String) value);
                 typedStatistic.getValues().add(statisticValue);
-                typedStatistic.setLatestStatisticValue(statisticValue);
+
+                StatisticValue lastStatisticValue = typedStatistic.getLatestStatisticValue();
+                if (lastStatisticValue == null) {
+                    typedStatistic.setLatestStatisticValue(statisticValue);
+                } else if (statisticValue.getTimestamp().isAfter(lastStatisticValue.getTimestamp()) &&
+                        statisticValue.getTimestamp().isBefore(Instant.now())) {
+                    typedStatistic.setLatestStatisticValue(lastStatisticValue);
+                }
             }
             break;
             case MULTIPLE_FLOATS: {
@@ -159,7 +166,14 @@ public class StationStatisticService {
                 }
                 statisticValue = new StatisticValueFloat(statistic, date, ((Number) value).doubleValue());
                 typedStatistic.getValues().add(statisticValue);
-                typedStatistic.setLatestStatisticValue(statisticValue);
+
+                StatisticValue lastStatisticValue = typedStatistic.getLatestStatisticValue();
+                if (lastStatisticValue == null) {
+                    typedStatistic.setLatestStatisticValue(statisticValue);
+                } else if (statisticValue.getTimestamp().isAfter(lastStatisticValue.getTimestamp()) &&
+                        statisticValue.getTimestamp().isBefore(Instant.now())) {
+                    typedStatistic.setLatestStatisticValue(lastStatisticValue);
+                }
             }
             break;
         }
