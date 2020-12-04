@@ -36,3 +36,5 @@ build/
 ### Liquibase generated files ###
 /src/main/resources/liquibase-diffChangeLog.postgresql.sql
 /src/main/resources/liquibase-outputChangeLog.postgresql.sql
+
+.DS_Store
