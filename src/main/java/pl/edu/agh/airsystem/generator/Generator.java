@@ -3,6 +3,7 @@ package pl.edu.agh.airsystem.generator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.TaskScheduler;
@@ -42,6 +43,9 @@ import java.util.stream.Collectors;
 public class Generator {
     @Qualifier("generatorTaskScheduler")
     TaskScheduler taskScheduler;
+
+    private final GeneratorUtil generatorUtil;
+
     private final StationRepository stationRepository;
     private final AddressRepository addressRepository;
     private final SensorRepository sensorRepository;
@@ -61,6 +65,11 @@ public class Generator {
 
     @Transactional
     public void postConstruct() {
+        if (!generatorUtil.isGeneratorEnabled()) {
+            log.info("Generator disabled");
+            return;
+        }
+
         log.info("Generator is working...");
 
         List<GeneratorStationDefinition> generatorStationDefinitions =
@@ -93,17 +102,17 @@ public class Generator {
             }
         }
 
-                for (Pair<Sensor, GeneratorMeasurementInstance> pair : sensorToMeasurementGenerator) {
-                    pair.getValue().startMeasurementsGenerator(pair.getKey().getDbId(),
-                            sensorRepository, sensorUtilsService, measurementRepository,
-                            measurementUtilsService, taskScheduler);
-                }
-                for (Pair<Statistic, GeneratorStatisticValueInstance> pair : statisticToStatisticValueGenerator) {
-                    pair.getValue().startStatisticsGenerator(pair.getKey().getDbId(),
-                            statisticUtilsService, statisticRepository, statisticValueUtilsService,
-                            statisticValueRepository, taskScheduler);
-                }
-                log.info("Generator has ended it's job!");
+        for (Pair<Sensor, GeneratorMeasurementInstance> pair : sensorToMeasurementGenerator) {
+            pair.getValue().startMeasurementsGenerator(pair.getKey().getDbId(),
+                    sensorRepository, sensorUtilsService, measurementRepository,
+                    measurementUtilsService, taskScheduler);
+        }
+        for (Pair<Statistic, GeneratorStatisticValueInstance> pair : statisticToStatisticValueGenerator) {
+            pair.getValue().startStatisticsGenerator(pair.getKey().getDbId(),
+                    statisticUtilsService, statisticRepository, statisticValueUtilsService,
+                    statisticValueRepository, taskScheduler);
+        }
+        log.info("Generator has ended it's job!");
 
     }
 

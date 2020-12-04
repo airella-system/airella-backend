@@ -14,6 +14,8 @@ import java.time.Instant;
 @NoArgsConstructor
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "statisticValue", indexes = {
+        @Index(name = "INDX_1", columnList = "timestamp")})
 public abstract class StatisticValue {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

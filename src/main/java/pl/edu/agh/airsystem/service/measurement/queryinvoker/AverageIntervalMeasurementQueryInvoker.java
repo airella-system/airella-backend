@@ -1,12 +1,16 @@
 package pl.edu.agh.airsystem.service.measurement.queryinvoker;
 
+import lombok.AllArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
 import pl.edu.agh.airsystem.model.api.query.MeasurementQuery;
 import pl.edu.agh.airsystem.model.api.sensors.IntervalMeasurementResponse;
 import pl.edu.agh.airsystem.model.api.sensors.MeasurementResponse;
+import pl.edu.agh.airsystem.model.api.sensors.SingleValueMeasurementResponse;
 import pl.edu.agh.airsystem.model.api.sensors.TimespanResponse;
 import pl.edu.agh.airsystem.model.database.Measurement;
 import pl.edu.agh.airsystem.model.database.Sensor;
+import pl.edu.agh.airsystem.repository.MeasurementRepository;
 import pl.edu.agh.airsystem.util.Interval;
 
 import java.util.ArrayList;
@@ -16,7 +20,10 @@ import static pl.edu.agh.airsystem.model.api.query.MeasurementQueryStrategy.AVG;
 import static pl.edu.agh.airsystem.util.Intervals.generateIntervals;
 
 @Component
+@AllArgsConstructor
 public class AverageIntervalMeasurementQueryInvoker implements MeasurementQueryInvoker {
+
+    private final MeasurementRepository measurementRepository;
 
     @Override
     public List<? extends MeasurementResponse> apply(Sensor sensor, MeasurementQuery measurementQuery) {
@@ -28,13 +35,14 @@ public class AverageIntervalMeasurementQueryInvoker implements MeasurementQueryI
             TimespanResponse timespan = new TimespanResponse(
                     interval.getStart().toString(),
                     interval.getEnd().toString());
-            sensor.getMeasurements().stream()
-                    .filter(e -> e.getTimestamp().isAfter(interval.getStart()))
-                    .filter(e -> e.getTimestamp().isBefore(interval.getEnd()))
-                    .mapToDouble(Measurement::getValue)
-                    .average()
-                    .ifPresentOrElse(e -> measurementResponses.add(new IntervalMeasurementResponse(timespan, e)),
-                            () -> measurementResponses.add(new IntervalMeasurementResponse(timespan, null)));
+            try {
+                Double avg = measurementRepository.findAverageBySensorAndTimestampAfterAndTimestampBefore(
+                        sensor, interval.getStart(), interval.getEnd());
+                measurementResponses.add(new IntervalMeasurementResponse(timespan, avg));
+            } catch (EmptyResultDataAccessException ex) {
+                measurementResponses.add(new IntervalMeasurementResponse(timespan, null));
+                ex.printStackTrace();
+            }
         }
 
         return measurementResponses;
