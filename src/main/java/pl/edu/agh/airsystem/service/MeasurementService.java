@@ -8,12 +8,14 @@ import pl.edu.agh.airsystem.exception.NotUsersStationException;
 import pl.edu.agh.airsystem.model.api.measurement.NewMeasurementRequest;
 import pl.edu.agh.airsystem.model.api.response.Response;
 import pl.edu.agh.airsystem.model.api.response.SuccessResponse;
+import pl.edu.agh.airsystem.model.api.stations.complexapi.ComplexQueryNewMeasurementRequest;
 import pl.edu.agh.airsystem.model.database.Measurement;
 import pl.edu.agh.airsystem.model.database.Sensor;
 import pl.edu.agh.airsystem.model.database.StationClient;
 import pl.edu.agh.airsystem.util.MeasurementUtilsService;
 
 import java.time.Instant;
+import java.util.List;
 
 @Service
 @Transactional
@@ -50,6 +52,15 @@ public class MeasurementService {
 
 
         return ResponseEntity.ok(new SuccessResponse());
+    }
+
+    public void addMeasurements(
+            String stationId,
+            List<ComplexQueryNewMeasurementRequest> newMeasurementRequests) {
+        newMeasurementRequests.forEach(newMeasurementRequest ->
+                addMeasurement(stationId,
+                        newMeasurementRequest.getSensorId(),
+                        newMeasurementRequest.getMeasurement()));
     }
 }
 

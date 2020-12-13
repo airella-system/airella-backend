@@ -13,43 +13,43 @@ import pl.edu.agh.airsystem.model.api.authorization.RefreshTokenRequest;
 import pl.edu.agh.airsystem.model.api.authorization.RegisterStationRequest;
 import pl.edu.agh.airsystem.model.api.authorization.RegisterUserRequest;
 import pl.edu.agh.airsystem.model.api.response.Response;
-import pl.edu.agh.airsystem.service.AuthorizationService;
+import pl.edu.agh.airsystem.service.RegisterLoginService;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/auth")
 public class AuthorizationController {
-    private final AuthorizationService authorizationService;
+    private final RegisterLoginService registerLoginService;
 
     @PostMapping("/login")
     public ResponseEntity<? extends Response> login(
             @RequestBody LoginRequest authenticationRequest) {
-        return authorizationService.login(authenticationRequest);
+        return registerLoginService.login(authenticationRequest);
     }
 
     @PostMapping("/refresh-token")
     public ResponseEntity<? extends Response> refreshToken(
             @RequestBody RefreshTokenRequest authenticationRequest) {
-        return authorizationService.refreshToken(authenticationRequest);
+        return registerLoginService.refreshToken(authenticationRequest);
     }
 
     @PostMapping("/register-user")
     public ResponseEntity<? extends Response> registerUser(
             @RequestBody RegisterUserRequest registerUserRequest) {
-        return authorizationService.registerUser(registerUserRequest);
+        return registerLoginService.registerUser(registerUserRequest);
     }
 
     @GetMapping("/activate-user")
     public ResponseEntity<? extends Response> activateUser(
             @RequestParam String email,
             @RequestParam String activationCode) {
-        return authorizationService.activateUser(email, activationCode);
+        return registerLoginService.activateUser(email, activationCode);
     }
 
     @PostMapping("/register-station")
     public ResponseEntity<? extends Response> registerStation(
             @RequestBody RegisterStationRequest registerStationRequest) {
-        return authorizationService.registerStation(registerStationRequest);
+        return registerLoginService.registerStation(registerStationRequest);
     }
 
 }

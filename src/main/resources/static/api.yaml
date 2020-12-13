@@ -11,6 +11,8 @@ tags:
     description: "Manage stations, sensors, measurements and statistics"
   - name: "search"
     description: "Search for stations"
+  - name: "utils"
+    description: "Utilities"
 paths:
   /auth/login:
     post:
@@ -162,6 +164,8 @@ paths:
               properties:
                 stationRegistrationToken:
                   type: string
+                additionalQuery:
+                  $ref: '#/components/schemas/station-query'
       responses:
         '201':
           description: |-
@@ -441,15 +445,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                type:
-                  type: string
-                id:
-                  type: string
-                name:
-                  type: string
-                  description: name of sensor (visible on frontend)
+              $ref: '#/components/schemas/sensor-add-request'
       responses:
         '201':
           description: |-
@@ -490,13 +486,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                value:
-                  type: number
-                date:
-                  type: string
-                  description: "Optional argument - date in ISO 8601 without timezone (must end with \"Z\"). If not provided, current date will be taken."
+              $ref: '#/components/schemas/measurement-add-request'
       responses:
         '200':
           description: |-
@@ -549,27 +539,6 @@ paths:
                     type: boolean
                   data:
                     $ref: '#/components/schemas/station-brief'
-  /user/stations:
-    get:
-      tags:
-        - "stations"
-      security:
-        - bearerAuth: [ ]
-      operationId: get-user-stations
-      summary: List user stations
-      responses:
-        '200':
-          description: |-
-            Returned user stations. User needs to be logged in.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                  data:
-                    $ref: '#/components/schemas/station-brief'
   /stations/{stationId}/statistics/{statisticId}/values:
     post:
       tags:
@@ -597,11 +566,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                value:
-                  type: object
-                  description: value of new statistic value
+              $ref: '#/components/schemas/statistic-value-add-request'
       responses:
         '200':
           description: |-
@@ -633,28 +598,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                privacyMode:
-                  type: string
-                  description: PUBLIC or PRIVATE
-                type:
-                  type: string
-                  description: ONE_STRING, MULTIPLE_ENUMS, MULTIPLE_FLOATS
-                id:
-                  type: string
-                  description: id of statistic
-                name:
-                  type: string
-                  description: name of statistic (visible on frontend)
-                enumDefinitions:
-                  type: array
-                  description: only applicable to MULTIPLE_ENUMS type
-                  items:
-                    $ref: '#/components/schemas/enum-definition'
-                metric:
-                  type: string
-                  description: only applicable to MULTIPLE_FLOATS type - defines metric which will be displayed on frontend (for example V if this is statistic about voltage)
+              $ref: '#/components/schemas/statistic-add-request'
       responses:
         '201':
           description: |-
@@ -788,6 +732,76 @@ paths:
                     type: boolean
                   data:
                     $ref: '#/components/schemas/statistic'
+  /user/stations:
+    get:
+      tags:
+        - "stations"
+      security:
+        - bearerAuth: [ ]
+      operationId: get-user-stations
+      summary: List user stations
+      responses:
+        '200':
+          description: |-
+            Returns user stations. User needs to be logged in.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/station-brief'
+  /stations/{stationId}/query:
+    post:
+      tags:
+        - "stations"
+      parameters:
+        - in: path
+          name: stationId
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: Station id
+      operationId: query-station
+      summary: Groups many query endpoints into one
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/station-query'
+      responses:
+        '200':
+          description: |-
+            Returns if query was successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+  /utils/datetime:
+    get:
+      tags:
+        - "utils"
+      operationId: get-datetime
+      summary: Get date and time
+      responses:
+        '200':
+          description: |-
+            Returns date and time in ISO8601 and Unix Timestamp format
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/datetime'
 components:
   securitySchemes:
     bearerAuth:
@@ -841,6 +855,53 @@ components:
             $ref: '#/components/schemas/location'
           aqi:
             type: number
+    statistic-value-add-request:
+      type: object
+      properties:
+        value:
+          type: object
+          description: value of new statistic value
+    sensor-add-request:
+      type: object
+      properties:
+        type:
+          type: string
+        id:
+          type: string
+        name:
+          type: string
+          description: name of sensor (visible on frontend)
+    measurement-add-request:
+      type: object
+      properties:
+        value:
+          type: number
+        date:
+          type: string
+          description: "Optional argument - date in ISO 8601 without timezone (must end with \"Z\"). If not provided, current date will be taken."
+    statistic-add-request:
+      type: object
+      properties:
+        privacyMode:
+          type: string
+          description: PUBLIC or PRIVATE
+        type:
+          type: string
+          description: ONE_STRING, MULTIPLE_ENUMS, MULTIPLE_FLOATS
+        id:
+          type: string
+          description: id of statistic
+        name:
+          type: string
+          description: name of statistic (visible on frontend)
+        enumDefinitions:
+          type: array
+          description: only applicable to MULTIPLE_ENUMS type
+          items:
+            $ref: '#/components/schemas/enum-definition'
+        metric:
+          type: string
+          description: only applicable to MULTIPLE_FLOATS type - defines metric which will be displayed on frontend (for example V if this is statistic about voltage)
     station:
       type: array
       items:
@@ -958,3 +1019,53 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/statistic'
+    station-query:
+      type: object
+      properties:
+        add:
+          type: object
+          properties:
+            sensors:
+              type: array
+              items:
+                $ref: '#/components/schemas/sensor-add-request'
+            statistics:
+              type: array
+              items:
+                $ref: '#/components/schemas/statistic-add-request'
+            measurements:
+              type: array
+              items:
+                type: object
+                properties:
+                  sensorId:
+                    type: string
+                  measurement:
+                    $ref: '#/components/schemas/measurement-add-request'
+            statisticValues:
+              type: array
+              items:
+                type: object
+                properties:
+                  statisticId:
+                    type: string
+                  statisticValue:
+                    $ref: '#/components/schemas/statistic-value-add-request'
+        set:
+          type: object
+          properties:
+            name:
+              $ref: '#/components/schemas/station-name'
+            address:
+              $ref: '#/components/schemas/address'
+            location:
+              $ref: '#/components/schemas/location'
+    datetime:
+      type: object
+      properties:
+        iso8601utc:
+          type: string
+          description: Actual date and time in ISO8601 format in UTC
+        unixTimestamp:
+          type: integer
+          description: Unix Timestamp
