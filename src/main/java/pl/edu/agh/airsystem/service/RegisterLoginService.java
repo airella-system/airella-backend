@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.edu.agh.airsystem.exception.*;
+import pl.edu.agh.airsystem.filters.JWTAuthorizationFilter;
 import pl.edu.agh.airsystem.model.api.authorization.*;
 import pl.edu.agh.airsystem.model.api.response.DataResponse;
 import pl.edu.agh.airsystem.model.api.response.Response;
@@ -151,6 +152,9 @@ public class RegisterLoginService {
         stationClientRepository.save(stationClient);
 
         if (registerStationRequest.getAdditionalQuery() != null) {
+            SecurityContextHolder.getContext().setAuthentication(
+                    new UsernamePasswordAuthenticationToken(stationClient,
+                            null, JWTAuthorizationFilter.getGrantedAuthorities(stationClient)));
             stationService.makeComplexQuery(station.getId(), registerStationRequest.getAdditionalQuery());
         }
 
@@ -159,10 +163,15 @@ public class RegisterLoginService {
                 .buildAndExpand(station.getId())
                 .toUri();
 
+        final JWTToken accessToken = jwtTokenUtil.generateAccessToken(stationClient);
+
         return ResponseEntity
                 .created(uri)
                 .body(DataResponse.of(
-                        new RegisterStationResponse(String.valueOf(station.getId()), stationClient.getRefreshToken())));
+                        new RegisterStationResponse(
+                                String.valueOf(station.getId()),
+                                stationClient.getRefreshToken(),
+                                accessToken)));
     }
 
     private void authenticate(String username, String password) {

@@ -164,7 +164,7 @@ public class StationService {
 
     public ResponseEntity<? extends Response> makeComplexQuery(String stationId, ComplexQueryRequest complexQueryRequest) {
         Station station = resourceFinder.findStation(stationId);
-        //authorizationService.ensureSelectedStationAuthorization(station);
+        authorizationService.ensureSelectedStationAuthorization(station);
 
         Optional.ofNullable(complexQueryRequest.getAdd())
                 .flatMap(addRequest -> Optional.ofNullable(addRequest.getSensors()))

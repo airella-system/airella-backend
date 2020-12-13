@@ -44,7 +44,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
         chain.doFilter(req, res);
     }
 
-    private Collection<GrantedAuthority> getGrantedAuthorities(Client client) {
+    public static Collection<GrantedAuthority> getGrantedAuthorities(Client client) {
         String[] roles = client.getRoles().stream()
                 .map(Role::toString)
                 .toArray(String[]::new);
