@@ -3,7 +3,6 @@ package pl.edu.agh.airsystem.generator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.TaskScheduler;
@@ -24,7 +23,7 @@ import pl.edu.agh.airsystem.repository.SensorRepository;
 import pl.edu.agh.airsystem.repository.StationRepository;
 import pl.edu.agh.airsystem.repository.StatisticRepository;
 import pl.edu.agh.airsystem.repository.StatisticValueRepository;
-import pl.edu.agh.airsystem.service.AuthorizationService;
+import pl.edu.agh.airsystem.service.RegisterLoginService;
 import pl.edu.agh.airsystem.util.MeasurementUtilsService;
 import pl.edu.agh.airsystem.util.Pair;
 import pl.edu.agh.airsystem.util.SensorUtilsService;
@@ -190,7 +189,7 @@ public class Generator {
             addressRepository.save(address);
 
             Station station = new Station();
-            station.setId(AuthorizationService.generateStationId());
+            station.setId(RegisterLoginService.generateStationId());
             station.setName(stationDefinition.getName());
             station.setLocation(stationDefinition.getLocation());
             station.setAddress(stationDefinition.getAddress());

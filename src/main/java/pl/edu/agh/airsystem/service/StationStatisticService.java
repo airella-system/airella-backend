@@ -17,6 +17,7 @@ import pl.edu.agh.airsystem.model.api.response.DataResponse;
 import pl.edu.agh.airsystem.model.api.response.Response;
 import pl.edu.agh.airsystem.model.api.response.SuccessResponse;
 import pl.edu.agh.airsystem.model.api.sensors.NewSensorResponse;
+import pl.edu.agh.airsystem.model.api.stations.complexapi.ComplexQueryNewStatisticValueRequest;
 import pl.edu.agh.airsystem.model.api.statistic.AddStatisticRequest;
 import pl.edu.agh.airsystem.model.api.statistic.AddToStatisticRequest;
 import pl.edu.agh.airsystem.model.api.statistic.StatisticResponse;
@@ -105,6 +106,10 @@ public class StationStatisticService {
                 .body(DataResponse.of(new NewSensorResponse(statistic.getId())));
     }
 
+    public void addStatistics(String stationId, List<AddStatisticRequest> addStatisticRequests) {
+        addStatisticRequests.forEach(newStatisticRequest -> addStatistic(stationId, newStatisticRequest));
+    }
+
     public ResponseEntity<Response> removeStatistic(String stationId, String statisticId) {
         Client client = authorizationService.checkAuthenticationAndGetClient();
         Statistic toDelete = statisticRepository.findByStation_IdAndId(stationId, statisticId)
@@ -182,6 +187,14 @@ public class StationStatisticService {
         statisticRepository.save(statistic);
         return ResponseEntity.ok(new SuccessResponse());
     }
+
+    public void addToStatistic(String stationId, List<ComplexQueryNewStatisticValueRequest> addToStatisticRequests) {
+        addToStatisticRequests.forEach(addToStatisticRequest -> addToStatistic(
+                stationId,
+                addToStatisticRequest.getStatisticId(),
+                addToStatisticRequest.getStatisticValue()));
+    }
+
 
     public ResponseEntity<Response> getStatistic(String stationId, String statisticId, StatisticValueQuery statisticQuery) {
         Statistic statistic = resourceFinder.findStationStatistic(stationId, statisticId);

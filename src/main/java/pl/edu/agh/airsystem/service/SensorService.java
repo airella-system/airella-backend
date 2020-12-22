@@ -49,6 +49,10 @@ public class SensorService {
         return types.contains(sensor.getType());
     }
 
+    public void createSensor(String stationId, NewSensorRequest newSensor) {
+
+    }
+
     public ResponseEntity<Response> addSensor(String stationId, NewSensorRequest newSensor) {
         StationClient loggedStation = authorizationService.checkAuthenticationAndGetStationClient();
 
@@ -79,6 +83,11 @@ public class SensorService {
         return ResponseEntity
                 .created(uri)
                 .body(DataResponse.of(new NewSensorResponse(sensor.getId())));
+    }
+
+
+    public void addSensors(String stationId, List<NewSensorRequest> newSensorRequestsList) {
+        newSensorRequestsList.forEach(newSensorRequest -> addSensor(stationId, newSensorRequest));
     }
 
     public ResponseEntity<DataResponse> getSensor(String stationId, String sensorId, MeasurementQuery measurementQuery) {

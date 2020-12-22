@@ -9,6 +9,7 @@ import pl.edu.agh.airsystem.model.api.response.Response;
 import pl.edu.agh.airsystem.model.api.stations.AddressChangeRequest;
 import pl.edu.agh.airsystem.model.api.stations.LocationChangeRequest;
 import pl.edu.agh.airsystem.model.api.stations.NameChangeRequest;
+import pl.edu.agh.airsystem.model.api.stations.complexapi.ComplexQueryRequest;
 import pl.edu.agh.airsystem.service.StationService;
 
 @RestController
@@ -29,6 +30,13 @@ public class StationController {
             MeasurementQueryRequest measurementQueryRequest) {
         return stationService.getStation(stationId,
                 measurementQueryConverter.convert(measurementQueryRequest));
+    }
+
+    @PostMapping("{stationId}/query")
+    public ResponseEntity<? extends Response> makeComplexQuery(
+            @PathVariable(value = "stationId") String stationId,
+            @RequestBody ComplexQueryRequest complexQueryRequest) {
+        return stationService.makeComplexQuery(stationId, complexQueryRequest);
     }
 
     @DeleteMapping("{stationId}")

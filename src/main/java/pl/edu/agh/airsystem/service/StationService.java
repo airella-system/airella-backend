@@ -15,6 +15,8 @@ import pl.edu.agh.airsystem.model.api.stations.BriefStationResponse;
 import pl.edu.agh.airsystem.model.api.stations.LocationChangeRequest;
 import pl.edu.agh.airsystem.model.api.stations.NameChangeRequest;
 import pl.edu.agh.airsystem.model.api.stations.StationResponse;
+import pl.edu.agh.airsystem.model.api.stations.complexapi.ComplexQueryAddRequest;
+import pl.edu.agh.airsystem.model.api.stations.complexapi.ComplexQueryRequest;
 import pl.edu.agh.airsystem.model.database.*;
 import pl.edu.agh.airsystem.model.database.statistic.MultipleValueEnumStatistic;
 import pl.edu.agh.airsystem.model.database.statistic.MultipleValueFloatStatistic;
@@ -24,6 +26,7 @@ import pl.edu.agh.airsystem.repository.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -42,6 +45,11 @@ public class StationService {
     private final AuthorizationService authorizationService;
     private final StationResponseAssembler stationResponseAssembler;
     private final BriefStationResponseAssembler briefStationResponseAssembler;
+
+    private final SensorService sensorService;
+    private final MeasurementService measurementService;
+    private final StationStatisticService stationStatisticService;
+
 
     public ResponseEntity<Response> getStations() {
         List<BriefStationResponse> response = new ArrayList<>();
@@ -154,4 +162,45 @@ public class StationService {
         return ResponseEntity.ok().body(DataResponse.of(response));
     }
 
+    public ResponseEntity<? extends Response> makeComplexQuery(String stationId, ComplexQueryRequest complexQueryRequest) {
+        Station station = resourceFinder.findStation(stationId);
+        authorizationService.ensureSelectedStationAuthorization(station);
+
+        Optional.ofNullable(complexQueryRequest.getAdd())
+                .flatMap(addRequest -> Optional.ofNullable(addRequest.getSensors()))
+                .ifPresent(newSensorRequestsList ->
+                        sensorService.addSensors(stationId, newSensorRequestsList));
+
+        Optional.ofNullable(complexQueryRequest.getAdd())
+                .flatMap(addRequest -> Optional.ofNullable(addRequest.getStatistics()))
+                .ifPresent(newStatisticRequestsList ->
+                        stationStatisticService.addStatistics(stationId, newStatisticRequestsList));
+
+        Optional.ofNullable(complexQueryRequest.getAdd())
+                .flatMap(addRequest -> Optional.ofNullable(addRequest.getMeasurements()))
+                .ifPresent(newMeasurementRequestsList ->
+                        measurementService.addMeasurements(stationId, newMeasurementRequestsList));
+
+        Optional.ofNullable(complexQueryRequest.getAdd())
+                .flatMap(addRequest -> Optional.ofNullable(addRequest.getStatisticValues()))
+                .ifPresent(newStatisticValueRequestList ->
+                        stationStatisticService.addToStatistic(stationId, newStatisticValueRequestList));
+
+        Optional.ofNullable(complexQueryRequest.getSet())
+                .flatMap(setRequest -> Optional.ofNullable(setRequest.getName()))
+                .ifPresent(setNameRequest ->
+                        setStationName(stationId, setNameRequest));
+
+        Optional.ofNullable(complexQueryRequest.getSet())
+                .flatMap(setRequest -> Optional.ofNullable(setRequest.getAddress()))
+                .ifPresent(setAddressRequest ->
+                        setStationAddress(stationId, setAddressRequest));
+
+        Optional.ofNullable(complexQueryRequest.getSet())
+                .flatMap(setRequest -> Optional.ofNullable(setRequest.getLocation()))
+                .ifPresent(setLocationRequest ->
+                        setStationLocation(stationId, setLocationRequest));
+
+        return ResponseEntity.ok(new SuccessResponse());
+    }
 }
