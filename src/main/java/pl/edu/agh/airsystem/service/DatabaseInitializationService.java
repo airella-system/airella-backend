@@ -10,6 +10,7 @@ import pl.edu.agh.airsystem.model.database.UserClient;
 import pl.edu.agh.airsystem.repository.UserClientRepository;
 
 import javax.annotation.PostConstruct;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -31,15 +32,28 @@ public class DatabaseInitializationService {
 
     @PostConstruct
     private void postConstruct() {
+        Optional<UserClient> optionalAdmin = userClientRepository.findByRolesContaining(Role.ROLE_START_ADMIN);
         if (adminEnabled) {
-            //create default user if not exists
-            if (userClientRepository.findByEmail(adminUsername).isEmpty()) {
-                UserClient admin = new UserClient(adminUsername,
-                        new BCryptPasswordEncoder().encode(adminPassword));
-                admin.getRoles().add(Role.ROLE_USER);
-                admin.getRoles().add(Role.ROLE_ADMIN);
-                userClientRepository.save(admin);
+            if (optionalAdmin.isEmpty()) {
+                System.out.println("IS NULL oh");
+                optionalAdmin = userClientRepository.findByRolesContaining(Role.ROLE_ADMIN);
+                System.out.println("IS NULL? " + optionalAdmin.isEmpty());
             }
+            UserClient admin;
+            if (optionalAdmin.isEmpty()) {
+                admin = new UserClient(adminUsername,
+                        new BCryptPasswordEncoder().encode(adminPassword));
+            } else {
+                admin = optionalAdmin.get();
+                admin.setEmail(adminUsername);
+                admin.setPasswordHash(new BCryptPasswordEncoder().encode(adminPassword));
+            }
+            admin.getRoles().add(Role.ROLE_USER);
+            admin.getRoles().add(Role.ROLE_ADMIN);
+            admin.getRoles().add(Role.ROLE_START_ADMIN);
+            userClientRepository.save(admin);
+        } else {
+            optionalAdmin.ifPresent(userClientRepository::delete);
         }
     }
 

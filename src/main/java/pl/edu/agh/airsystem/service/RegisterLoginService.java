@@ -41,6 +41,7 @@ public class RegisterLoginService {
     private final StationRepository stationRepository;
     private final EmailSenderService emailSenderService;
     private final StationService stationService;
+    private final AuthorizationService authorizationService;
 
     public ResponseEntity<Response> login(LoginRequest authenticationRequest) {
         authenticate(authenticationRequest.getEmail(), authenticationRequest.getPassword());
@@ -178,5 +179,31 @@ public class RegisterLoginService {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
     }
 
+    public ResponseEntity<? extends Response> deleteUser(DeleteUserRequest deleteUserRequest) {
+        Client client = authorizationService.checkAuthenticationAndGetClient();
+
+        if (!client.getRoles().contains(Role.ROLE_ADMIN)) {
+            throw new AdministratorRightsRequiredException();
+        }
+
+        Optional<UserClientStub> userClientStub = userClientStubRepository
+                .findByEmail(deleteUserRequest.getEmail());
+
+        Optional<UserClient> userClient = userClientRepository
+                .findByEmail(deleteUserRequest.getEmail());
+
+
+        if (userClientStub.isPresent()) {
+            userClientStubRepository.delete(userClientStub.get());
+            return ResponseEntity.ok(new SuccessResponse());
+        } else if (userClient.isPresent()) {
+            userClient.get().getStations().forEach(station ->
+                    stationService.deleteStation(station.getId()));
+            userClientRepository.delete(userClient.get());
+            return ResponseEntity.ok(new SuccessResponse());
+        } else {
+            throw new EmailNotFoundException(deleteUserRequest.getEmail());
+        }
+    }
 }
 
