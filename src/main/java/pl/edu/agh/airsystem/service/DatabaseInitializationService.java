@@ -34,11 +34,6 @@ public class DatabaseInitializationService {
     private void postConstruct() {
         Optional<UserClient> optionalAdmin = userClientRepository.findByRolesContaining(Role.ROLE_START_ADMIN);
         if (adminEnabled) {
-            if (optionalAdmin.isEmpty()) {
-                System.out.println("IS NULL oh");
-                optionalAdmin = userClientRepository.findByRolesContaining(Role.ROLE_ADMIN);
-                System.out.println("IS NULL? " + optionalAdmin.isEmpty());
-            }
             UserClient admin;
             if (optionalAdmin.isEmpty()) {
                 admin = new UserClient(adminUsername,

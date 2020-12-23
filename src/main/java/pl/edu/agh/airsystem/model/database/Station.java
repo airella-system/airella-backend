@@ -57,6 +57,8 @@ public class Station {
 
     @PreRemove
     private void preRemove() {
-        owner.getStations().remove(this);
+        if (owner != null) { //owner can be null for example for generated stations
+            owner.getStations().remove(this);
+        }
     }
 }
